@@ -1,0 +1,22 @@
+[project]
+name = "gunj"
+version = "0.1.0"
+description = "Date Indian recordings from the hum of the national grid"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy", "pandas", "matplotlib", "soundfile"]
+
+[project.scripts]
+gunj = "gunj.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["gunj"]
+
+[tool.setuptools.package-data]
+gunj = ["config.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

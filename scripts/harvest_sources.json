@@ -1,0 +1,715 @@
+{
+ "_comment": "Candidate channels for scripts/harvest_metadata.py. Handles were found with logged YouTube channel searches (data/channel_search.jsonl). group=india: Indian synchronous grid; group=negative: foreign 50 Hz grids. Nepal and Bhutan are excluded (may be synchronous with India). Court channels are excluded.",
+ "sources": [
+  {
+   "key": "pib_india",
+   "group": "india",
+   "name": "PIB India",
+   "url": "https://www.youtube.com/@pibindia",
+   "venue_type": "government event",
+   "country": "IN",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "notes": "press conferences and official events; heavy streamer, so channel search by year",
+   "max_fetch": 22
+  },
+  {
+   "key": "up_vidhan_sabha",
+   "group": "india",
+   "name": "UTTAR PRADESH VIDHAN SABHA",
+   "url": "https://www.youtube.com/@UTTARPRADESHVIDHANSABHA",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "iucaa_live",
+   "group": "india",
+   "name": "IUCAA: Lectures, Colloquia & Live Streams",
+   "url": "https://www.youtube.com/@IUCAALive",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "somnath_temple",
+   "group": "india",
+   "name": "Somnath Temple - Official Channel",
+   "url": "https://www.youtube.com/@SomnathTempleOfficialChannel",
+   "venue_type": "religious",
+   "country": "IN",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "notes": "daily aarti streams; channel search by year",
+   "max_fetch": 22
+  },
+  {
+   "key": "rajasthan_vidhan_sabha",
+   "group": "india",
+   "name": "Rajasthan Vidhan Sabha",
+   "url": "https://www.youtube.com/@RajasthanVidhanSabha",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "icts",
+   "group": "india",
+   "name": "International Centre for Theoretical Sciences",
+   "url": "https://www.youtube.com/@ICTStalks",
+   "venue_type": "conference",
+   "country": "IN",
+   "max_pages": 15,
+   "notes": "ICTS programmes: schools, workshops, discussion meetings",
+   "max_fetch": 22
+  },
+  {
+   "key": "isro",
+   "group": "india",
+   "name": "ISRO Official",
+   "url": "https://www.youtube.com/@isroofficial5866",
+   "venue_type": "government event",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "sabha_tv_kerala",
+   "group": "india",
+   "name": "Sabha TV (Kerala Legislative Assembly)",
+   "url": "https://www.youtube.com/@SabhaTV-KLA",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "belur_math",
+   "group": "india",
+   "name": "Ramakrishna Math & Ramakrishna Mission, Belur Math",
+   "url": "https://www.youtube.com/@belurmathofficial",
+   "venue_type": "religious",
+   "country": "IN",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "max_fetch": 22
+  },
+  {
+   "key": "iit_madras",
+   "group": "india",
+   "name": "IIT Madras",
+   "url": "https://www.youtube.com/@IITMadrasOfficial",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "bihar_vidhan_sabha",
+   "group": "india",
+   "name": "Bihar Vidhan Sabha TV",
+   "url": "https://www.youtube.com/@BiharVidhanSabhaTV",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "president_of_india",
+   "group": "india",
+   "name": "President of India",
+   "url": "https://www.youtube.com/@PresidentOfIndia",
+   "venue_type": "government event",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "shirdi_sansthan",
+   "group": "india",
+   "name": "Shree Saibaba Sansthan Trust",
+   "url": "https://www.youtube.com/@saibabasansthantrust",
+   "venue_type": "religious",
+   "country": "IN",
+   "tabs": [
+    "streams",
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 4,
+   "notes": "official status not verified",
+   "max_fetch": 22
+  },
+  {
+   "key": "iitgn",
+   "group": "india",
+   "name": "IIT Gandhinagar",
+   "url": "https://www.youtube.com/@IITGNOfficial",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "maharashtra_assembly",
+   "group": "india",
+   "name": "Maharashtra Assembly Live",
+   "url": "https://www.youtube.com/@maharashtra_assembly_live",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "notes": "official status not verified",
+   "max_fetch": 22
+  },
+  {
+   "key": "rbi",
+   "group": "india",
+   "name": "Reserve Bank of India",
+   "url": "https://www.youtube.com/@reservebankofindia593",
+   "venue_type": "government event",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "mayapur_tv",
+   "group": "india",
+   "name": "Mayapur TV",
+   "url": "https://www.youtube.com/@MayapurTVOfficial",
+   "venue_type": "religious",
+   "country": "IN",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "notes": "ISKCON Mayapur; some streams may come from outside Mayapur",
+   "max_fetch": 22
+  },
+  {
+   "key": "iisc",
+   "group": "india",
+   "name": "Indian Institute of Science (IISc)",
+   "url": "https://www.youtube.com/@indianinstituteofscience-iisc",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "delhi_assembly_tv",
+   "group": "india",
+   "name": "Delhi Assembly Television",
+   "url": "https://www.youtube.com/@DelhiAssemblyTelevision",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "prd_live_kerala",
+   "group": "india",
+   "name": "prdlivekerala",
+   "url": "https://www.youtube.com/@PRDLIVEAPP",
+   "venue_type": "government event",
+   "country": "IN",
+   "max_pages": 15,
+   "notes": "Kerala govt PRD live; CM press meets",
+   "max_fetch": 22
+  },
+  {
+   "key": "siddhivinayak",
+   "group": "india",
+   "name": "Shree Siddhivinayak Ganapati Temple Trust",
+   "url": "https://www.youtube.com/@ShreeSiddhivinayakTemple",
+   "venue_type": "religious",
+   "country": "IN",
+   "tabs": [
+    "streams",
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 4,
+   "max_fetch": 22
+  },
+  {
+   "key": "iit_delhi",
+   "group": "india",
+   "name": "IIT Delhi",
+   "url": "https://www.youtube.com/@IITDelhiOfficial",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "jharkhand_vidhan_sabha",
+   "group": "india",
+   "name": "Jharkhand Vidhansabha TV",
+   "url": "https://www.youtube.com/@jharkhandvidhansabhatv",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "kerala_iprd",
+   "group": "india",
+   "name": "Kerala Government (IPRD)",
+   "url": "https://www.youtube.com/@IPRDKerala",
+   "venue_type": "government event",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "sgpc",
+   "group": "india",
+   "name": "SGPC, Sri Amritsar",
+   "url": "https://www.youtube.com/@SGPCSriAmritsar",
+   "venue_type": "religious",
+   "country": "IN",
+   "tabs": [
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "notes": "own Gurbani broadcast began mid-2023, so little overlap with the reference",
+   "max_fetch": 22
+  },
+  {
+   "key": "iit_kanpur",
+   "group": "india",
+   "name": "IIT Kanpur",
+   "url": "https://www.youtube.com/@iitkanpur",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "wb_assembly",
+   "group": "india",
+   "name": "West Bengal Legislative Assembly",
+   "url": "https://www.youtube.com/@wbassembly",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "tifr",
+   "group": "india",
+   "name": "Tata Institute of Fundamental Research",
+   "url": "https://www.youtube.com/@tifrscience",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "meghalaya_assembly",
+   "group": "india",
+   "name": "Meghalaya Legislative Assembly Channel",
+   "url": "https://www.youtube.com/@MeghalayaAssemblyChannel",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "nptel_noc_iitm",
+   "group": "india",
+   "name": "NPTEL-NOC IITM",
+   "url": "https://www.youtube.com/@nptel-nociitm9240",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "haryana_vidhan_sabha",
+   "group": "india",
+   "name": "Haryana Vidhan Sabha",
+   "url": "https://www.youtube.com/@HaryanaVidhanSabhaChd",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "theory_tifr",
+   "group": "india",
+   "name": "Department of Theoretical Physics, TIFR",
+   "url": "https://www.youtube.com/@TheoryTIFR",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "tripura_assembly",
+   "group": "india",
+   "name": "Tripura Legislative Assembly",
+   "url": "https://www.youtube.com/@TLA-uw8uy",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "sansad_tv_lok_sabha",
+   "group": "india",
+   "name": "Sansad TV Lok Sabha",
+   "url": "https://www.youtube.com/@sansadtvloksabha1507",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "notes": "official status not verified",
+   "max_fetch": 22
+  },
+  {
+   "key": "digital_sansad",
+   "group": "india",
+   "name": "Digital Sansad - Parliament of India",
+   "url": "https://www.youtube.com/@DigitalSansadPOI",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "sansad_tv",
+   "group": "india",
+   "name": "Sansad TV",
+   "url": "https://www.youtube.com/@SansadTV",
+   "venue_type": "legislature",
+   "country": "IN",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "notes": "mixes House proceedings with studio shows",
+   "max_fetch": 22
+  },
+  {
+   "key": "iitm_bs",
+   "group": "india",
+   "name": "IIT Madras - B.S. Degree Programme",
+   "url": "https://www.youtube.com/@IITMadrasBSDegreeProgramme",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "notes": "online live sessions, often from home or office",
+   "max_fetch": 22
+  },
+  {
+   "key": "punjab_vidhan_sabha",
+   "group": "india",
+   "name": "Punjab Vidhan Sabha",
+   "url": "https://www.youtube.com/@PunjabVidhanSabha",
+   "venue_type": "legislature",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "hbcse",
+   "group": "india",
+   "name": "HBCSE-TIFR",
+   "url": "https://www.youtube.com/@HBCSETIFRMumbai",
+   "venue_type": "lecture",
+   "country": "IN",
+   "max_pages": 15,
+   "max_fetch": 22
+  },
+  {
+   "key": "icts_search",
+   "group": "india",
+   "name": "International Centre for Theoretical Sciences",
+   "url": "https://www.youtube.com/@ICTStalks",
+   "venue_type": "conference",
+   "country": "IN",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "max_fetch": 22,
+   "notes": "second pass on ICTS: the Live tab never reached 2023 within 15 pages, so channel search by year"
+  },
+  {
+   "key": "na_pakistan",
+   "group": "negative",
+   "name": "National Assembly Of Pakistan",
+   "url": "https://www.youtube.com/@NaofPakistan",
+   "venue_type": "legislature",
+   "country": "PK",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "gresham",
+   "group": "negative",
+   "name": "Gresham College",
+   "url": "https://www.youtube.com/@GreshamCollege",
+   "venue_type": "lecture",
+   "country": "GB",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "bd_parliament",
+   "group": "negative",
+   "name": "Bangladesh Parliament",
+   "url": "https://www.youtube.com/@JatiyaSangsad",
+   "venue_type": "legislature",
+   "country": "BD",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "bundestag",
+   "group": "negative",
+   "name": "Deutscher Bundestag",
+   "url": "https://www.youtube.com/@bundestag",
+   "venue_type": "legislature",
+   "country": "DE",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "sl_parliament",
+   "group": "negative",
+   "name": "Parliament of Sri Lanka",
+   "url": "https://www.youtube.com/@ParliamentofSriLankaOfficial",
+   "venue_type": "legislature",
+   "country": "LK",
+   "max_pages": 15,
+   "max_fetch": 32
+  },
+  {
+   "key": "lums",
+   "group": "negative",
+   "name": "LUMS",
+   "url": "https://www.youtube.com/@lahoreuniversityofmanagement",
+   "venue_type": "lecture",
+   "country": "PK",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "st_pauls",
+   "group": "negative",
+   "name": "St Paul's Cathedral",
+   "url": "https://www.youtube.com/@StPaulsLondon",
+   "venue_type": "religious",
+   "country": "GB",
+   "tabs": [
+    "streams",
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 4,
+   "max_fetch": 19
+  },
+  {
+   "key": "vatican_news",
+   "group": "negative",
+   "name": "Vatican News",
+   "url": "https://www.youtube.com/@VaticanNews",
+   "venue_type": "religious",
+   "country": "VA",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "notes": "Vatican City sits on the Italian (continental European) grid",
+   "max_fetch": 12
+  },
+  {
+   "key": "ictp",
+   "group": "negative",
+   "name": "International Centre for Theoretical Physics",
+   "url": "https://www.youtube.com/@ictpchannel",
+   "venue_type": "conference",
+   "country": "IT",
+   "max_pages": 15,
+   "max_fetch": 30
+  },
+  {
+   "key": "senate_pakistan",
+   "group": "negative",
+   "name": "Senate of Pakistan",
+   "url": "https://www.youtube.com/@SenateofPakistanOfficial",
+   "venue_type": "legislature",
+   "country": "PK",
+   "max_pages": 15,
+   "max_fetch": 32
+  },
+  {
+   "key": "scottish_parl",
+   "group": "negative",
+   "name": "The Scottish Parliament",
+   "url": "https://www.youtube.com/@ScottishParl",
+   "venue_type": "legislature",
+   "country": "GB",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "uni_colombo",
+   "group": "negative",
+   "name": "University of Colombo",
+   "url": "https://www.youtube.com/@universitycolombo",
+   "venue_type": "lecture",
+   "country": "LK",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "pap_punjab",
+   "group": "negative",
+   "name": "Provincial Assembly of the Punjab",
+   "url": "https://www.youtube.com/@ProvincialAssemblyofPunjab",
+   "venue_type": "legislature",
+   "country": "PK",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "tweede_kamer",
+   "group": "negative",
+   "name": "Tweede Kamer der Staten-Generaal",
+   "url": "https://www.youtube.com/@TweedeKamerderStatenGeneraal",
+   "venue_type": "legislature",
+   "country": "NL",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "senedd",
+   "group": "negative",
+   "name": "Senedd",
+   "url": "https://www.youtube.com/@Senedd",
+   "venue_type": "legislature",
+   "country": "GB",
+   "max_pages": 15,
+   "max_fetch": 12
+  },
+  {
+   "key": "bundesregierung",
+   "group": "negative",
+   "name": "Bundesregierung",
+   "url": "https://www.youtube.com/@bundesregierung",
+   "venue_type": "government event",
+   "country": "DE",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "max_fetch": 15,
+   "notes": "federal government press conferences, Berlin"
+  },
+  {
+   "key": "european_commission",
+   "group": "negative",
+   "name": "European Commission",
+   "url": "https://www.youtube.com/@EuropeanCommission",
+   "venue_type": "government event",
+   "country": "BE",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "max_fetch": 15,
+   "notes": "press briefings, Brussels; some events elsewhere in the EU"
+  },
+  {
+   "key": "westminster_abbey",
+   "group": "negative",
+   "name": "Westminster Abbey",
+   "url": "https://www.youtube.com/@WestminsterAbbeyLondon",
+   "venue_type": "religious",
+   "country": "GB",
+   "tabs": [
+    "streams",
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 4,
+   "max_fetch": 15
+  },
+  {
+   "key": "minhaj_ul_quran",
+   "group": "negative",
+   "name": "Minhaj-ul-Quran International",
+   "url": "https://www.youtube.com/@minhajulquran",
+   "venue_type": "religious",
+   "country": "PK",
+   "tabs": [
+    "streams",
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 4,
+   "max_fetch": 15,
+   "notes": "mostly Lahore; some events may be held abroad (still a non-Indian grid, but country may differ)"
+  },
+  {
+   "key": "camera_deputati",
+   "group": "negative",
+   "name": "Camera dei deputati",
+   "url": "https://www.youtube.com/@cameradeideputati",
+   "venue_type": "legislature",
+   "country": "IT",
+   "tabs": [
+    "search:2021",
+    "search:2022",
+    "search:2023"
+   ],
+   "max_pages": 2,
+   "max_fetch": 15
+  },
+  {
+   "key": "btv",
+   "group": "negative",
+   "name": "Bangladesh Television",
+   "url": "https://www.youtube.com/@BangladeshTelevision-BTV",
+   "venue_type": "government event",
+   "country": "BD",
+   "max_pages": 15,
+   "max_fetch": 15,
+   "notes": "state broadcaster; mix of studio and outside events"
+  }
+ ]
+}

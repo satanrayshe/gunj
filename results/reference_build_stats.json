@@ -1,0 +1,668 @@
+{
+ "parse": {
+  "freq_I.csv": {
+   "file": "freq_I.csv",
+   "bytes": 2077025888,
+   "data_bytes": 2077024184,
+   "header": [
+    "STARTDATE",
+    "SubstationId",
+    "DeviceType",
+    "DeviceId",
+    "PointName",
+    "MeasurementId",
+    "MeasurementData1hz",
+    "MeasurementData1hz:Quality"
+   ],
+   "columns_used": {
+    "ts": "STARTDATE",
+    "val": "MeasurementData1hz",
+    "q": "MeasurementData1hz:Quality",
+    "ids": [
+     "SubstationId",
+     "DeviceId",
+     "MeasurementId"
+    ]
+   },
+   "rows_read": 19999942,
+   "rows_bad_timestamp": 0,
+   "rows_kept": 19999942,
+   "rows_empty_value": 68544,
+   "rows_nonnumeric_value": 0,
+   "rows_numeric": 19931398,
+   "quality_counts_numeric": {
+    "0": 19928730,
+    "2": 360,
+    "1": 2308
+   },
+   "quality_counts_empty": {
+    "2": 68544
+   },
+   "ids": {
+    "SubstationId": [
+     "BALIP_PG"
+    ],
+    "DeviceId": [
+     "400BUS2______"
+    ],
+    "MeasurementId": [
+     "BALIP_PG.B.400BUS2______.HZ"
+    ]
+   },
+   "steps": {
+    "eq1": 19999941,
+    "dup0": 0,
+    "backward": 0,
+    "jump": 0,
+    "max_jump_s": 1
+   },
+   "first_ts": 1608422400,
+   "last_ts": 1628422341,
+   "first_numeric_ts": 1608484861,
+   "last_numeric_ts": 1628422341,
+   "value_min": 49.504349,
+   "value_max": 50.334209,
+   "trailing_bytes_dropped": 1704,
+   "trailing_lines_dropped": 16,
+   "truncated_row_prefix": "\"2021-08-08 11:32:22\",\"BALIP_PG\",\"B\",\"400BUS2______\",\"HZ\",\"BALIP_PG.B.40",
+   "sha256": "586a2dcb5ca57773417940c0fd66612147c6b5e22c8930f88ac2ba8be5aac42d",
+   "first_ts_ist": "2020-12-20 00:00:00",
+   "last_ts_ist": "2021-08-08 11:32:21",
+   "first_numeric_ts_ist": "2020-12-20 17:21:01",
+   "last_numeric_ts_ist": "2021-08-08 11:32:21",
+   "parse_seconds": 43.4,
+   "first_valid_sec": 1608484861,
+   "last_valid_sec": 1628422341,
+   "rows_valid": 19931398,
+   "rows_out_of_band": 0,
+   "neighbour_residual_by_quality": {
+    "0": {
+     "n": 398568,
+     "median_hz": 0.0002744999999961806,
+     "p99_hz": 0.0011705000000006294,
+     "max_hz": 0.020414500000001112,
+     "sampled_every": 50
+    },
+    "1": {
+     "n": 2301,
+     "median_hz": 0.0002704999999991742,
+     "p99_hz": 0.0011599999999987176,
+     "max_hz": 0.44844400000000206,
+     "sampled_every": 1
+    },
+    "2": {
+     "n": 206,
+     "median_hz": 0.00032850000000550494,
+     "p99_hz": 0.0017404499999976503,
+     "max_hz": 0.001933999999998548,
+     "sampled_every": 1
+    }
+   }
+  },
+  "freq_II.csv": {
+   "file": "freq_II.csv",
+   "bytes": 755199467,
+   "data_bytes": 755199467,
+   "header": [
+    "STARTDATE",
+    "SubstationId",
+    "MeasurementData1hz",
+    "MeasurementData1hz:Quality"
+   ],
+   "columns_used": {
+    "ts": "STARTDATE",
+    "val": "MeasurementData1hz",
+    "q": "MeasurementData1hz:Quality",
+    "ids": [
+     "SubstationId"
+    ]
+   },
+   "rows_read": 15552000,
+   "rows_bad_timestamp": 0,
+   "rows_kept": 15552000,
+   "rows_empty_value": 470174,
+   "rows_nonnumeric_value": 0,
+   "rows_numeric": 15081826,
+   "quality_counts_numeric": {
+    "0": 15050282,
+    "1": 31496,
+    "2": 48
+   },
+   "quality_counts_empty": {
+    "2": 470174
+   },
+   "ids": {
+    "SubstationId": [
+     "BALIP_PG"
+    ]
+   },
+   "steps": {
+    "eq1": 15551999,
+    "dup0": 0,
+    "backward": 0,
+    "jump": 0,
+    "max_jump_s": 1
+   },
+   "first_ts": 1627776000,
+   "last_ts": 1643327999,
+   "first_numeric_ts": 1627776000,
+   "last_numeric_ts": 1643327999,
+   "value_min": 49.499168,
+   "value_max": 50.342152,
+   "trailing_bytes_dropped": 0,
+   "trailing_lines_dropped": 0,
+   "truncated_row_prefix": "",
+   "sha256": "178ddfcffd795dcf0643b9ab0ec8c668462b0f02720512f393614f2dbe4fb0bb",
+   "first_ts_ist": "2021-08-01 00:00:00",
+   "last_ts_ist": "2022-01-27 23:59:59",
+   "first_numeric_ts_ist": "2021-08-01 00:00:00",
+   "last_numeric_ts_ist": "2022-01-27 23:59:59",
+   "parse_seconds": 34.4,
+   "first_valid_sec": 1627776000,
+   "last_valid_sec": 1643327999,
+   "rows_valid": 15081826,
+   "rows_out_of_band": 0,
+   "neighbour_residual_by_quality": {
+    "0": {
+     "n": 301001,
+     "median_hz": 0.000286000000002673,
+     "p99_hz": 0.0011955000000014593,
+     "max_hz": 0.021371999999999503,
+     "sampled_every": 50
+    },
+    "1": {
+     "n": 31470,
+     "median_hz": 0.00033149999999437796,
+     "p99_hz": 0.0013824999999982879,
+     "max_hz": 0.020343500000002734,
+     "sampled_every": 1
+    },
+    "2": {
+     "n": 17,
+     "median_hz": 0.0003719999999987067,
+     "p99_hz": 0.001172300000004327,
+     "max_hz": 0.0012055000000046334,
+     "sampled_every": 1
+    }
+   }
+  },
+  "freq_III.csv": {
+   "file": "freq_III.csv",
+   "bytes": 2076452448,
+   "data_bytes": 2076450731,
+   "header": [
+    "STARTDATE",
+    "SubstationId",
+    "DeviceType",
+    "DeviceId",
+    "PointName",
+    "MeasurementId",
+    "MeasurementData1hz",
+    "MeasurementData1hz:Quality"
+   ],
+   "columns_used": {
+    "ts": "STARTDATE",
+    "val": "MeasurementData1hz",
+    "q": "MeasurementData1hz:Quality",
+    "ids": [
+     "SubstationId",
+     "DeviceId",
+     "MeasurementId"
+    ]
+   },
+   "rows_read": 19999958,
+   "rows_bad_timestamp": 0,
+   "rows_kept": 19999958,
+   "rows_empty_value": 121254,
+   "rows_nonnumeric_value": 0,
+   "rows_numeric": 19878704,
+   "quality_counts_numeric": {
+    "0": 19878666,
+    "2": 38
+   },
+   "quality_counts_empty": {
+    "2": 121254
+   },
+   "ids": {
+    "SubstationId": [
+     "BALIP_PG"
+    ],
+    "DeviceId": [
+     "400BUS1______"
+    ],
+    "MeasurementId": [
+     "BALIP_PG.B.400BUS1______.HZ"
+    ]
+   },
+   "steps": {
+    "eq1": 19999957,
+    "dup0": 0,
+    "backward": 0,
+    "jump": 0,
+    "max_jump_s": 1
+   },
+   "first_ts": 1642550400,
+   "last_ts": 1662550357,
+   "first_numeric_ts": 1642607896,
+   "last_numeric_ts": 1662550357,
+   "value_min": 49.416771,
+   "value_max": 50.359753,
+   "trailing_bytes_dropped": 1717,
+   "trailing_lines_dropped": 16,
+   "truncated_row_prefix": "\"2022-09-07 11:32:38\",\"BALIP_PG\",\"B\",\"400BUS1______\",\"HZ\",\"BALIP_PG.B.400BUS1______.H",
+   "sha256": "c716159199725e51435ada9272cd136ea2347fab1f86f8a8e60f2193d21812e9",
+   "first_ts_ist": "2022-01-19 00:00:00",
+   "last_ts_ist": "2022-09-07 11:32:37",
+   "first_numeric_ts_ist": "2022-01-19 15:58:16",
+   "last_numeric_ts_ist": "2022-09-07 11:32:37",
+   "parse_seconds": 54.5,
+   "first_valid_sec": 1642607896,
+   "last_valid_sec": 1662550357,
+   "rows_valid": 19878704,
+   "rows_out_of_band": 0,
+   "neighbour_residual_by_quality": {
+    "0": {
+     "n": 397574,
+     "median_hz": 0.00027599999999949887,
+     "p99_hz": 0.0011785000000017476,
+     "max_hz": 0.027356500000003336,
+     "sampled_every": 50
+    },
+    "2": {
+     "n": 14,
+     "median_hz": 0.0006882499999996128,
+     "p99_hz": 0.0026647150000047746,
+     "max_hz": 0.0028460000000052332,
+     "sampled_every": 1
+    }
+   }
+  },
+  "freq_IV.csv": {
+   "file": "freq_IV.csv",
+   "bytes": 421464489,
+   "data_bytes": 421464489,
+   "header": [
+    "STARTDATE",
+    "MeasurementData1hz"
+   ],
+   "columns_used": {
+    "ts": "STARTDATE",
+    "val": "MeasurementData1hz",
+    "q": null,
+    "ids": []
+   },
+   "rows_read": 13651200,
+   "rows_bad_timestamp": 0,
+   "rows_kept": 13651200,
+   "rows_empty_value": 34785,
+   "rows_nonnumeric_value": 0,
+   "rows_numeric": 13616415,
+   "quality_counts_numeric": {},
+   "quality_counts_empty": {},
+   "ids": {},
+   "steps": {
+    "eq1": 13651199,
+    "dup0": 0,
+    "backward": 0,
+    "jump": 0,
+    "max_jump_s": 1
+   },
+   "first_ts": 1661990400,
+   "last_ts": 1675641599,
+   "first_numeric_ts": 1661990400,
+   "last_numeric_ts": 1675641599,
+   "value_min": 49.40683,
+   "value_max": 50.547546,
+   "trailing_bytes_dropped": 0,
+   "trailing_lines_dropped": 0,
+   "truncated_row_prefix": "",
+   "sha256": "49c75e24dadf78e78cc03e1bd71cf538e086aff3dac09a9c65bb0be2af6a2aec",
+   "first_ts_ist": "2022-09-01 00:00:00",
+   "last_ts_ist": "2023-02-05 23:59:59",
+   "first_numeric_ts_ist": "2022-09-01 00:00:00",
+   "last_numeric_ts_ist": "2023-02-05 23:59:59",
+   "parse_seconds": 20.9,
+   "first_valid_sec": 1661990400,
+   "last_valid_sec": 1675641599,
+   "rows_valid": 13616415,
+   "rows_out_of_band": 0
+  },
+  "freq_V.csv": {
+   "file": "freq_V.csv",
+   "bytes": 2075256495,
+   "data_bytes": 2075254780,
+   "header": [
+    "STARTDATE",
+    "SubstationId",
+    "DeviceType",
+    "DeviceId",
+    "PointName",
+    "MeasurementId",
+    "ComplexReportGroup:1hz",
+    "ComplexReportGroup:1hz:Quality"
+   ],
+   "columns_used": {
+    "ts": "STARTDATE",
+    "val": "ComplexReportGroup:1hz",
+    "q": "ComplexReportGroup:1hz:Quality",
+    "ids": [
+     "SubstationId",
+     "DeviceId",
+     "MeasurementId"
+    ]
+   },
+   "rows_read": 19999986,
+   "rows_bad_timestamp": 0,
+   "rows_kept": 19999986,
+   "rows_empty_value": 231442,
+   "rows_nonnumeric_value": 0,
+   "rows_numeric": 19768544,
+   "quality_counts_numeric": {
+    "0": 19768503,
+    "2": 41
+   },
+   "quality_counts_empty": {
+    "2": 231442
+   },
+   "ids": {
+    "SubstationId": [
+     "BALIP_PG"
+    ],
+    "DeviceId": [
+     "400BUS1______"
+    ],
+    "MeasurementId": [
+     "BALIP_PG.B.400BUS1______.HZ"
+    ]
+   },
+   "steps": {
+    "eq1": 19999985,
+    "dup0": 0,
+    "backward": 0,
+    "jump": 0,
+    "max_jump_s": 1
+   },
+   "first_ts": 1672531200,
+   "last_ts": 1692531185,
+   "first_numeric_ts": 1672531200,
+   "last_numeric_ts": 1692531185,
+   "value_min": 49.405876,
+   "value_max": 50.494785,
+   "trailing_bytes_dropped": 1715,
+   "trailing_lines_dropped": 17,
+   "truncated_row_prefix": "\"202",
+   "sha256": "87821d40a093c166fec8093ee7af52febeaee51466c0813726a4b658139d54a6",
+   "first_ts_ist": "2023-01-01 00:00:00",
+   "last_ts_ist": "2023-08-20 11:33:05",
+   "first_numeric_ts_ist": "2023-01-01 00:00:00",
+   "last_numeric_ts_ist": "2023-08-20 11:33:05",
+   "parse_seconds": 58.9,
+   "first_valid_sec": 1672531200,
+   "last_valid_sec": 1692531185,
+   "rows_valid": 19768544,
+   "rows_out_of_band": 0,
+   "neighbour_residual_by_quality": {
+    "0": {
+     "n": 395370,
+     "median_hz": 0.0002689999999958559,
+     "p99_hz": 0.0011539999999996553,
+     "max_hz": 0.026719999999997412,
+     "sampled_every": 50
+    },
+    "2": {
+     "n": 16,
+     "median_hz": 0.0004922499999935326,
+     "p99_hz": 0.0015872249999986819,
+     "max_hz": 0.001666499999998905,
+     "sampled_every": 1
+    }
+   }
+  }
+ },
+ "contributions": {
+  "freq_V.csv": {
+   "written": 19768544,
+   "already_filled_by_later_file": 0,
+   "duplicate_second_in_file": 0,
+   "duplicate_second_differs": 0
+  },
+  "freq_IV.csv": {
+   "written": 10539545,
+   "already_filled_by_later_file": 3076870,
+   "duplicate_second_in_file": 0,
+   "duplicate_second_differs": 0
+  },
+  "freq_III.csv": {
+   "written": 19318746,
+   "already_filled_by_later_file": 559958,
+   "duplicate_second_in_file": 0,
+   "duplicate_second_differs": 0
+  },
+  "freq_II.csv": {
+   "written": 14361732,
+   "already_filled_by_later_file": 720094,
+   "duplicate_second_in_file": 0,
+   "duplicate_second_differs": 0
+  },
+  "freq_I.csv": {
+   "written": 19285064,
+   "already_filled_by_later_file": 646334,
+   "duplicate_second_in_file": 0,
+   "duplicate_second_differs": 0
+  }
+ },
+ "overlaps": [
+  {
+   "window_start_ist": "2021-08-01 00:00:00",
+   "window_end_ist": "2021-08-08 11:32:21",
+   "window_seconds": 646342,
+   "a_valid": 646338,
+   "b_valid": 646338,
+   "both_valid": 646334,
+   "a_only": 4,
+   "b_only": 4,
+   "neither": 0,
+   "identical": 34,
+   "share_identical": 5.260438101662608e-05,
+   "max_abs_diff_hz": 0.2133789999999962,
+   "mean_abs_diff_hz": 0.028723032071653352,
+   "median_abs_diff_hz": 0.02344500000000238,
+   "p99_abs_diff_hz": 0.10285067999999976,
+   "n_abs_diff_gt_0p001": 631022,
+   "n_abs_diff_gt_0p01": 497479,
+   "mean_abs_diff_by_lag_s": {
+    "-3": 0.029024110834850875,
+    "-2": 0.02892407837458149,
+    "-1": 0.028823780088592106,
+    "0": 0.028723032071653352,
+    "1": 0.02862236824206717,
+    "2": 0.028521218282554477,
+    "3": 0.02841985339709839
+   },
+   "lag_search": {
+    "max_lag_searched_s": 172800,
+    "best_lag_s": 172,
+    "best_lag_hms": "0 days 00:02:52",
+    "r_at_best": 0.9999996060269797,
+    "pairs_at_best": 646166,
+    "identical_at_best": 20681,
+    "mean_abs_diff_at_best_hz": 4.1866302157649394e-05,
+    "r_at_0": 0.8490013847247034,
+    "mean_abs_diff_at_0_hz": 0.028723032071653352,
+    "runner_up_lag_s": 773,
+    "r_at_runner_up": 0.5088034644241475
+   },
+   "a": "freq_I.csv",
+   "b": "freq_II.csv"
+  },
+  {
+   "window_start_ist": "2022-01-19 15:58:16",
+   "window_end_ist": "2022-01-27 23:59:59",
+   "window_seconds": 720104,
+   "a_valid": 720099,
+   "b_valid": 720099,
+   "both_valid": 720094,
+   "a_only": 5,
+   "b_only": 5,
+   "neither": 0,
+   "identical": 48,
+   "share_identical": 6.66579640991315e-05,
+   "max_abs_diff_hz": 0.12578200000000095,
+   "mean_abs_diff_hz": 0.01925481633092347,
+   "median_abs_diff_hz": 0.01605599999999896,
+   "p99_abs_diff_hz": 0.06456428000000387,
+   "n_abs_diff_gt_0p001": 695934,
+   "n_abs_diff_gt_0p01": 484817,
+   "mean_abs_diff_by_lag_s": {
+    "-3": 0.019777309852504754,
+    "-2": 0.019604585650166928,
+    "-1": 0.019430472451475025,
+    "0": 0.01925481633092347,
+    "1": 0.01907785647964916,
+    "2": 0.018899117530815513,
+    "3": 0.01871893139894819
+   },
+   "lag_search": {
+    "max_lag_searched_s": 172800,
+    "best_lag_s": 64,
+    "best_lag_hms": "0 days 00:01:04",
+    "r_at_best": 1.0,
+    "pairs_at_best": 720035,
+    "identical_at_best": 720035,
+    "mean_abs_diff_at_best_hz": 0.0,
+    "r_at_0": 0.9118107154370718,
+    "mean_abs_diff_at_0_hz": 0.01925481633092347,
+    "runner_up_lag_s": 962,
+    "r_at_runner_up": 0.39574767542533384
+   },
+   "a": "freq_II.csv",
+   "b": "freq_III.csv"
+  },
+  {
+   "window_start_ist": "2022-09-01 00:00:00",
+   "window_end_ist": "2022-09-07 11:32:37",
+   "window_seconds": 559958,
+   "a_valid": 559958,
+   "b_valid": 559958,
+   "both_valid": 559958,
+   "a_only": 0,
+   "b_only": 0,
+   "neither": 0,
+   "identical": 21,
+   "share_identical": 3.750281271095332e-05,
+   "max_abs_diff_hz": 0.3082810000000009,
+   "mean_abs_diff_hz": 0.03928821435536236,
+   "median_abs_diff_hz": 0.03279099999999602,
+   "p99_abs_diff_hz": 0.13962844999999852,
+   "n_abs_diff_gt_0p001": 550314,
+   "n_abs_diff_gt_0p01": 466216,
+   "mean_abs_diff_by_lag_s": {
+    "-3": 0.039447891462706816,
+    "-2": 0.039394680267735314,
+    "-1": 0.03934145074532508,
+    "0": 0.03928821435536236,
+    "1": 0.039235190682498824,
+    "2": 0.039181835906749805,
+    "3": 0.03912816175585538
+   },
+   "lag_search": {
+    "max_lag_searched_s": 172800,
+    "best_lag_s": 319,
+    "best_lag_hms": "0 days 00:05:19",
+    "r_at_best": 0.9999999999999999,
+    "pairs_at_best": 559639,
+    "identical_at_best": 559639,
+    "mean_abs_diff_at_best_hz": 0.0,
+    "r_at_0": 0.6402647723268379,
+    "mean_abs_diff_at_0_hz": 0.03928821435536236,
+    "runner_up_lag_s": 920,
+    "r_at_runner_up": 0.4761410532599028
+   },
+   "a": "freq_III.csv",
+   "b": "freq_IV.csv"
+  },
+  {
+   "window_start_ist": "2023-01-01 00:00:00",
+   "window_end_ist": "2023-02-05 23:59:59",
+   "window_seconds": 3110400,
+   "a_valid": 3077718,
+   "b_valid": 3077831,
+   "both_valid": 3076870,
+   "a_only": 848,
+   "b_only": 961,
+   "neither": 31721,
+   "identical": 69,
+   "share_identical": 2.2425386837922954e-05,
+   "max_abs_diff_hz": 0.41669100000000014,
+   "mean_abs_diff_hz": 0.05668256776009386,
+   "median_abs_diff_hz": 0.04719100000000509,
+   "p99_abs_diff_hz": 0.19496930999999967,
+   "n_abs_diff_gt_0p001": 3040915,
+   "n_abs_diff_gt_0p01": 2723025,
+   "mean_abs_diff_by_lag_s": {
+    "-3": 0.05730522415637236,
+    "-2": 0.05709828828281003,
+    "-1": 0.05689074236715464,
+    "0": 0.05668256776009386,
+    "1": 0.05647386242062147,
+    "2": 0.056264614665153444,
+    "3": 0.05605484336955084
+   },
+   "lag_search": {
+    "max_lag_searched_s": 172800,
+    "best_lag_s": 198,
+    "best_lag_hms": "0 days 00:03:18",
+    "r_at_best": 0.9999999999999704,
+    "pairs_at_best": 3077520,
+    "identical_at_best": 3077519,
+    "mean_abs_diff_at_best_hz": 1.3647352413807742e-11,
+    "r_at_0": 0.7401795041486698,
+    "mean_abs_diff_at_0_hz": 0.05668256776009386,
+    "runner_up_lag_s": 1074,
+    "r_at_runner_up": 0.492764882341591
+   },
+   "a": "freq_IV.csv",
+   "b": "freq_V.csv"
+  }
+ ],
+ "junctions": [
+  {
+   "from_file": "freq_I.csv",
+   "to_file": "freq_II.csv",
+   "handover_ist": "2021-08-01 00:00:00",
+   "label_offset_s": 172,
+   "meaning": "freq_I.csv labels the same moment 172 s later than freq_II.csv. Near the handover, about 172 s of real time are absent from the series although the mask shows no gap."
+  },
+  {
+   "from_file": "freq_II.csv",
+   "to_file": "freq_III.csv",
+   "handover_ist": "2022-01-19 15:58:16",
+   "label_offset_s": 64,
+   "meaning": "freq_II.csv labels the same moment 64 s later than freq_III.csv. Near the handover, about 64 s of real time are absent from the series although the mask shows no gap."
+  },
+  {
+   "from_file": "freq_III.csv",
+   "to_file": "freq_IV.csv",
+   "handover_ist": "2022-09-01 00:00:00",
+   "label_offset_s": 319,
+   "meaning": "freq_III.csv labels the same moment 319 s later than freq_IV.csv. Near the handover, about 319 s of real time are absent from the series although the mask shows no gap."
+  },
+  {
+   "from_file": "freq_IV.csv",
+   "to_file": "freq_V.csv",
+   "handover_ist": "2023-01-01 00:00:00",
+   "label_offset_s": 198,
+   "meaning": "freq_IV.csv labels the same moment 198 s later than freq_V.csv. Near the handover, about 198 s of real time are absent from the series although the mask shows no gap."
+  }
+ ],
+ "series": {
+  "t0_ist": "2020-12-20T17:21:01",
+  "t_end_ist": "2023-08-20T11:33:05",
+  "length": 84046325
+ },
+ "valid_band_hz": [
+  45.0,
+  55.0
+ ],
+ "overlap_rule": "Later file wins: for each second, take the value from the highest-numbered file (V > IV > III > II > I) that has a valid value there. An earlier file only fills seconds the later files lack. Within one file, the first row for a second wins. Reason: in every overlap the two files hold the same or nearly the same values with their time labels shifted by about one to five minutes, and the 15-minute block-clock check (scripts/check_time_axis.py) finds labels drifting late over the length of each file. The later file is near its own start there, so its labels have drifted less."
+}

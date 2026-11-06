@@ -1,0 +1,31 @@
+{
+ "cpu_count": 32,
+ "default": {
+  "start": {
+   "working_set_mb": 16.8,
+   "private_commit_mb": 8.4
+  },
+  "after_numpy": {
+   "working_set_mb": 28.6,
+   "private_commit_mb": 757.0
+  },
+  "after_scipy": {
+   "working_set_mb": 99.9,
+   "private_commit_mb": 1551.5
+  }
+ },
+ "OPENBLAS_NUM_THREADS=1": {
+  "start": {
+   "working_set_mb": 16.9,
+   "private_commit_mb": 8.5
+  },
+  "after_numpy": {
+   "working_set_mb": 27.0,
+   "private_commit_mb": 17.6
+  },
+  "after_scipy": {
+   "working_set_mb": 96.5,
+   "private_commit_mb": 72.6
+  }
+ }
+}

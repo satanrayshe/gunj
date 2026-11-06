@@ -1,0 +1,212 @@
+{
+ "span": {
+  "t0_ist": "2020-12-20 17:21:01",
+  "t_end_ist": "2023-08-20 11:33:05",
+  "seconds": 84046325,
+  "days": 972.76
+ },
+ "valid_seconds": 83273631,
+ "valid_pct": 99.0806,
+ "missing_seconds": 772694,
+ "gaps_all": 296,
+ "gaps_gt10s": 61,
+ "missing_in_gaps_gt10s_s": 772056,
+ "gaps_1_to_10s": 235,
+ "missing_in_gaps_le10s_s": 638,
+ "longest_gaps": [
+  {
+   "start_ist": "2021-09-11 13:22:38",
+   "end_ist": "2021-09-16 10:10:15",
+   "length_s": 420458,
+   "length_h": 116.79
+  },
+  {
+   "start_ist": "2023-07-22 16:38:16",
+   "end_ist": "2023-07-24 10:38:14",
+   "length_s": 151199,
+   "length_h": 42.0
+  },
+  {
+   "start_ist": "2022-03-26 00:07:02",
+   "end_ist": "2022-03-26 15:50:49",
+   "length_s": 56628,
+   "length_h": 15.73
+  },
+  {
+   "start_ist": "2023-06-18 21:56:59",
+   "end_ist": "2023-06-19 09:56:57",
+   "length_s": 43199,
+   "length_h": 12.0
+  },
+  {
+   "start_ist": "2021-09-10 22:09:02",
+   "end_ist": "2021-09-11 09:56:15",
+   "length_s": 42434,
+   "length_h": 11.79
+  },
+  {
+   "start_ist": "2023-01-13 10:47:13",
+   "end_ist": "2023-01-13 14:30:53",
+   "length_s": 13421,
+   "length_h": 3.73
+  },
+  {
+   "start_ist": "2023-01-04 10:19:58",
+   "end_ist": "2023-01-04 13:41:15",
+   "length_s": 12078,
+   "length_h": 3.35
+  },
+  {
+   "start_ist": "2023-01-05 23:03:53",
+   "end_ist": "2023-01-06 00:46:15",
+   "length_s": 6143,
+   "length_h": 1.71
+  },
+  {
+   "start_ist": "2022-01-11 12:08:39",
+   "end_ist": "2022-01-11 13:50:19",
+   "length_s": 6101,
+   "length_h": 1.69
+  },
+  {
+   "start_ist": "2023-05-02 11:02:58",
+   "end_ist": "2023-05-02 11:52:25",
+   "length_s": 2968,
+   "length_h": 0.82
+  },
+  {
+   "start_ist": "2021-04-20 12:54:49",
+   "end_ist": "2021-04-20 13:34:15",
+   "length_s": 2367,
+   "length_h": 0.66
+  },
+  {
+   "start_ist": "2022-05-31 11:47:14",
+   "end_ist": "2022-05-31 12:23:44",
+   "length_s": 2191,
+   "length_h": 0.61
+  },
+  {
+   "start_ist": "2022-12-08 00:50:18",
+   "end_ist": "2022-12-08 01:18:01",
+   "length_s": 1664,
+   "length_h": 0.46
+  },
+  {
+   "start_ist": "2022-03-28 12:12:13",
+   "end_ist": "2022-03-28 12:37:40",
+   "length_s": 1528,
+   "length_h": 0.42
+  },
+  {
+   "start_ist": "2022-06-10 12:17:39",
+   "end_ist": "2022-06-10 12:36:44",
+   "length_s": 1146,
+   "length_h": 0.32
+  }
+ ],
+ "freq": {
+  "min_hz": 49.40587615966797,
+  "max_hz": 50.54754638671875,
+  "mean_hz": 49.99631014240646,
+  "std_hz": 0.07361387988607088,
+  "percentiles_hz_from_0p0001_hist": {
+   "0.1": 49.6061,
+   "1": 49.766,
+   "5": 49.8659,
+   "50": 50.0064,
+   "95": 50.0928,
+   "99": 50.1619,
+   "99.9": 50.2863
+  },
+  "max_abs_1s_step_hz": 0.5683517456054688,
+  "steps_gt_0p05hz": 57
+ },
+ "stuck_values": {
+  "runs_ge_5s": 0,
+  "runs_ge_10s": 0,
+  "runs_ge_60s": 0,
+  "seconds_in_runs_ge_10s": 0,
+  "longest_run_s": 4,
+  "longest_run_start_ist": "2023-06-28 22:01:31"
+ },
+ "source_seconds": {
+  "none": 772694,
+  "freq_I.csv": 19285064,
+  "freq_II.csv": 14361732,
+  "freq_III.csv": 19318746,
+  "freq_IV.csv": 10539545,
+  "freq_V.csv": 19768544
+ },
+ "sanity": {
+  "probe": {
+   "line": "len=2400s: top r=0.876 at 2023-01-11 17:10:31 (off vs YT +189s); runner-up r=0.839 at 2023-01-31 16:43:16; z of top=2.6",
+   "r": 0.876,
+   "lock_ist_file_IV_labels": "2023-01-11 17:10:31",
+   "offset_vs_youtube_s": 189,
+   "youtube_start_ist": "2023-01-11 17:07:22"
+  },
+  "lock_index": 64972170,
+  "round_trip_ist": "2023-01-11 17:10:31",
+  "round_trip_ok": true,
+  "index_equals_seconds_from_t0": true,
+  "value_at_lock_label_hz": 49.913578033447266,
+  "valid_at_lock_label": 1,
+  "source_at_lock_label": "freq_V.csv",
+  "iv_minus_v_label_offset_s": 198,
+  "matched_window_file_IV_labels_ist": [
+   "2023-01-11 17:12:39",
+   "2023-01-11 17:52:38"
+  ],
+  "matched_window_series_labels_ist": [
+   "2023-01-11 17:09:21",
+   "2023-01-11 17:49:20"
+  ],
+  "lock_on_series_labels_ist": "2023-01-11 17:07:13",
+  "lock_on_series_labels_minus_youtube_start_s": -9,
+  "valid_share_matched_window": 1.0,
+  "seconds_matched_window": 2400,
+  "valid_share_plus_minus_1_day": 1.0,
+  "seconds_plus_minus_1_day": 172801,
+  "valid_share_plus_minus_90_days": 0.997852,
+  "seconds_plus_minus_90_days": 15552001,
+  "matched_window_source_counts": {
+   "freq_V.csv": 2400
+  },
+  "file_IV_first_row_ist": "2022-09-01 00:00:00",
+  "probe_index_in_file_IV": 11466631,
+  "series_index_of_file_IV_first_row": 53505539,
+  "series_index_minus_probe_index": 53505539,
+  "raw_csv_vs_series": {
+   "freq_IV.csv": {
+    "rows_from_ist": "2023-01-11 17:07:00",
+    "rows_to_ist": "2023-01-11 17:52:39",
+    "rows_found": 2760,
+    "series_shift_s": 198,
+    "rows_compared": 2760,
+    "equal_as_float32": 2760,
+    "max_abs_diff_hz": 0.0,
+    "row_at_probe_lock_label": [
+     "2023-01-11 17:10:31",
+     "50.13464"
+    ]
+   },
+   "freq_V.csv": {
+    "rows_from_ist": "2023-01-11 17:07:00",
+    "rows_to_ist": "2023-01-11 17:52:39",
+    "rows_found": 2760,
+    "series_shift_s": 0,
+    "rows_compared": 2760,
+    "equal_as_float32": 2760,
+    "max_abs_diff_hz": 0.0,
+    "row_at_probe_lock_label": [
+     "2023-01-11 17:10:31",
+     "49.913578"
+    ]
+   }
+  }
+ },
+ "days_with_full_coverage": 857,
+ "days_with_zero_coverage": 5,
+ "days_total": 974
+}

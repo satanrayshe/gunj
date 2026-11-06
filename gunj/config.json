@@ -1,0 +1,7 @@
+{
+  "_note": "Settings read by 'gunj date'. confidence_threshold below is a PLACEHOLDER that has NOT been calibrated. It is not derived from any data. PROTOCOL.md sets the real value on the calibration half of the negative set; replace it then and set confidence_threshold_calibrated to true.",
+  "confidence_threshold": 0.1,
+  "confidence_threshold_calibrated": false,
+  "confidence_definition": "atanh(r1) - atanh(r2): Fisher-z margin of the top candidate over the best candidate peak at least 60 s away",
+  "top_k": 5
+}

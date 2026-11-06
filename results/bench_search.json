@@ -1,0 +1,54 @@
+{
+ "what": "Self-match timing/memory check on the real reference. Query = reference stretch plus SYNTHETIC noise; not an accuracy result.",
+ "reference_seconds": 84046325,
+ "query_length_s": 1200,
+ "query_start_index": 79414655,
+ "query_start_ist": "2023-06-27 20:58:36",
+ "synthetic_noise_hz": 0.002,
+ "nfft": 2097152,
+ "runs": [
+  {
+   "scope": "full",
+   "positions_in_scope": 84046325,
+   "positions_with_valid_window": 83242642,
+   "seconds": 9.46,
+   "tracemalloc_peak_mb": 182.0,
+   "top1_index": 79414655,
+   "top1_correct": true,
+   "top1_r": 0.9983,
+   "runner_up_r": 0.9492,
+   "margin": 0.049,
+   "confidence": 1.6992
+  },
+  {
+   "scope": "+-90d",
+   "positions_in_scope": 12407670,
+   "positions_with_valid_window": 12200929,
+   "seconds": 1.4,
+   "tracemalloc_peak_mb": 182.0,
+   "top1_index": 79414655,
+   "top1_correct": true,
+   "top1_r": 0.9983,
+   "runner_up_r": 0.9307,
+   "margin": 0.0675,
+   "confidence": 1.8593
+  },
+  {
+   "scope": "+-1d",
+   "positions_in_scope": 172801,
+   "positions_with_valid_window": 172801,
+   "seconds": 0.01,
+   "tracemalloc_peak_mb": 12.3,
+   "top1_index": 79414655,
+   "top1_correct": true,
+   "top1_r": 0.9983,
+   "runner_up_r": 0.8789,
+   "margin": 0.1194,
+   "confidence": 2.1525
+  }
+ ],
+ "process_memory": {
+  "peak_working_set_mb": 681.4,
+  "peak_private_mb": 255.9
+ }
+}

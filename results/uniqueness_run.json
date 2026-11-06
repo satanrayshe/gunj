@@ -1,0 +1,108 @@
+{
+ "seed": 20261107,
+ "lengths_s": [
+  300,
+  600,
+  1200,
+  2400,
+  3600
+ ],
+ "conditions": [
+  {
+   "kind": "white",
+   "sigma": 0.0
+  },
+  {
+   "kind": "white",
+   "sigma": 0.01
+  },
+  {
+   "kind": "white",
+   "sigma": 0.02
+  },
+  {
+   "kind": "white",
+   "sigma": 0.04
+  },
+  {
+   "kind": "white",
+   "sigma": 0.06
+  },
+  {
+   "kind": "hann16",
+   "sigma": 0.01
+  },
+  {
+   "kind": "hann16",
+   "sigma": 0.02
+  },
+  {
+   "kind": "hann16",
+   "sigma": 0.04
+  },
+  {
+   "kind": "hann16",
+   "sigma": 0.06
+  }
+ ],
+ "hit_tol_s": 30,
+ "n_planned": {
+  "1d": 2000,
+  "90d": 800,
+  "full": 450
+ },
+ "budgets_min": {
+  "1d": 15.0,
+  "90d": 40.0,
+  "full": 90.0
+ },
+ "threads": 4,
+ "sampling_tries": {
+  "300": 2015,
+  "600": 2019,
+  "1200": 2021,
+  "2400": 2024,
+  "3600": 2025
+ },
+ "reference": {
+  "t0_ist": "2020-12-20 17:21:01",
+  "length": 84046325
+ },
+ "phases": {
+  "1d": {
+   "seconds_this_run": 209.0,
+   "groups_added": 10000,
+   "stop_reason": "planned N reached",
+   "memory": {
+    "peak_working_set_mb": 533.5,
+    "peak_private_mb": 108.4,
+    "private_now_mb": 83.3
+   }
+  },
+  "90d": {
+   "seconds_this_run": 2162.4,
+   "groups_added": 4000,
+   "stop_reason": "planned N reached",
+   "memory": {
+    "peak_working_set_mb": 563.2,
+    "peak_private_mb": 183.1,
+    "private_now_mb": 76.4
+   }
+  },
+  "full": {
+   "seconds_this_run": 4928.6,
+   "groups_added": 2250,
+   "stop_reason": "planned N reached",
+   "memory": {
+    "peak_working_set_mb": 643.4,
+    "peak_private_mb": 250.5,
+    "private_now_mb": 110.0
+   }
+  }
+ },
+ "memory_end": {
+  "peak_working_set_mb": 643.4,
+  "peak_private_mb": 250.5,
+  "private_now_mb": 109.9
+ }
+}

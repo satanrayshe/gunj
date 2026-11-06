@@ -1,0 +1,385 @@
+{
+ "what": "Equivalent white trace noise implied by the 5 Nov probe's printed r at the true lock. Derived from docs/probe/*_out.txt and the reference series; no audio used.",
+ "model": "sigma_eff = s * sqrt(1/r^2 - 1), s = std of the reference over the excerpt's matched window",
+ "alignment": {
+  "youtube_start_ist_from_probe": "2023-01-11 17:07:22",
+  "file_iv_minus_series_label_offset_s": 198,
+  "extractor_frame_offset_s": 8
+ },
+ "rows": [
+  {
+   "source": "enf_margin_out.txt",
+   "reference": "raw",
+   "excerpt_length_s": 1800,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.902,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64972100,
+   "series_window_start_ist": "2023-01-11 17:09:21",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.079295,
+   "sigma_eff_hz": 0.037954,
+   "sigma_eff_range_from_rounding_hz": [
+    0.037841,
+    0.038067
+   ]
+  },
+  {
+   "source": "enf_margin_out.txt",
+   "reference": "raw",
+   "excerpt_length_s": 2400,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.876,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64972100,
+   "series_window_start_ist": "2023-01-11 17:09:21",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.070172,
+   "sigma_eff_hz": 0.038635,
+   "sigma_eff_range_from_rounding_hz": [
+    0.03854,
+    0.03873
+   ]
+  },
+  {
+   "source": "enf_margin_out.txt",
+   "reference": "raw",
+   "excerpt_length_s": 3600,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.851,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:30",
+   "lock_label_series": "2023-01-11 17:07:12",
+   "series_window_start_index": 64972099,
+   "series_window_start_ist": "2023-01-11 17:09:20",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.07198,
+   "sigma_eff_hz": 0.04442,
+   "sigma_eff_range_from_rounding_hz": [
+    0.044326,
+    0.044515
+   ]
+  },
+  {
+   "source": "enf_hp_out.txt (k2 raw)",
+   "reference": "raw",
+   "excerpt_length_s": 300,
+   "excerpt_start_audio_s": 420,
+   "r_printed": 0.98,
+   "r_decimals": 2,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64972400,
+   "series_window_start_ist": "2023-01-11 17:14:21",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.041855,
+   "sigma_eff_hz": 0.008499,
+   "sigma_eff_range_from_rounding_hz": [
+    0.007332,
+    0.009539
+   ]
+  },
+  {
+   "source": "enf_hp_out.txt (k2 raw)",
+   "reference": "raw",
+   "excerpt_length_s": 1200,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.75,
+   "r_decimals": 2,
+   "lock_label_file_iv": "2023-01-11 17:10:33",
+   "lock_label_series": "2023-01-11 17:07:15",
+   "series_window_start_index": 64972102,
+   "series_window_start_ist": "2023-01-11 17:09:23",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.039422,
+   "sigma_eff_hz": 0.034767,
+   "sigma_eff_range_from_rounding_hz": [
+    0.034238,
+    0.035298
+   ]
+  },
+  {
+   "source": "enf_mf_out.txt (smoothed ref raw)",
+   "reference": "smoothed",
+   "excerpt_length_s": 600,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.843,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64972092,
+   "series_window_start_ist": "2023-01-11 17:09:13",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.04532,
+   "sigma_eff_hz": 0.028918,
+   "sigma_eff_range_from_rounding_hz": [
+    0.028859,
+    0.028977
+   ]
+  },
+  {
+   "source": "enf_mf_out.txt (smoothed ref raw)",
+   "reference": "smoothed",
+   "excerpt_length_s": 600,
+   "excerpt_start_audio_s": 1320,
+   "r_printed": 0.634,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64973292,
+   "series_window_start_ist": "2023-01-11 17:29:13",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.047732,
+   "sigma_eff_hz": 0.058222,
+   "sigma_eff_range_from_rounding_hz": [
+    0.058145,
+    0.058298
+   ]
+  },
+  {
+   "source": "enf_mf_out.txt (smoothed ref raw)",
+   "reference": "smoothed",
+   "excerpt_length_s": 1200,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.751,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64972092,
+   "series_window_start_ist": "2023-01-11 17:09:13",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.039386,
+   "sigma_eff_hz": 0.034629,
+   "sigma_eff_range_from_rounding_hz": [
+    0.034577,
+    0.034682
+   ]
+  },
+  {
+   "source": "enf_mf_out.txt (smoothed ref raw)",
+   "reference": "smoothed",
+   "excerpt_length_s": 1200,
+   "excerpt_start_audio_s": 1320,
+   "r_printed": 0.827,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64973292,
+   "series_window_start_ist": "2023-01-11 17:29:13",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.066518,
+   "sigma_eff_hz": 0.04522,
+   "sigma_eff_range_from_rounding_hz": [
+    0.045133,
+    0.045306
+   ]
+  },
+  {
+   "source": "enf_mf_out.txt (smoothed ref raw)",
+   "reference": "smoothed",
+   "excerpt_length_s": 1200,
+   "excerpt_start_audio_s": 2520,
+   "r_printed": 0.749,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64974492,
+   "series_window_start_ist": "2023-01-11 17:49:13",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.063751,
+   "sigma_eff_hz": 0.056395,
+   "sigma_eff_range_from_rounding_hz": [
+    0.056309,
+    0.05648
+   ]
+  },
+  {
+   "source": "enf_mf_out.txt (smoothed ref raw)",
+   "reference": "smoothed",
+   "excerpt_length_s": 2400,
+   "excerpt_start_audio_s": 120,
+   "r_printed": 0.876,
+   "r_decimals": 3,
+   "lock_label_file_iv": "2023-01-11 17:10:31",
+   "lock_label_series": "2023-01-11 17:07:13",
+   "series_window_start_index": 64972092,
+   "series_window_start_ist": "2023-01-11 17:09:13",
+   "window_valid_share": 1.0,
+   "ref_window_std_hz": 0.070132,
+   "sigma_eff_hz": 0.038614,
+   "sigma_eff_range_from_rounding_hz": [
+    0.038519,
+    0.038708
+   ]
+  }
+ ],
+ "probe_outcomes": [
+  {
+   "source": "enf_hp_out.txt (k2 raw)",
+   "scope": "file IV only",
+   "length_s": 300,
+   "hits": 1,
+   "n": 8,
+   "ranks": [
+    72970,
+    1,
+    4708061,
+    16277,
+    42735,
+    189188,
+    1256398,
+    15074
+   ]
+  },
+  {
+   "source": "enf_hp_out.txt (k2 raw)",
+   "scope": "file IV only",
+   "length_s": 600,
+   "hits": 0,
+   "n": 4,
+   "ranks": [
+    78,
+    60543,
+    1389,
+    9203
+   ]
+  },
+  {
+   "source": "enf_hp_out.txt (k2 raw)",
+   "scope": "file IV only",
+   "length_s": 1200,
+   "hits": 1,
+   "n": 2,
+   "ranks": [
+    1,
+    29
+   ]
+  },
+  {
+   "source": "enf_margin_out.txt",
+   "scope": "file IV only",
+   "length_s": 1800,
+   "hits": 1,
+   "n": 1,
+   "offset_vs_youtube_s": 189
+  },
+  {
+   "source": "enf_margin_out.txt",
+   "scope": "file IV only",
+   "length_s": 2400,
+   "hits": 1,
+   "n": 1,
+   "offset_vs_youtube_s": 189
+  },
+  {
+   "source": "enf_margin_out.txt",
+   "scope": "file IV only",
+   "length_s": 3600,
+   "hits": 1,
+   "n": 1,
+   "offset_vs_youtube_s": 188
+  },
+  {
+   "source": "enf_claimed_out.txt",
+   "scope": "+-1 day",
+   "length_s": 60,
+   "hits": 0,
+   "n": 40,
+   "search_space_s": 172801
+  },
+  {
+   "source": "enf_claimed_out.txt",
+   "scope": "+-1 day",
+   "length_s": 120,
+   "hits": 1,
+   "n": 20,
+   "search_space_s": 172801
+  },
+  {
+   "source": "enf_claimed_out.txt",
+   "scope": "+-1 day",
+   "length_s": 180,
+   "hits": 1,
+   "n": 13,
+   "search_space_s": 172801
+  },
+  {
+   "source": "enf_claimed_out.txt",
+   "scope": "+-1 day",
+   "length_s": 300,
+   "hits": 1,
+   "n": 8,
+   "search_space_s": 172801
+  },
+  {
+   "source": "enf_claimed_out.txt",
+   "scope": "+-1 day",
+   "length_s": 600,
+   "hits": 2,
+   "n": 4,
+   "search_space_s": 172801
+  }
+ ],
+ "probe_scope_note": "file IV only, 13,651,200 rows (results/reference_summary.md). That is between the +-90 d (15,552,001 positions) and full scopes of M4.",
+ "probe_median_peak_to_floor_100hz_by_10min": [
+  {
+   "minute": 0,
+   "median_peak_to_floor": 4.23
+  },
+  {
+   "minute": 10,
+   "median_peak_to_floor": 5.1
+  },
+  {
+   "minute": 20,
+   "median_peak_to_floor": 4.43
+  },
+  {
+   "minute": 30,
+   "median_peak_to_floor": 4.96
+  },
+  {
+   "minute": 40,
+   "median_peak_to_floor": 4.41
+  },
+  {
+   "minute": 50,
+   "median_peak_to_floor": 5.03
+  },
+  {
+   "minute": 60,
+   "median_peak_to_floor": 2.92
+  },
+  {
+   "minute": 70,
+   "median_peak_to_floor": 2.3
+  },
+  {
+   "minute": 80,
+   "median_peak_to_floor": 2.91
+  },
+  {
+   "minute": 90,
+   "median_peak_to_floor": 2.34
+  }
+ ],
+ "summary": {
+  "n_raw_reference_points": 5,
+  "sigma_eff_raw_min_hz": 0.008499,
+  "sigma_eff_raw_median_hz": 0.037954,
+  "sigma_eff_raw_max_hz": 0.04442,
+  "n_all_points": 11,
+  "sigma_eff_all_min_hz": 0.008499,
+  "sigma_eff_all_median_hz": 0.038614,
+  "sigma_eff_all_max_hz": 0.058222
+ },
+ "caveats": [
+  "One stream only (the probe clip, 11 Jan 2023). Its 100 Hz peak-to-floor ratio per 10 minutes is in probe_median_peak_to_floor_100hz_by_10min.",
+  "sigma_eff is an equivalent white noise. The real trace error is smoothed over about 16 s, so it has fewer independent samples than white noise of the same size.",
+  "r values from enf_hp_out.txt are printed to 2 decimals; the rounding range is given per row."
+ ]
+}

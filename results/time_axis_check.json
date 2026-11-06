@@ -1,0 +1,1116 @@
+{
+ "method": "For each file and each window of 7 days: mean |f(t)-f(t-1)| folded on the label t mod 900 s (the 15-minute scheduling block). Circular cross-correlation with a template (mean of aligned windows, phase anchored to the first window of each file) gives each window's shift, in seconds; r is the profile correlation at that shift. Positive shift = the block features sit later on that file's labels. The check is relative: it assumes each file's first window is on time.",
+ "template_peak_phase_s": 24,
+ "per_file": {
+  "freq_I.csv": {
+   "windows": 33,
+   "windows_r_ge_0p5": 3,
+   "median_r": 0.3695,
+   "first_window_shift_s": 0,
+   "last_window_shift_s": 172,
+   "min_shift_s": -91,
+   "max_shift_s": 208
+  },
+  "freq_II.csv": {
+   "windows": 25,
+   "windows_r_ge_0p5": 6,
+   "median_r": 0.3892,
+   "first_window_shift_s": 0,
+   "last_window_shift_s": 64,
+   "min_shift_s": -28,
+   "max_shift_s": 84
+  },
+  "freq_III.csv": {
+   "windows": 33,
+   "windows_r_ge_0p5": 7,
+   "median_r": 0.3791,
+   "first_window_shift_s": 0,
+   "last_window_shift_s": 319,
+   "min_shift_s": -137,
+   "max_shift_s": 424
+  },
+  "freq_IV.csv": {
+   "windows": 23,
+   "windows_r_ge_0p5": 12,
+   "median_r": 0.5605,
+   "first_window_shift_s": 0,
+   "last_window_shift_s": 198,
+   "min_shift_s": 0,
+   "max_shift_s": 198
+  },
+  "freq_V.csv": {
+   "windows": 33,
+   "windows_r_ge_0p5": 20,
+   "median_r": 0.5748,
+   "first_window_shift_s": 0,
+   "last_window_shift_s": 224,
+   "min_shift_s": -17,
+   "max_shift_s": 224
+  }
+ },
+ "overlap_cross_check": [
+  {
+   "a": "freq_I.csv",
+   "b": "freq_II.csv",
+   "label_offset_from_overlap_s": 172,
+   "block_shift_a_minus_b_s": 172.0,
+   "windows_a": 1,
+   "windows_b": 1
+  },
+  {
+   "a": "freq_II.csv",
+   "b": "freq_III.csv",
+   "label_offset_from_overlap_s": 64,
+   "block_shift_a_minus_b_s": 64.0,
+   "windows_a": 1,
+   "windows_b": 1
+  },
+  {
+   "a": "freq_III.csv",
+   "b": "freq_IV.csv",
+   "label_offset_from_overlap_s": 319,
+   "block_shift_a_minus_b_s": 319.0,
+   "windows_a": 1,
+   "windows_b": 1
+  },
+  {
+   "a": "freq_IV.csv",
+   "b": "freq_V.csv",
+   "label_offset_from_overlap_s": 198,
+   "block_shift_a_minus_b_s": 198.0,
+   "windows_a": 6,
+   "windows_b": 5
+  }
+ ],
+ "per_window": [
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2020-12-24",
+   "days_since_file_start": 4.0,
+   "shift_s": 0,
+   "r": 0.4477
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2020-12-31",
+   "days_since_file_start": 11.0,
+   "shift_s": -13,
+   "r": 0.5026
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-01-07",
+   "days_since_file_start": 18.0,
+   "shift_s": -9,
+   "r": 0.3581
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-01-14",
+   "days_since_file_start": 25.0,
+   "shift_s": 4,
+   "r": 0.4706
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-01-21",
+   "days_since_file_start": 32.0,
+   "shift_s": -14,
+   "r": 0.4494
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-01-28",
+   "days_since_file_start": 39.0,
+   "shift_s": -25,
+   "r": 0.3695
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-02-04",
+   "days_since_file_start": 46.0,
+   "shift_s": -8,
+   "r": 0.4294
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-02-11",
+   "days_since_file_start": 53.0,
+   "shift_s": 2,
+   "r": 0.3398
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-02-18",
+   "days_since_file_start": 60.0,
+   "shift_s": -91,
+   "r": 0.4463
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-02-25",
+   "days_since_file_start": 67.0,
+   "shift_s": -21,
+   "r": 0.4897
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-03-04",
+   "days_since_file_start": 74.0,
+   "shift_s": -2,
+   "r": 0.5849
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-03-11",
+   "days_since_file_start": 81.0,
+   "shift_s": -9,
+   "r": 0.4357
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-03-18",
+   "days_since_file_start": 88.0,
+   "shift_s": 10,
+   "r": 0.4803
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-03-25",
+   "days_since_file_start": 95.0,
+   "shift_s": -9,
+   "r": 0.43
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-04-01",
+   "days_since_file_start": 102.0,
+   "shift_s": -11,
+   "r": 0.4581
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-04-08",
+   "days_since_file_start": 109.0,
+   "shift_s": -10,
+   "r": 0.4578
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-04-15",
+   "days_since_file_start": 116.0,
+   "shift_s": 14,
+   "r": 0.3093
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-04-22",
+   "days_since_file_start": 123.0,
+   "shift_s": -2,
+   "r": 0.3524
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-04-29",
+   "days_since_file_start": 130.0,
+   "shift_s": 11,
+   "r": 0.3395
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-05-06",
+   "days_since_file_start": 137.0,
+   "shift_s": 26,
+   "r": 0.5053
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-05-13",
+   "days_since_file_start": 144.0,
+   "shift_s": 28,
+   "r": 0.4219
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-05-20",
+   "days_since_file_start": 151.0,
+   "shift_s": 68,
+   "r": 0.3283
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-05-27",
+   "days_since_file_start": 158.0,
+   "shift_s": 44,
+   "r": 0.2165
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-06-03",
+   "days_since_file_start": 165.0,
+   "shift_s": 70,
+   "r": 0.3881
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-06-10",
+   "days_since_file_start": 172.0,
+   "shift_s": 91,
+   "r": 0.2746
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-06-17",
+   "days_since_file_start": 179.0,
+   "shift_s": 38,
+   "r": 0.1543
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-06-24",
+   "days_since_file_start": 186.0,
+   "shift_s": 40,
+   "r": 0.2573
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-07-01",
+   "days_since_file_start": 193.0,
+   "shift_s": 68,
+   "r": 0.3369
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-07-08",
+   "days_since_file_start": 200.0,
+   "shift_s": 70,
+   "r": 0.3033
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-07-15",
+   "days_since_file_start": 207.0,
+   "shift_s": 58,
+   "r": 0.279
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-07-22",
+   "days_since_file_start": 214.0,
+   "shift_s": 59,
+   "r": 0.184
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-07-29",
+   "days_since_file_start": 221.0,
+   "shift_s": 208,
+   "r": 0.2424
+  },
+  {
+   "file": "freq_I.csv",
+   "window_mid_ist": "2021-08-04",
+   "days_since_file_start": 227.5,
+   "shift_s": 172,
+   "r": 0.2928
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-08-04",
+   "days_since_file_start": 3.0,
+   "shift_s": 0,
+   "r": 0.3256
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-08-11",
+   "days_since_file_start": 10.0,
+   "shift_s": -11,
+   "r": 0.2175
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-08-18",
+   "days_since_file_start": 17.0,
+   "shift_s": 11,
+   "r": 0.2823
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-08-25",
+   "days_since_file_start": 24.0,
+   "shift_s": 2,
+   "r": 0.2367
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-09-01",
+   "days_since_file_start": 31.0,
+   "shift_s": 16,
+   "r": 0.1965
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-09-07",
+   "days_since_file_start": 37.5,
+   "shift_s": 4,
+   "r": 0.2207
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-09-20",
+   "days_since_file_start": 50.0,
+   "shift_s": -19,
+   "r": 0.3593
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-09-27",
+   "days_since_file_start": 57.0,
+   "shift_s": -28,
+   "r": 0.3887
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-10-04",
+   "days_since_file_start": 64.0,
+   "shift_s": -8,
+   "r": 0.3545
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-10-11",
+   "days_since_file_start": 71.0,
+   "shift_s": 1,
+   "r": 0.3892
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-10-18",
+   "days_since_file_start": 78.0,
+   "shift_s": 74,
+   "r": 0.3571
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-10-25",
+   "days_since_file_start": 85.0,
+   "shift_s": -8,
+   "r": 0.3165
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-11-01",
+   "days_since_file_start": 92.0,
+   "shift_s": 75,
+   "r": 0.3888
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-11-08",
+   "days_since_file_start": 99.0,
+   "shift_s": 62,
+   "r": 0.498
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-11-15",
+   "days_since_file_start": 106.0,
+   "shift_s": 45,
+   "r": 0.4768
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-11-22",
+   "days_since_file_start": 113.0,
+   "shift_s": 55,
+   "r": 0.4539
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-11-29",
+   "days_since_file_start": 120.0,
+   "shift_s": 37,
+   "r": 0.5122
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-12-06",
+   "days_since_file_start": 127.0,
+   "shift_s": 53,
+   "r": 0.4722
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-12-13",
+   "days_since_file_start": 134.0,
+   "shift_s": 72,
+   "r": 0.601
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-12-20",
+   "days_since_file_start": 141.0,
+   "shift_s": 54,
+   "r": 0.5636
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2021-12-27",
+   "days_since_file_start": 148.0,
+   "shift_s": 46,
+   "r": 0.5274
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2022-01-03",
+   "days_since_file_start": 155.0,
+   "shift_s": 51,
+   "r": 0.5701
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2022-01-10",
+   "days_since_file_start": 162.0,
+   "shift_s": 84,
+   "r": 0.4286
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2022-01-17",
+   "days_since_file_start": 169.0,
+   "shift_s": 50,
+   "r": 0.5876
+  },
+  {
+   "file": "freq_II.csv",
+   "window_mid_ist": "2022-01-24",
+   "days_since_file_start": 176.0,
+   "shift_s": 64,
+   "r": 0.4679
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-01-23",
+   "days_since_file_start": 4.0,
+   "shift_s": 0,
+   "r": 0.4942
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-01-30",
+   "days_since_file_start": 11.0,
+   "shift_s": -14,
+   "r": 0.4618
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-02-06",
+   "days_since_file_start": 18.0,
+   "shift_s": 76,
+   "r": 0.5601
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-02-13",
+   "days_since_file_start": 25.0,
+   "shift_s": 87,
+   "r": 0.5771
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-02-20",
+   "days_since_file_start": 32.0,
+   "shift_s": 77,
+   "r": 0.4359
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-02-27",
+   "days_since_file_start": 39.0,
+   "shift_s": 111,
+   "r": 0.3609
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-03-06",
+   "days_since_file_start": 46.0,
+   "shift_s": 87,
+   "r": 0.5394
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-03-13",
+   "days_since_file_start": 53.0,
+   "shift_s": 80,
+   "r": 0.501
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-03-20",
+   "days_since_file_start": 60.0,
+   "shift_s": 81,
+   "r": 0.6388
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-03-27",
+   "days_since_file_start": 67.0,
+   "shift_s": 84,
+   "r": 0.4949
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-04-04",
+   "days_since_file_start": 75.0,
+   "shift_s": 77,
+   "r": 0.5727
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-04-11",
+   "days_since_file_start": 82.0,
+   "shift_s": 85,
+   "r": 0.5925
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-04-18",
+   "days_since_file_start": 89.0,
+   "shift_s": 78,
+   "r": 0.4457
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-04-25",
+   "days_since_file_start": 96.0,
+   "shift_s": 68,
+   "r": 0.3794
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-05-02",
+   "days_since_file_start": 103.0,
+   "shift_s": 83,
+   "r": 0.4109
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-05-09",
+   "days_since_file_start": 110.0,
+   "shift_s": 57,
+   "r": 0.3441
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-05-16",
+   "days_since_file_start": 117.0,
+   "shift_s": 111,
+   "r": 0.2001
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-05-23",
+   "days_since_file_start": 124.0,
+   "shift_s": 88,
+   "r": 0.3261
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-05-30",
+   "days_since_file_start": 131.0,
+   "shift_s": 99,
+   "r": 0.3964
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-06-06",
+   "days_since_file_start": 138.0,
+   "shift_s": 109,
+   "r": 0.2758
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-06-13",
+   "days_since_file_start": 145.0,
+   "shift_s": 153,
+   "r": 0.2113
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-06-20",
+   "days_since_file_start": 152.0,
+   "shift_s": 159,
+   "r": 0.4001
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-06-27",
+   "days_since_file_start": 159.0,
+   "shift_s": 157,
+   "r": 0.3791
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-07-04",
+   "days_since_file_start": 166.0,
+   "shift_s": 157,
+   "r": 0.3312
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-07-11",
+   "days_since_file_start": 173.0,
+   "shift_s": 136,
+   "r": 0.1817
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-07-18",
+   "days_since_file_start": 180.0,
+   "shift_s": 159,
+   "r": 0.2684
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-07-25",
+   "days_since_file_start": 187.0,
+   "shift_s": 293,
+   "r": 0.1358
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-08-01",
+   "days_since_file_start": 194.0,
+   "shift_s": 314,
+   "r": 0.2352
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-08-08",
+   "days_since_file_start": 201.0,
+   "shift_s": -137,
+   "r": 0.1957
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-08-15",
+   "days_since_file_start": 208.0,
+   "shift_s": 424,
+   "r": 0.2047
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-08-22",
+   "days_since_file_start": 215.0,
+   "shift_s": 137,
+   "r": 0.2076
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-08-29",
+   "days_since_file_start": 222.0,
+   "shift_s": 319,
+   "r": 0.3036
+  },
+  {
+   "file": "freq_III.csv",
+   "window_mid_ist": "2022-09-04",
+   "days_since_file_start": 228.0,
+   "shift_s": 319,
+   "r": 0.3045
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-09-04",
+   "days_since_file_start": 3.0,
+   "shift_s": 0,
+   "r": 0.3512
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-09-11",
+   "days_since_file_start": 10.0,
+   "shift_s": 51,
+   "r": 0.2277
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-09-18",
+   "days_since_file_start": 17.0,
+   "shift_s": 25,
+   "r": 0.4468
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-09-25",
+   "days_since_file_start": 24.0,
+   "shift_s": 62,
+   "r": 0.3417
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-10-02",
+   "days_since_file_start": 31.0,
+   "shift_s": 81,
+   "r": 0.3292
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-10-09",
+   "days_since_file_start": 38.0,
+   "shift_s": 67,
+   "r": 0.2449
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-10-16",
+   "days_since_file_start": 45.0,
+   "shift_s": 114,
+   "r": 0.1956
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-10-23",
+   "days_since_file_start": 52.0,
+   "shift_s": 87,
+   "r": 0.4337
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-10-30",
+   "days_since_file_start": 59.0,
+   "shift_s": 82,
+   "r": 0.4081
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-11-06",
+   "days_since_file_start": 66.0,
+   "shift_s": 88,
+   "r": 0.4617
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-11-13",
+   "days_since_file_start": 73.0,
+   "shift_s": 83,
+   "r": 0.42
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-11-20",
+   "days_since_file_start": 80.0,
+   "shift_s": 161,
+   "r": 0.5605
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-11-27",
+   "days_since_file_start": 87.0,
+   "shift_s": 169,
+   "r": 0.5866
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-12-04",
+   "days_since_file_start": 94.0,
+   "shift_s": 170,
+   "r": 0.741
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-12-11",
+   "days_since_file_start": 101.0,
+   "shift_s": 174,
+   "r": 0.745
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-12-18",
+   "days_since_file_start": 108.0,
+   "shift_s": 174,
+   "r": 0.7481
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2022-12-25",
+   "days_since_file_start": 115.0,
+   "shift_s": 188,
+   "r": 0.7586
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2023-01-01",
+   "days_since_file_start": 122.0,
+   "shift_s": 198,
+   "r": 0.726
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2023-01-08",
+   "days_since_file_start": 129.0,
+   "shift_s": 198,
+   "r": 0.7398
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2023-01-15",
+   "days_since_file_start": 136.0,
+   "shift_s": 198,
+   "r": 0.7041
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2023-01-22",
+   "days_since_file_start": 143.0,
+   "shift_s": 189,
+   "r": 0.74
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2023-01-29",
+   "days_since_file_start": 150.0,
+   "shift_s": 196,
+   "r": 0.7524
+  },
+  {
+   "file": "freq_IV.csv",
+   "window_mid_ist": "2023-02-03",
+   "days_since_file_start": 155.5,
+   "shift_s": 198,
+   "r": 0.6248
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-01-04",
+   "days_since_file_start": 3.0,
+   "shift_s": 0,
+   "r": 0.7292
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-01-11",
+   "days_since_file_start": 10.0,
+   "shift_s": 17,
+   "r": 0.725
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-01-18",
+   "days_since_file_start": 17.0,
+   "shift_s": -9,
+   "r": 0.7443
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-01-25",
+   "days_since_file_start": 24.0,
+   "shift_s": -2,
+   "r": 0.7312
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-02-01",
+   "days_since_file_start": 31.0,
+   "shift_s": 0,
+   "r": 0.7767
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-02-08",
+   "days_since_file_start": 38.0,
+   "shift_s": 0,
+   "r": 0.734
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-02-15",
+   "days_since_file_start": 45.0,
+   "shift_s": -10,
+   "r": 0.7181
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-02-22",
+   "days_since_file_start": 52.0,
+   "shift_s": -6,
+   "r": 0.7093
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-03-01",
+   "days_since_file_start": 59.0,
+   "shift_s": -8,
+   "r": 0.7705
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-03-08",
+   "days_since_file_start": 66.0,
+   "shift_s": -10,
+   "r": 0.7097
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-03-15",
+   "days_since_file_start": 73.0,
+   "shift_s": -4,
+   "r": 0.7218
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-03-22",
+   "days_since_file_start": 80.0,
+   "shift_s": -14,
+   "r": 0.6917
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-03-29",
+   "days_since_file_start": 87.0,
+   "shift_s": -13,
+   "r": 0.5748
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-04-05",
+   "days_since_file_start": 94.0,
+   "shift_s": 2,
+   "r": 0.7012
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-04-12",
+   "days_since_file_start": 101.0,
+   "shift_s": -6,
+   "r": 0.6193
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-04-19",
+   "days_since_file_start": 108.0,
+   "shift_s": -3,
+   "r": 0.6255
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-04-26",
+   "days_since_file_start": 115.0,
+   "shift_s": 12,
+   "r": 0.6676
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-05-03",
+   "days_since_file_start": 122.0,
+   "shift_s": 4,
+   "r": 0.5545
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-05-10",
+   "days_since_file_start": 129.0,
+   "shift_s": 2,
+   "r": 0.4665
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-05-17",
+   "days_since_file_start": 136.0,
+   "shift_s": 8,
+   "r": 0.5598
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-05-24",
+   "days_since_file_start": 143.0,
+   "shift_s": -17,
+   "r": 0.3617
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-05-31",
+   "days_since_file_start": 150.0,
+   "shift_s": 4,
+   "r": 0.5035
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-06-07",
+   "days_since_file_start": 157.0,
+   "shift_s": 5,
+   "r": 0.4976
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-06-14",
+   "days_since_file_start": 164.0,
+   "shift_s": 7,
+   "r": 0.4383
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-06-21",
+   "days_since_file_start": 171.0,
+   "shift_s": 40,
+   "r": 0.45
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-06-28",
+   "days_since_file_start": 178.0,
+   "shift_s": 69,
+   "r": 0.2959
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-07-05",
+   "days_since_file_start": 185.0,
+   "shift_s": 57,
+   "r": 0.2948
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-07-12",
+   "days_since_file_start": 192.0,
+   "shift_s": 54,
+   "r": 0.2967
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-07-19",
+   "days_since_file_start": 199.0,
+   "shift_s": 110,
+   "r": 0.3737
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-07-27",
+   "days_since_file_start": 207.0,
+   "shift_s": 122,
+   "r": 0.3383
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-08-03",
+   "days_since_file_start": 214.0,
+   "shift_s": 114,
+   "r": 0.2054
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-08-10",
+   "days_since_file_start": 221.0,
+   "shift_s": 200,
+   "r": 0.2132
+  },
+  {
+   "file": "freq_V.csv",
+   "window_mid_ist": "2023-08-16",
+   "days_since_file_start": 227.5,
+   "shift_s": 224,
+   "r": 0.3142
+  }
+ ]
+}
