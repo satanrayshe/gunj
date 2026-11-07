@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 12:20 IST, by the coordinator session.
+Last updated: 7 Nov 2026, 22:45 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -32,7 +32,7 @@ If the laptop was shut down or the session ended, a new coding session should:
 | 10 | Shrey approves the PROTOCOL.md commit (pre-registration) | git commit "Pre-registration" | DONE: Shrey wrote "approved" at 09:05 IST on 7 Nov; commit 2485706 |
 | 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | RUNNING since 09:05 IST on 7 Nov (detached). To restart after a shutdown, run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts
 un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYNTHETIC negatives, then threshold-half negatives, then Test in row order with `--cuts`, then report-half negatives. Re-run the same command after any shutdown. Progress is in `logs/run_stage3.log` and `logs/harvest_<step>.log` |
-| 12 | Threshold, latency, blind matching, gate numbers | `results/threshold.json`, `results/latency.json`, `results/gate.md` | Scripts committed in e21d221. `set_threshold.py --wait --workers 2` RUNNING since 09:58 (detached; log `logs/set_threshold.log`). It searches each threshold-half negative as it lands and writes tau when all 45 are final. Restart after a shutdown with `.venv\Scripts\python.exe scripts\set_threshold.py --wait --workers 2`. Then: commit threshold.json + config.json + search_cache; run `scripts\calibrate_latency.py`, commit latency.json; run `scripts\evaluate.py --practice --no-negatives --workers 2` (writes to %TEMP%\gunj_practice); then `scripts\evaluate.py` hourly on Test (it refuses unless 11 files are committed and unchanged). Use 2 workers: free RAM is low. Gate Sat 7 Nov 22:00 IST |
+| 12 | Threshold, latency, blind matching, gate numbers | `results/threshold.json`, `results/latency.json`, `results/gate.md` | tau committed 22:35 (beadde1), L = 2 s committed 22:35 (84ac47d), evaluate.py frozen 22:40 (6d010bb). GATE MOVED to Sun 8 Nov 14:00 IST (PROTOCOL section 19, 7 Nov 22:40). Scoring chain running detached since 22:40: practice on Calibration, then the real Test run (`logs/run_eval_chain.ps1`, log `logs/run_eval.log`). Re-run the real scoring hourly with `.venv\Scripts\python.exe scripts\evaluate.py --workers 2` (safe to kill and re-run). The first full run started after 14:10 on 8 Nov writes `results/gate_frozen.json`; commit it with gate.md |
 | 13 | Results, Pages explorer, README, v1 video | `results/`, `site/`, `README.md` | pending; Shrey submits v1 by 8 Nov 21:00 |
 
 ## Resilience rules for every script
