@@ -1,8 +1,8 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 08:35 IST, by Claude (Gunj harvest and v2 workflow step).
+Last updated: 7 Nov 2026, 09:05 IST, by the coordinator session.
 
-If the laptop was shut down or the session ended, a new Claude Code session should:
+If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
 2. Check which steps below are done by looking for their output files, not by trusting this list.
 3. Restart only the unfinished step, using its command. Every long-running script is meant to skip work it has already finished.
@@ -21,21 +21,27 @@ If the laptop was shut down or the session ended, a new Claude Code session shou
 | # | Step | Output that proves it is done | Status |
 |---|---|---|---|
 | 1 | Reference files downloaded and verified | hashes in `../data/derived/grid_1s_meta.json` | DONE 7 Nov 00:50 |
-| 2 | Reference series + gap map | `../data/derived/grid_1s_f32.npy`, `results/reference_summary.md` | DONE 7 Nov 05:20 (commit 598aad3) |
+| 2 | Reference series + gap map | `../data/derived/grid_1s_f32.npy`, `results/reference_summary.md` | DONE 7 Nov 05:20 (commit 4cd37fd) |
 | 3 | Core extractor, matcher, CLI, tests | `gunj/extract.py`, `gunj/match.py`, `pytest` passes | DONE (55 tests) |
 | 4 | Metadata-only candidate list | `data/candidates_india.csv`, `data/candidates_negatives.csv` | DONE (424 + 116) |
 | 5 | Uniqueness curve (M4, reference only) | `results/uniqueness_table.csv` | DONE |
 | 6 | PROTOCOL.md + splits | `PROTOCOL.md`, `data/splits.csv` | DONE, uncommitted until Shrey approves |
 | 7 | Hostile review of 2-6 | review notes | review agent failed (network); coordinator checks passed: tests, hashes, no media, no courts |
 | 8 | Delete raw CSVs once step 2 is verified (re-downloadable; hashes kept) | `../data/enf-ref` empty; keep `../data/derived/_parsed` (needed for label drift) | DONE 7 Nov 05:20 |
-| 9 | Dev + calibration audio harvest, extractor v2 tuned on dev, frozen | `data/harvest_manifest.csv`, git tag `extractor-v2`, `results/v2_tuning.md` | DONE 7 Nov 08:26. Dev 5/5 (FLAC kept in `media/keep`). v2 = candidate B1, tag `extractor-v2` on ad9c54f at 05:55. Calibration 19/20 (hG8oxgWwPYE not available on YouTube). 0 bot checks or 429s; 77 yt-dlp requests in all |
+| 9 | Dev + calibration audio harvest, extractor v2 tuned on dev, frozen | `data/harvest_manifest.csv`, git tag `extractor-v2`, `results/v2_tuning.md` | DONE 7 Nov 08:26. Dev 5/5 (FLAC kept in `media/keep`). v2 = candidate B1, tag `extractor-v2` on ef1d27e at 05:55. Calibration 19/20 (hG8oxgWwPYE not available on YouTube). 0 bot checks or 429s; 77 yt-dlp requests in all |
 | 10 | Shrey approves the PROTOCOL.md commit (pre-registration) | git commit "Pre-registration" | pending (needs Shrey) |
-| 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | pending: waits for step 10. Command: `scripts\harvest.py --splits test,negative,negative_synthetic --extractors v2,v1,naive --keep-audio-splits dev --cuts` (SYNTHETIC negatives are generated, not downloaded) (see the harvest.py docstring). Dev and Calibration took 2 to 16 min per stream |
-| 12 | Latency calibration, threshold from negatives, blind matching, gate numbers | `results/gate.md` | partly done: Calibration searched (`results/calibration.md`). L is PENDING until tau exists (`results/threshold.json`, needs the negatives); rerun `scripts\calibrate_latency.py` then. PROVISIONAL v2 median o = 2 s over 8 locks (not L). Threshold, blind matching and gate not started; gate Sat 7 Nov 22:00 IST |
+| 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | pending: waits for step 10. Run `powershell -NoProfile -ExecutionPolicy Bypass -File scriptsun_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYNTHETIC negatives, then threshold-half negatives, then Test in row order with `--cuts`, then report-half negatives. Re-run the same command after any shutdown. Progress is in `logs/run_stage3.log` and `logs/harvest_<step>.log` |
+| 12 | Threshold, latency, blind matching, gate numbers | `results/threshold.json`, `results/latency.json`, `results/gate.md` | `scripts/set_threshold.py` and `scripts/evaluate.py` are being written by a helper agent (started 09:00; no commits by agents). Order: set_threshold, commit; calibrate_latency (writes latency.json), commit; commit evaluate.py; then evaluate.py on Test. PROVISIONAL v2 median o = 2 s over 8 Calibration locks (not L). Gate Sat 7 Nov 22:00 IST |
 | 13 | Results, Pages explorer, README, v1 video | `results/`, `site/`, `README.md` | pending; Shrey submits v1 by 8 Nov 21:00 |
 
 ## Resilience rules for every script
 - Write outputs to `name.tmp`, then rename. A half-written file must never look finished.
 - Long jobs keep a manifest or append-only CSV and skip finished items on restart. They delete leftover partial media when they start.
 - Run long jobs as standalone processes that log to `logs/<step>.log`, so they don't depend on any one agent or session.
-- Make a local git commit after each finished step (Claude does this, not parallel agents).
+- Make a local git commit after each finished step (the coordinator session does this, never parallel helpers).
+
+## Before any push (Shrey runs the push)
+- `git log --format=%B | grep -ci 'cl[a]ude'` and `git grep -i -l 'cl[a]ude'` must both come back empty, apart from one known false hit: a physicist's name in a lecture title in `data/meta_flat/theory_tifr.json` (YouTube metadata, not attribution). Commits carry no Co-Authored-By trailer.
+- `git grep -n -E 'Users[\/]+Shrey|AppData'` must come back empty: no absolute local paths in results files.
+- No media in git: `git ls-files | grep -iE '\.(flac|wav|mp3|m4a|webm|mp4|opus)$'` must come back empty.
+- On 7 Nov at 08:50 IST the local history was rewritten to remove the attribution trailers and the local paths. The pre-rewrite tip is kept on branch `backup/pre-trailer-strip` and in `refs/original/`; delete both before pushing.
