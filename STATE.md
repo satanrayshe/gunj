@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 22:45 IST, by the coordinator session.
+Last updated: 8 Nov 2026, 00:20 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -47,6 +47,9 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 - 12:15 IST: harvester fixes from a review (rate-limit wording, private videos, ffmpeg segment skips, network waits, stop after 4 unexplained failures). Outage-charged attempts were given back by `scripts/repair_outage_attempts.py` (PROTOCOL section 19, 12:15; commit 3936ca8). Runner and set_threshold restarted at 12:18 (runner pid 68204 since 16:36 after an exit-5 stop at 14:57, set_threshold pid 58684 since 12:30, on commit 1e26989).
 - If set_threshold exits 2 saying a real threshold negative "used up its retries", it is the coordinator's decision: retry that stream, or rerun with `--accept-excluded` and record the decision in PROTOCOL section 19.
 - If the harvester exits 5 (4 unexplained failures in a row), read `logs/harvest_<step>.log` before restarting: it may be a new YouTube limit message.
+
+- 8 Nov 00:13: first real scoring run done. INTERIM (decision time 14:00): N = 31 Test streams processed, 8 locks (S1, D = 0: 2), health ok. Hourly scoring loop running detached since 00:15 (`logs/run_eval_loop.ps1`, pid 57980, log `logs/run_eval.log`); it stops after `results/gate_frozen.json` exists or at 16:00. If the laptop restarts, run that script again. After the freeze: commit results/gate.md, gate_frozen.json, test_results.csv, flow_table.md, evaluation.json, false_matches.*, search_cache/test; then `scripts/export_site_data.py` and `scripts/fill_results.py`, and commit site/data and docs/screens.
+- Pre-push: two expected hits for the path grep are the guard regexes in `scripts/export_site_data.py` and `scripts/fill_results.py`.
 
 ## Before any push (Shrey runs the push)
 - `git log --format=%B | grep -ci 'cl[a]ude'` and `git grep -i -l 'cl[a]ude'` must both come back empty, apart from one known false hit: a physicist's name in a lecture title in `data/meta_flat/theory_tifr.json` (YouTube metadata, not attribution). Commits carry no Co-Authored-By trailer.
