@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 09:08 IST, by the coordinator session.
+Last updated: 7 Nov 2026, 10:00 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -32,7 +32,7 @@ If the laptop was shut down or the session ended, a new coding session should:
 | 10 | Shrey approves the PROTOCOL.md commit (pre-registration) | git commit "Pre-registration" | DONE: Shrey wrote "approved" at 09:05 IST on 7 Nov; commit 2485706 |
 | 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | RUNNING since 09:05 IST on 7 Nov (detached). To restart after a shutdown, run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts
 un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYNTHETIC negatives, then threshold-half negatives, then Test in row order with `--cuts`, then report-half negatives. Re-run the same command after any shutdown. Progress is in `logs/run_stage3.log` and `logs/harvest_<step>.log` |
-| 12 | Threshold, latency, blind matching, gate numbers | `results/threshold.json`, `results/latency.json`, `results/gate.md` | `scripts/set_threshold.py` and `scripts/evaluate.py` are being written by a helper agent (started 09:00; no commits by agents). Order: set_threshold, commit; calibrate_latency (writes latency.json), commit; commit evaluate.py; then evaluate.py on Test. PROVISIONAL v2 median o = 2 s over 8 Calibration locks (not L). Gate Sat 7 Nov 22:00 IST |
+| 12 | Threshold, latency, blind matching, gate numbers | `results/threshold.json`, `results/latency.json`, `results/gate.md` | Scripts committed in e21d221. `set_threshold.py --wait --workers 2` RUNNING since 09:58 (detached; log `logs/set_threshold.log`). It searches each threshold-half negative as it lands and writes tau when all 45 are final. Restart after a shutdown with `.venv\Scripts\python.exe scripts\set_threshold.py --wait --workers 2`. Then: commit threshold.json + config.json + search_cache; run `scripts\calibrate_latency.py`, commit latency.json; run `scripts\evaluate.py --practice --no-negatives --workers 2` (writes to %TEMP%\gunj_practice); then `scripts\evaluate.py` hourly on Test (it refuses unless 11 files are committed and unchanged). Use 2 workers: free RAM is low. Gate Sat 7 Nov 22:00 IST |
 | 13 | Results, Pages explorer, README, v1 video | `results/`, `site/`, `README.md` | pending; Shrey submits v1 by 8 Nov 21:00 |
 
 ## Resilience rules for every script
@@ -40,6 +40,9 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 - Long jobs keep a manifest or append-only CSV and skip finished items on restart. They delete leftover partial media when they start.
 - Run long jobs as standalone processes that log to `logs/<step>.log`, so they don't depend on any one agent or session.
 - Make a local git commit after each finished step (the coordinator session does this, never parallel helpers).
+
+## Deviations so far
+- 10:00 IST: the Test harvest uses `--order-seed 2026110701`, because `data/splits.csv` rows are in date order (PROTOCOL section 19). The runner that started at 09:05 lacked the flag, so it was stopped at 09:57. Its neg_threshold harvester was left running, and a watcher starts the updated `run_stage3.ps1` when that harvester ends.
 
 ## Before any push (Shrey runs the push)
 - `git log --format=%B | grep -ci 'cl[a]ude'` and `git grep -i -l 'cl[a]ude'` must both come back empty, apart from one known false hit: a physicist's name in a lecture title in `data/meta_flat/theory_tifr.json` (YouTube metadata, not attribution). Commits carry no Co-Authored-By trailer.
