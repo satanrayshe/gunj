@@ -297,7 +297,7 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - The outage failures between 10:15 and 11:40 IST had each been charged an attempt. `scripts/repair_outage_attempts.py` gave them back: it counts only failures outside that window that are not network-down. 182 rows changed (`data/attempt_repair_20261107.json`). zQSjO3YREkM keeps 1 charged attempt, for its 11:43 ffmpeg failure; its 10:18 "short audio" failure falls inside the window.
   - The rules for τ, L, hits and the gate are unchanged.
 
-- **7 Nov 2026, 12:35 IST. Evaluation-script fixes from the same review (sections 15 and 16).** `scripts/evaluate.py` had not been run on any Test trace, and no Test trace existed.
+- **7 Nov 2026, 12:30 IST. Evaluation-script fixes from the same review (sections 15 and 16).** `scripts/evaluate.py` had not been run on any Test trace, and no Test trace existed.
   - Local paths in harvest error messages are redacted, so they can no longer crash a run, the gate run included.
   - A failure caused by the laptop's network being down is not a download attempt. It is left out of the most recent download for gate condition 3, and it counts as "not attempted yet" in the flow table and `results/test_results.csv`.
   - Gate condition 3 is judged as of the decision time from the append-only harvest logs, and blocked rows count only up to that time. The first full run started at least 10 minutes after 22:00 IST writes `results/gate_frozen.json`, and later runs reuse it.
