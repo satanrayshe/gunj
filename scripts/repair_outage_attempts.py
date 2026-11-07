@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """One-off repair of data/harvest_manifest.csv after the 7 Nov 2026 network outage
-(PROTOCOL section 19, 12:40 IST entry).
+(PROTOCOL section 19, 12:15 IST entry).
 
 From about 10:18 to 11:38 IST the laptop had no working internet connection. Every
 download in that window failed and was charged one of its MAX_ATTEMPTS tries, before

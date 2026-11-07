@@ -286,7 +286,7 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - `scripts/set_threshold.py` counted every "failed" row as final, so at 10:35 IST it wrote a τ from 1 real and 20 SYNTHETIC threshold-half negatives. That τ was deleted before it was committed or used, and `gunj/config.json` was restored. Its log line showed the naive extractor's τ values; no Test data existed.
   - Fixes: a retryable failure is final only once the harvester will never retry it. The harvester checks a DNS lookup before each download and waits while the network is down. A failure caused by the laptop's network being down is not charged an attempt, and the stream is tried again once the network returns. The τ rule itself is unchanged.
 
-- **7 Nov 2026, 12:40 IST. Harvester fixes from a code review, and outage-charged attempts given back (sections 10, 15 and 17).** No Test audio had been obtained, and no Test search had been run. Only 1 real threshold-half negative was done.
+- **7 Nov 2026, 12:15 IST. Harvester fixes from a code review, and outage-charged attempts given back (sections 10, 15 and 17).** No Test audio had been obtained, and no Test search had been run. Only 1 real threshold-half negative was done.
   - A read-only review of the harvester and the evaluation scripts found these defects, each confirmed by a second check. All were fixed before any further download:
     - YouTube's rate-limit message ("The current session has been rate-limited by YouTube") was not treated as a block. Now it is.
     - A private video's error ("Sign in if you've been granted access") was wrongly treated as a bot check. It is now "unavailable", and so is an age check.
