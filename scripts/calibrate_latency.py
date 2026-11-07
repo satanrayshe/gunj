@@ -82,19 +82,47 @@ def load_tau(path: Path):
     return out or None
 
 
-def search_one(z, ext, ref, release_ts, D):
-    key = f"{ext}__x{LENGTH_MIN}"
+SCOPE_DAYS = {"full": None, "90d": 90, "1d": 1}     # PROTOCOL section 8
+
+
+def scope_positions(ref, rel_ist, scope: str) -> tuple:
+    """Search positions [p0, p1) for a scope (PROTOCOL section 8).
+
+    A scope bounds the implied recording start, which is position - 128 s.
+    "full" is the whole series; "90d" and "1d" are the release time in IST
+    +- 90 days or +- 1 day, clipped to the series.
+    """
+    days = SCOPE_DAYS[scope]
+    i0, i1 = ref.scope_full() if days is None else ref.scope(rel_ist, days=days)
+    return i0 + FRAME0_S, min(i1 + FRAME0_S, len(ref))
+
+
+def run_search(z, ext, ref, release_ts, length_min: int = LENGTH_MIN, scope: str = "1d", k: int = 5):
+    """Search one excerpt trace of an open trace file in one scope.
+
+    Returns (SearchResult, n_frames, weighted) or None if the trace file has
+    no such excerpt. v2 traces carry frame weights and use the weighted
+    matcher (gunj/match_v2.py); v1 and naive use the frozen gunj/match.py.
+    """
+    key = f"{ext}__x{length_min}"
     if f"{key}__freq" not in z.files:
         return None
     freq = z[f"{key}__freq"]
     fw = z[f"{key}__fw"] if f"{key}__fw" in z.files else None
-    rel_ist = gref.unix_to_ist(release_ts)
-    i0, i1 = ref.scope(rel_ist, days=1)
-    p0, p1 = i0 + FRAME0_S, min(i1 + FRAME0_S, len(ref))
+    p0, p1 = scope_positions(ref, gref.unix_to_ist(release_ts), scope)
     if fw is None:
-        res = ncc_search(freq, ref.freq, ref.valid, start=p0, stop=p1, k=5)
+        res = ncc_search(freq, ref.freq, ref.valid, start=p0, stop=p1, k=k)
     else:
-        res = wncc_search(freq, fw.astype(np.float64), ref.freq, ref.valid, start=p0, stop=p1, k=5)
+        res = wncc_search(freq, fw.astype(np.float64), ref.freq, ref.valid, start=p0, stop=p1, k=k)
+    return res, int(freq.size), fw is not None
+
+
+def search_one(z, ext, ref, release_ts, D):
+    out = run_search(z, ext, ref, release_ts, LENGTH_MIN, "1d")
+    if out is None:
+        return None
+    res, n_frames, weighted = out
+    rel_ist = gref.unix_to_ist(release_ts)
     e = ref.index_of(rel_ist + pd.Timedelta(seconds=float(D)), check=False)
     e0 = ref.index_of(rel_ist, check=False)
     top, ru = res.top, res.runner_up
@@ -102,7 +130,7 @@ def search_one(z, ext, ref, release_ts, D):
         return {"extractor": ext, "lock": None}
     start_idx = top.index - FRAME0_S
     return {
-        "extractor": ext, "weighted_correlation": fw is not None, "n_frames": int(freq.size),
+        "extractor": ext, "weighted_correlation": weighted, "n_frames": n_frames,
         "lock_start_ist": str(ref.time_of(start_idx)), "lock_index": int(top.index),
         "r1": round(top.r, 5), "r2": None if ru is None else round(ru.r, 5),
         "runner_up_start_ist": None if ru is None else str(ref.time_of(ru.index - FRAME0_S)),

@@ -142,9 +142,20 @@ def test_edits_flag_reports_synthetic_cut(tmp_path, capsys, synth_ref_dir, synth
 
 
 def test_default_config_is_marked_placeholder():
+    """Before scripts/set_threshold.py runs the threshold is a marked placeholder;
+    after it runs, the config must match results/threshold.json (PROTOCOL section 10)."""
     cfg = cli.load_config()
-    assert cfg["confidence_threshold_calibrated"] is False
-    assert "PLACEHOLDER" in cfg["_note"]
+    if not cfg["confidence_threshold_calibrated"]:
+        assert "PLACEHOLDER" in cfg["_note"]
+        return
+    thr = json.loads((Path(cli.__file__).resolve().parents[1] / "results" / "threshold.json")
+                     .read_text(encoding="utf-8"))
+    ext = cfg["confidence_threshold_extractor"]
+    assert ext == thr["primary_extractor"]
+    cells = {m: {s: c["tau"] for s, c in by.items()} for m, by in thr["cells"][ext].items()}
+    assert cfg["confidence_threshold_cells"] == cells
+    assert cfg["confidence_threshold"] == max(t for by in cells.values() for t in by.values() if t is not None)
+    assert "PLACEHOLDER" not in cfg["_note"]
 
 
 def test_extract_writes_csv(tmp_path, capsys, hum_wav):
