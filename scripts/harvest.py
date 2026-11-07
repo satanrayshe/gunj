@@ -212,13 +212,21 @@ def write_manifest(path: Path, rows: dict) -> None:
     replace_retry(tmp, path)
 
 
-def read_splits(path: Path, splits) -> list:
+def seeded_rank(seed: int, video_id: str) -> str:
+    """Order key for --order-seed (PROTOCOL section 19, deviation of 7 Nov 10:00 IST):
+    SHA-256 of "<seed>:<video_id>" as hex. It depends on nothing but the ID and the seed."""
+    return hashlib.sha256(f"{seed}:{video_id}".encode("utf-8")).hexdigest()
+
+
+def read_splits(path: Path, splits, order_seed=None) -> list:
     with open(path, encoding="utf-8", newline="") as f:
         rows = [dict(r) for r in csv.DictReader(f)]
     want = list(splits)
     out = [r for r in rows if r["split"] in want]
     order = {s: i for i, s in enumerate(want)}
-    return sorted(out, key=lambda r: order[r["split"]])   # stable: file order within a split
+    if order_seed is None:
+        return sorted(out, key=lambda r: order[r["split"]])   # stable: file order within a split
+    return sorted(out, key=lambda r: (order[r["split"]], seeded_rank(order_seed, r["video_id"])))
 
 
 def excerpt_lengths(row: dict) -> list:
@@ -984,7 +992,7 @@ def run(args, downloader=None, sleep=time.sleep, repo: Path = REPO, log=None) ->
                       ",".join(blocked))
             return EXIT_BLOCKED
         splits = [s for s in args.splits.split(",") if s]
-        rows = read_splits(ctx.splits_path, splits)
+        rows = read_splits(ctx.splits_path, splits, args.order_seed)
         if args.only:
             only = set(args.only.split(","))
             rows = [r for r in rows if r["video_id"] in only]
@@ -1043,6 +1051,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--cut-splits", default="test", help="splits that get cut traces with --cuts")
     ap.add_argument("--only", default=None, help="comma list of video IDs (debugging)")
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--order-seed", type=int, default=None,
+                    help="within each split, process rows in order of SHA-256('<seed>:<video_id>') "
+                         "instead of file order (the Test harvest uses 2026110701)")
     ap.add_argument("--allow-unfrozen-v2", action="store_true", help="tests only")
     ap.add_argument("--clear-block", action="store_true",
                     help="start even though a row is blocked (Shrey's decision only)")

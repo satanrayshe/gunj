@@ -5,7 +5,7 @@
 #   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\run_stage3.ps1
 #
 # Steps: SYNTHETIC negatives (made locally, nothing is downloaded), threshold-half real negatives,
-# Test in splits.csv row order with the M5 cuts, then report-half real negatives.
+# Test in the seeded order of PROTOCOL section 19 (10:00 deviation) with the M5 cuts, then report-half real negatives.
 # It stops at the first bot check / HTTP 429 (harvester exit 3) or if another harvester holds the lock (exit 4).
 
 $ErrorActionPreference = 'Stop'
@@ -23,7 +23,7 @@ $thr = (Import-Csv data\splits.csv |
 $steps = @(
     @{ name = 'synthetic';     args = @('--splits', 'negative_synthetic', '--extractors', 'v2,v1,naive') },
     @{ name = 'neg_threshold'; args = @('--splits', 'negative', "--only=$thr", '--extractors', 'v2,v1,naive') },
-    @{ name = 'test';          args = @('--splits', 'test', '--extractors', 'v2,v1,naive', '--cuts') },
+    @{ name = 'test';          args = @('--splits', 'test', '--extractors', 'v2,v1,naive', '--cuts', '--order-seed', '2026110701') },
     @{ name = 'neg_report';    args = @('--splits', 'negative', '--extractors', 'v2,v1,naive') }
 )
 

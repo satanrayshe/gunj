@@ -304,3 +304,22 @@ def test_no_cuts_outside_cut_splits_or_short_audio():
     audio = synthetic_hum(walk, sr=sr, seed=8)
     arrays, meta = hv.build_traces(audio, sr, "shortVid", [10, 20, 40, 60], ["naive"], "naive", cuts=True)
     assert meta["cuts"] == [] and "naive__x10__freq" in arrays and "naive__x20__freq" not in arrays
+
+
+def test_order_seed_is_deterministic_and_ignores_file_order(tmp_path):
+    rows = [{"video_id": v, "split": "test"} for v in ["a1", "b2", "c3", "d4", "e5"]]
+    rows.insert(2, {"video_id": "n1", "split": "negative"})
+    fields = ["video_id", "split"]
+    p1, p2 = tmp_path / "s1.csv", tmp_path / "s2.csv"
+    for p, rs in ((p1, rows), (p2, list(reversed(rows)))):
+        with open(p, "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=fields)
+            w.writeheader()
+            w.writerows(rs)
+    plain = [r["video_id"] for r in hv.read_splits(p1, ["test"])]
+    assert plain == ["a1", "b2", "c3", "d4", "e5"]          # default: file order
+    s1 = [r["video_id"] for r in hv.read_splits(p1, ["test"], 2026110701)]
+    s2 = [r["video_id"] for r in hv.read_splits(p2, ["test"], 2026110701)]
+    assert s1 == s2                                         # file order does not matter
+    assert s1 == sorted(s1, key=lambda v: hv.seeded_rank(2026110701, v))
+    assert sorted(s1) == plain                              # same rows, only reordered

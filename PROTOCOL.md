@@ -276,6 +276,11 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - At about 08:50 IST the four local commits were rewritten before anything was pushed. Tool attribution lines were taken out of the commit messages, and absolute local paths in `results/cli_smoke_real_ref.json` and `results/v2_tuning.json` were made relative. No code file changed, and the frozen SHA-256 values above still hold. The commits are now 4cd37fd, ef1d27e (tag `extractor-v2`), be60dff and 273f86b; they were 598aad3, ad9c54f, 442f848 and 9ae56e5.
   - Section 14 step 3 now fixes the harvest order (threshold-half negatives, then Test in row order, then report-half negatives). It was added because downloads are slower than planned, so the gate will see only part of the Test split.
 
+- **7 Nov 2026, 10:00 IST, after approval. Test harvest order (section 14 step 3).** No Test audio or real negative audio had been downloaded, and no Test result had been computed or seen.
+  - Section 14 step 3 says the Test streams are harvested "in their `data/splits.csv` row order (the seeded random order of section 5)". That is wrong. `scripts/make_splits.py` writes the rows sorted by split, half, release time and video ID, so the row order is date order. Harvesting in that order would take the oldest streams first, and the streams finished by the gate would not be a random sample.
+  - Fix: the Test harvest runs `scripts/harvest.py --order-seed 2026110701`. It processes the Test rows in ascending order of SHA-256("2026110701:" + video ID), which depends only on the ID and the split seed. With this order, the Test streams finished by the gate are a random sample of the Test split, as section 14 intends. `data/splits.csv` is unchanged.
+  - The problem was found by checking the evaluation code against this file, before the Test harvest started.
+
 ## 20. How to check this file
 
 From the repo root:
