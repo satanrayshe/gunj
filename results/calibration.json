@@ -1,5 +1,5 @@
 {
- "written_ist": "2026-11-07T08:27:01+05:30",
+ "written_ist": "2026-11-07T22:35:20+05:30",
  "script": "scripts/calibrate_latency.py",
  "protocol": "PROTOCOL.md section 6 (draft, not yet approved)",
  "scope": "+-1 day around release time in IST",
@@ -8,7 +8,7 @@
  "max_abs_o_s": 600,
  "range_flag_s": 60,
  "threshold_file": "results/threshold.json",
- "tau_available": false,
+ "tau_available": true,
  "primary_extractor": "v2",
  "n_calibration_streams": 20,
  "n_harvested": 19,
@@ -36,35 +36,32 @@
     -18,
     -43006
    ],
-   "tau": null,
-   "status": "PENDING: tau for (60 min, +-1 day) is not set yet (results/threshold.json missing)",
-   "L_s": null,
-   "provisional": {
-    "what": "PROVISIONAL, |o| <= 600 s only, no tau condition. Not L.",
-    "n": 8,
+   "tau": 0.233444640602249,
+   "counted": {
+    "what": "counted: confidence >= tau and |o| <= 600 s",
+    "n": 5,
     "values_s": [
-     -18,
      -4,
      0,
      2,
      2,
-     5,
-     18,
-     42
+     5
     ],
     "median_s": 2.0,
     "median_rounded_s": 2,
     "iqr_s": [
-     -1.0,
-     8.25
+     0.0,
+     2.0
     ],
     "range_s": [
-     -18.0,
-     42.0
+     -4.0,
+     5.0
     ],
-    "range_width_s": 60.0,
+    "range_width_s": 9.0,
     "constant_latency_holds": true
-   }
+   },
+   "L_s": 2,
+   "status": "calibrated"
   },
   "v1": {
    "n_streams": 19,
@@ -89,33 +86,29 @@
     -11,
     64931
    ],
-   "tau": null,
-   "status": "PENDING: tau for (60 min, +-1 day) is not set yet (results/threshold.json missing)",
-   "L_s": null,
-   "provisional": {
-    "what": "PROVISIONAL, |o| <= 600 s only, no tau condition. Not L.",
-    "n": 6,
+   "tau": 0.11344123434606958,
+   "counted": {
+    "what": "counted: confidence >= tau and |o| <= 600 s",
+    "n": 2,
     "values_s": [
-     -23,
-     -11,
-     -3,
-     -2,
      1,
      2
     ],
-    "median_s": -2.5,
-    "median_rounded_s": -2,
+    "median_s": 1.5,
+    "median_rounded_s": 2,
     "iqr_s": [
-     -9.0,
-     0.25
+     1.25,
+     1.75
     ],
     "range_s": [
-     -23.0,
+     1.0,
      2.0
     ],
-    "range_width_s": 25.0,
+    "range_width_s": 1.0,
     "constant_latency_holds": true
-   }
+   },
+   "L_s": 0,
+   "status": "latency not calibrated (fewer than 3 streams count)"
   },
   "naive": {
    "n_streams": 19,
@@ -140,31 +133,28 @@
     59325,
     -48892
    ],
-   "tau": null,
-   "status": "PENDING: tau for (60 min, +-1 day) is not set yet (results/threshold.json missing)",
-   "L_s": null,
-   "provisional": {
-    "what": "PROVISIONAL, |o| <= 600 s only, no tau condition. Not L.",
-    "n": 4,
+   "tau": 0.09920365133532673,
+   "counted": {
+    "what": "counted: confidence >= tau and |o| <= 600 s",
+    "n": 1,
     "values_s": [
-     -34,
-     1,
-     2,
      3
     ],
-    "median_s": 1.5,
-    "median_rounded_s": 2,
+    "median_s": 3.0,
+    "median_rounded_s": 3,
     "iqr_s": [
-     -7.75,
-     2.25
-    ],
-    "range_s": [
-     -34.0,
+     3.0,
      3.0
     ],
-    "range_width_s": 37.0,
+    "range_s": [
+     3.0,
+     3.0
+    ],
+    "range_width_s": 0.0,
     "constant_latency_holds": true
-   }
+   },
+   "L_s": 0,
+   "status": "latency not calibrated (fewer than 3 streams count)"
   }
  },
  "streams": [
