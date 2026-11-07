@@ -273,6 +273,31 @@ def test_cut_traces_from_synthetic_audio():
     assert np.array_equal(edited[a:a + 1000], ex[a + c["length_s"] * sr:a + c["length_s"] * sr + 1000])
 
 
+def test_synthetic_negatives_generated_not_downloaded(tmp_path):
+    rows = [dict(row("SYN-NOISE-01", split="negative_synthetic", duration=3900, lengths="10"),
+                 synthetic_seed="123"),
+            dict(row("SYN-WALK-01", split="negative_synthetic", duration=3900, lengths="10"),
+                 synthetic_seed="456")]
+    repo = make_repo(tmp_path, rows)
+    with open(repo / "data" / "splits.csv", "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=SPLIT_FIELDS + ["synthetic_seed"])
+        w.writeheader()
+        for r in rows:
+            w.writerow(r)
+    fake = FakeDownloader()
+    assert hv.run(args_for("--cuts", splits="negative_synthetic"), downloader=fake,
+                  sleep=lambda s: None, repo=repo, log=LOG) == hv.EXIT_OK
+    assert fake.calls == {}                                   # nothing sent to YouTube
+    m = manifest(repo)
+    for vid in ("SYN-NOISE-01", "SYN-WALK-01"):
+        assert m[vid]["status"] == "done" and m[vid]["source_format"] == "SYNTHETIC"
+        assert float(m[vid]["seconds"]) == 3900.0 and m[vid]["cuts"] == "0"
+        meta = hv.read_npz_meta(repo / m[vid]["trace_path"])
+        assert meta["SYNTHETIC"] is True and "naive__x10" in meta["traces"]
+    a = hv.synthetic_negative_audio("SYN-WALK-01", 456)
+    assert a.shape == (3_900_000,) and np.array_equal(a, hv.synthetic_negative_audio("SYN-WALK-01", 456))
+
+
 def test_no_cuts_outside_cut_splits_or_short_audio():
     sr = 1000
     walk = synthetic_enf_walk(1001, seed=7)                                    # SYNTHETIC

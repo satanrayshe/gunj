@@ -44,9 +44,18 @@ the manifest row, code hashes and per-trace metadata.
 
 No trace is searched here. Test search results stay blind (PROTOCOL 14).
 
-Example (Dev):
-  .venv\\Scripts\\python.exe scripts\\harvest.py --splits dev --extractors v1,naive
-      --keep-audio-splits dev
+SYNTHETIC negatives (split negative_synthetic, IDs SYN-NOISE-xx and
+SYN-WALK-xx) are generated with gunj.synthetic from each row's
+synthetic_seed (PROTOCOL section 5). They are never downloaded, and the
+downloader refuses anything that is not an 11-character YouTube ID.
+
+Examples:
+  Dev:   .venv\\Scripts\\python.exe scripts\\harvest.py --splits dev
+             --extractors v1,naive --keep-audio-splits dev
+  Test + negatives (only after Shrey approves PROTOCOL.md):
+         .venv\\Scripts\\python.exe scripts\\harvest.py
+             --splits test,negative,negative_synthetic --extractors v2,v1,naive
+             --keep-audio-splits dev --cuts
 """
 from __future__ import annotations
 
@@ -394,6 +403,26 @@ def ffmpeg_exe() -> str:
     return exe
 
 
+def is_synthetic_row(r: dict) -> bool:
+    return r.get("split") == "negative_synthetic" or (r.get("video_id") or "").startswith("SYN-")
+
+
+def synthetic_negative_audio(video_id: str, seed: int) -> np.ndarray:
+    """SYNTHETIC negative audio, 3,900 s at 1 kHz (PROTOCOL section 5).
+
+    SYN-NOISE-xx: SYNTHETIC white Gaussian noise, standard deviation 1.
+    SYN-WALK-xx: synthetic_hum(synthetic_enf_walk(3901, seed), sr=1000,
+    seed=seed): SYNTHETIC hum following a SYNTHETIC grid that is not India's.
+    """
+    from gunj.synthetic import synthetic_enf_walk, synthetic_hum
+    n_s = DOWNLOAD_END_S
+    if video_id.startswith("SYN-NOISE-"):
+        return np.random.default_rng(int(seed)).standard_normal(n_s * SR).astype(np.float32)
+    if video_id.startswith("SYN-WALK-"):
+        return synthetic_hum(synthetic_enf_walk(n_s + 1, seed=int(seed)), sr=SR, seed=int(seed))
+    raise ValueError(f"unknown SYNTHETIC negative id {video_id!r}")
+
+
 def to_1k_wav(src: Path, dst: Path, max_s: float = DOWNLOAD_END_S) -> None:
     """Decode src to 1 kHz mono 16-bit PCM WAV (first max_s seconds)."""
     tmp = dst.with_name(dst.name + ".tmp.wav")
@@ -479,6 +508,8 @@ class YtDlpDownloader:
 
     def fetch(self, video_id: str, outdir: Path) -> dict:
         from yt_dlp.utils import DownloadError, ExtractorError, download_range_func
+        if not re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id or ""):
+            raise Unavailable(f"{video_id!r} is not a YouTube video ID; nothing was requested")
         outdir.mkdir(parents=True, exist_ok=True)
         report = outdir / "ffreport.log"
         log = self.log
@@ -816,6 +847,28 @@ def process_video(r: dict, prev: dict | None, ctx: Ctx) -> dict:
     work = ctx.media_tmp / f"{vid}.{ctx.run_id}"
     t0 = time.time()
     try:
+        if is_synthetic_row(r):
+            # SYNTHETIC negative: generated here, never downloaded, never kept.
+            audio = synthetic_negative_audio(vid, int(r["synthetic_seed"]))
+            row.update(source_sha256="", source_format="SYNTHETIC", source_ext="", source_abr_kbps="",
+                       source_protocol="generated (gunj.synthetic)", n_requests="0",
+                       seconds=f"{audio.shape[0] / SR:.3f}",
+                       audio_sha256=hashlib.sha256(np.ascontiguousarray(audio, dtype="<f4").tobytes()).hexdigest())
+            arrays, tmeta = build_traces(audio, SR, vid, lengths, ctx.extractors, ctx.primary, False, log=log)
+            del audio
+            row["cuts"] = "0"
+            row.update(hum_fields(tmeta))
+            row["trace_path"] = rel(trace_path, ctx.repo)
+            row["status"], row["reason"], row["retryable"] = "done", "SYNTHETIC negative (float32 audio hash)", ""
+            row["finished_utc"] = now_utc()
+            meta = {"video_id": vid, "split": split, "complete": True, "manifest_row": row, "sr": SR,
+                    "SYNTHETIC": True, "synthetic_seed": int(r["synthetic_seed"]),
+                    "excerpt_start_s": EXCERPT_START_S, "excerpt_lengths_min": lengths,
+                    "release_timestamp": r.get("release_timestamp"),
+                    "note": "SYNTHETIC negative generated with gunj.synthetic (PROTOCOL section 5).", **tmeta}
+            save_npz_atomic(trace_path, arrays, meta)
+            log.info("%s: SYNTHETIC negative done, trace %s", vid, rel(trace_path, ctx.repo))
+            return row
         pcm = None
         src_info = {}
         if (prev and prev.get("audio_sha256") and flac_path.exists()):
