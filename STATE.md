@@ -44,7 +44,7 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 ## Deviations so far
 - 10:00 IST: the Test harvest uses `--order-seed 2026110701`, because `data/splits.csv` rows are in date order (PROTOCOL section 19). The runner that started at 09:05 lacked the flag, so it was stopped at 09:57. Its neg_threshold harvester was left running, and a watcher starts the updated `run_stage3.ps1` when that harvester ends.
 - 10:18 to 11:38 IST: the laptop lost its internet connection. Every download failed and a premature tau was written and then deleted (PROTOCOL section 19, 11:50).
-- 12:15 IST: harvester fixes from a review (rate-limit wording, private videos, ffmpeg segment skips, network waits, stop after 4 unexplained failures). Outage-charged attempts were given back by `scripts/repair_outage_attempts.py` (PROTOCOL section 19, 12:15; commit 3936ca8). Runner and set_threshold restarted at 12:18 (runner pid 26312, set_threshold pid 26940).
+- 12:15 IST: harvester fixes from a review (rate-limit wording, private videos, ffmpeg segment skips, network waits, stop after 4 unexplained failures). Outage-charged attempts were given back by `scripts/repair_outage_attempts.py` (PROTOCOL section 19, 12:15; commit 3936ca8). Runner and set_threshold restarted at 12:18 (runner pid 26312, set_threshold pid 58684 since 12:30, on commit 1e26989).
 - If set_threshold exits 2 saying a real threshold negative "used up its retries", it is the coordinator's decision: retry that stream, or rerun with `--accept-excluded` and record the decision in PROTOCOL section 19.
 - If the harvester exits 5 (4 unexplained failures in a row), read `logs/harvest_<step>.log` before restarting: it may be a new YouTube limit message.
 
