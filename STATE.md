@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 10:00 IST, by the coordinator session.
+Last updated: 7 Nov 2026, 12:20 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -43,6 +43,10 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 
 ## Deviations so far
 - 10:00 IST: the Test harvest uses `--order-seed 2026110701`, because `data/splits.csv` rows are in date order (PROTOCOL section 19). The runner that started at 09:05 lacked the flag, so it was stopped at 09:57. Its neg_threshold harvester was left running, and a watcher starts the updated `run_stage3.ps1` when that harvester ends.
+- 10:18 to 11:38 IST: the laptop lost its internet connection. Every download failed and a premature tau was written and then deleted (PROTOCOL section 19, 11:50).
+- 12:15 IST: harvester fixes from a review (rate-limit wording, private videos, ffmpeg segment skips, network waits, stop after 4 unexplained failures). Outage-charged attempts were given back by `scripts/repair_outage_attempts.py` (PROTOCOL section 19, 12:15; commit 3936ca8). Runner and set_threshold restarted at 12:18 (runner pid 26312, set_threshold pid 26940).
+- If set_threshold exits 2 saying a real threshold negative "used up its retries", it is the coordinator's decision: retry that stream, or rerun with `--accept-excluded` and record the decision in PROTOCOL section 19.
+- If the harvester exits 5 (4 unexplained failures in a row), read `logs/harvest_<step>.log` before restarting: it may be a new YouTube limit message.
 
 ## Before any push (Shrey runs the push)
 - `git log --format=%B | grep -ci 'cl[a]ude'` and `git grep -i -l 'cl[a]ude'` must both come back empty, apart from one known false hit: a physicist's name in a lecture title in `data/meta_flat/theory_tifr.json` (YouTube metadata, not attribution). Commits carry no Co-Authored-By trailer.
