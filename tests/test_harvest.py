@@ -348,3 +348,74 @@ def test_network_down_rows_are_retried_past_max_attempts():
     assert st.failed_is_final(other)
     assert not st.failed_is_final(young)
     assert st.failed_is_final(gone)
+
+
+@pytest.fixture(autouse=True)
+def _network_is_up(monkeypatch):
+    """No test in this module touches the real network probe."""
+    monkeypatch.setattr(hv, "network_up", lambda *a, **k: True)
+    monkeypatch.setattr(hv, "ctx_network_up", lambda: True)
+
+
+def test_block_and_unavailable_wording():
+    rate = ("ERROR: [youtube] abcdefghijk: This content isn't available, try again later. The current "
+            "session has been rate-limited by YouTube for up to an hour.")
+    assert hv.BLOCK_RE.search(rate)
+    assert hv.BLOCK_RE.search("Sign in to confirm you're not a bot")
+    assert hv.BLOCK_RE.search("HTTP Error 429: Too Many Requests")
+    private = ("ERROR: [youtube] abcdefghijk: Private video. Sign in if you've been granted access to "
+               "this video. Use --cookies-from-browser or --cookies for the authentication.")
+    assert not hv.BLOCK_RE.search(private) and hv.UNAVAILABLE_RE.search(private)
+    age = "Sign in to confirm your age. This video may be inappropriate for some users."
+    assert not hv.BLOCK_RE.search(age) and hv.UNAVAILABLE_RE.search(age)
+    assert not hv.BLOCK_RE.search("[hls] Failed to open segment 429 of playlist 0")
+    assert hv.FF_429_EXIT_RE.search("ERROR: ffmpeg exited with code 3335375624")
+    assert not hv.FF_429_EXIT_RE.search("ERROR: ffmpeg exited with code 3753488571")
+    for s in ("[WinError 10051] A socket operation was attempted to an unreachable network",
+              "Failed to resolve hostname rr1---sn.googlevideo.com: No such host is known."):
+        assert hv.NETWORK_DOWN_RE.search(s)
+    for s in ("Read timed out", "[SSL: UNEXPECTED_EOF_WHILE_READING]", "connection reset by peer"):
+        assert not hv.NETWORK_DOWN_RE.search(s)
+
+
+def test_ffreport_scan(tmp_path):
+    rep = tmp_path / "ffreport.log"
+    rep.write_text("ffmpeg started on 2026-11-07\nCommand line:\n"
+                   '"ffmpeg" -headers "X-Seg: 429" -i "https://x.googlevideo.com/a?b=1"\n'
+                   "[hls @ 0x1] Opening 'https://x/seg/429' for reading\n"
+                   "[hls @ 0x1] Failed to open segment 429 of playlist 0\n", encoding="utf-8")
+    s = hv._ffreport_scan(rep)
+    assert not s["block"] and s["problems"] and "googlevideo" not in s["summary"]
+    rep.write_text("Command line:\n\"ffmpeg\" -i x\n[https @ 0x2] HTTP error 429 Too Many Requests\n"
+                   "Server returned 429 Too Many Requests\n", encoding="utf-8")
+    assert hv._ffreport_scan(rep)["block"]
+    rep.write_text("Command line:\n\"ffmpeg\" -i x\nsize=  1kB time=01:05:00.00\n", encoding="utf-8")
+    s = hv._ffreport_scan(rep)
+    assert not s["block"] and not s["problems"]
+
+
+def test_wait_for_network_needs_stable_probes():
+    seq = iter([True, False, True, True, True])
+    slept = []
+    hv.wait_for_network(LOG, probe=lambda: next(seq), sleep=slept.append, wait_s=1, stable=3)
+    assert len(slept) == 4          # up, (down), up, up, up: the flap resets the count
+
+
+def test_ambiguous_failure_with_network_down_is_not_charged(tmp_path, monkeypatch):
+    repo = make_repo(tmp_path, [row("vidN", split="test")])
+    fake = FakeDownloader(fail_once={"vidN"})
+    probes = iter([False])
+    monkeypatch.setattr(hv, "ctx_network_up", lambda: next(probes, True))
+    assert hv.run(args_for(splits="test"), downloader=fake, sleep=lambda s: None, repo=repo, log=LOG) == hv.EXIT_OK
+    m = manifest(repo)["vidN"]
+    assert fake.calls["vidN"] == 2            # retried in the same run once the network was back
+    assert m["status"] == "done" and m["attempts"] == "1"
+
+
+def test_stops_after_unexplained_failures_in_a_row(tmp_path):
+    vids = [f"vid{i}" for i in range(6)]
+    repo = make_repo(tmp_path, [row(v, split="test") for v in vids])
+    fake = FakeDownloader(fail_once=set(vids))
+    rc = hv.run(args_for(splits="test"), downloader=fake, sleep=lambda s: None, repo=repo, log=LOG)
+    assert rc == hv.EXIT_SUSPECT
+    assert sum(fake.calls.values()) == hv.MAX_CONSECUTIVE_UNEXPLAINED

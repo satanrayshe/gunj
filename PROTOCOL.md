@@ -286,6 +286,17 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - `scripts/set_threshold.py` counted every "failed" row as final, so at 10:35 IST it wrote a τ from 1 real and 20 SYNTHETIC threshold-half negatives. That τ was deleted before it was committed or used, and `gunj/config.json` was restored. Its log line showed the naive extractor's τ values; no Test data existed.
   - Fixes: a retryable failure is final only once the harvester will never retry it. The harvester checks a DNS lookup before each download and waits while the network is down. A failure caused by the laptop's network being down is not charged an attempt, and the stream is tried again once the network returns. The τ rule itself is unchanged.
 
+- **7 Nov 2026, 12:40 IST. Harvester fixes from a code review, and outage-charged attempts given back (sections 10, 15 and 17).** No Test audio had been obtained, and no Test search had been run. Only 1 real threshold-half negative was done.
+  - A read-only review of the harvester and the evaluation scripts found these defects, each confirmed by a second check. All were fixed before any further download:
+    - YouTube's rate-limit message ("The current session has been rate-limited by YouTube") was not treated as a block. Now it is.
+    - A private video's error ("Sign in if you've been granted access") was wrongly treated as a bot check. It is now "unavailable", and so is an age check.
+    - ffmpeg can skip an HLS segment that fails, still exit 0, and so splice the audio, which would shift every time in the stream. ffmpeg's report is now read in full: any skipped or failed segment fails the download (retryable), and an HTTP 429 seen by ffmpeg is a block. The completeness check is now at most 2 s short of the expected length (it was 2% + 2 s). Every stream already done was within 0.033 s.
+    - Network loss is now also recognised from Windows and ffmpeg wordings, and from a probe run right after any other failure. The probe is a DNS lookup plus a TCP connect to a public DNS resolver; nothing is sent to YouTube. While the network is down, the harvester waits for 3 good probes in a row and retries the same stream, up to 20 times.
+    - The harvester stops (exit 5) after 4 real downloads in a row fail for reasons no pattern explains, in case YouTube limits us under new wording.
+    - The runner gives the threshold-half negatives 3 passes. `scripts/set_threshold.py` refuses to set τ while any real threshold-half negative has used up its retries for a non-permanent reason, unless it is run with `--accept-excluded` and the decision is recorded here.
+  - The outage failures between 10:15 and 11:40 IST had each been charged an attempt. `scripts/repair_outage_attempts.py` gave them back: it counts only failures outside that window that are not network-down. 182 rows changed (`data/attempt_repair_20261107.json`). zQSjO3YREkM keeps 1 charged attempt, for its 11:43 ffmpeg failure; its 10:18 "short audio" failure falls inside the window.
+  - The rules for τ, L, hits and the gate are unchanged.
+
 ## 20. How to check this file
 
 From the repo root:

@@ -116,6 +116,7 @@ def readiness(rows: list, manifest: dict, repo: Path) -> tuple:
                 done.append((r, m))
         else:
             excluded.append({"video_id": r["video_id"], "split": r["split"], "status": st,
+                             "retryable": m.get("retryable", ""),
                              "reason": m.get("reason", "")})
     return not_ready, done, excluded
 
@@ -240,6 +241,9 @@ def build_parser() -> argparse.ArgumentParser:
                          "(exit 3 if the harvest is blocked)")
     ap.add_argument("--poll-seconds", type=int, default=120)
     ap.add_argument("--force", action="store_true", help="overwrite a committed threshold.json (a deviation)")
+    ap.add_argument("--accept-excluded", action="store_true",
+                    help="set tau even though some real threshold-half rows used up their retries "
+                         "(record the decision in PROTOCOL section 19)")
     ap.add_argument("--log", default="logs/set_threshold.log")
     return ap
 
@@ -294,6 +298,14 @@ def _run(args, repo: Path, log) -> int:
             log.error("REFUSING to set tau: %d threshold-half row(s) are not done or failed:", len(not_ready))
             for x in not_ready:
                 log.error("  %s (%s): %s", x["video_id"], x["split"], x["status"])
+            return 2
+        worn_out = [x for x in excluded if x["split"] == "negative" and x.get("retryable") == "True"]
+        if worn_out and not args.accept_excluded:
+            log.error("REFUSING to set tau: %d real threshold-half negative(s) used up their retries "
+                      "(not a permanent failure). Retry them, or rerun with --accept-excluded and record "
+                      "the decision in PROTOCOL section 19:", len(worn_out))
+            for x in worn_out:
+                log.error("  %s: %s", x["video_id"], x.get("reason", ""))
             return 2
         if not args.force and ec.is_under(out_path, repo):
             relp = ec.rel(out_path, repo)

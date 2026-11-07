@@ -6,7 +6,8 @@
 #
 # Steps: SYNTHETIC negatives (made locally, nothing is downloaded), threshold-half real negatives,
 # Test in the seeded order of PROTOCOL section 19 (10:00 deviation) with the M5 cuts, then report-half real negatives.
-# It stops at the first bot check / HTTP 429 (harvester exit 3) or if another harvester holds the lock (exit 4).
+# It stops at the first bot check / HTTP 429 (harvester exit 3), if another harvester holds the lock (exit 4),
+# or after 4 unexplained download failures in a row (exit 5).
 
 $ErrorActionPreference = 'Stop'
 Set-Location (Split-Path $PSScriptRoot -Parent)
@@ -24,18 +25,20 @@ $steps = @(
     @{ name = 'synthetic';     args = @('--splits', 'negative_synthetic', '--extractors', 'v2,v1,naive') },
     @{ name = 'neg_threshold'; args = @('--splits', 'negative', "--only=$thr", '--extractors', 'v2,v1,naive') },
     @{ name = 'neg_threshold'; args = @('--splits', 'negative', "--only=$thr", '--extractors', 'v2,v1,naive') },
+    @{ name = 'neg_threshold'; args = @('--splits', 'negative', "--only=$thr", '--extractors', 'v2,v1,naive') },
     @{ name = 'test';          args = @('--splits', 'test', '--extractors', 'v2,v1,naive', '--cuts', '--order-seed', '2026110701') },
     @{ name = 'neg_report';    args = @('--splits', 'negative', '--extractors', 'v2,v1,naive') },
     @{ name = 'test';          args = @('--splits', 'test', '--extractors', 'v2,v1,naive', '--cuts', '--order-seed', '2026110701') },
     @{ name = 'neg_report';    args = @('--splits', 'negative', '--extractors', 'v2,v1,naive') }
 )
-# Each step appears twice: the second pass retries streams whose first try failed in a retryable way.
+# Steps repeat (threshold negatives 3 times, the rest twice): later passes retry streams whose
+# earlier try failed in a retryable way. Threshold negatives get 3 passes because tau waits for them.
 
 foreach ($s in $steps) {
     "$(Get-Date -Format s) start $($s.name)" | Add-Content logs\run_stage3.log
     & $py scripts\harvest.py @($s.args) --log "logs\harvest_$($s.name).log"
     $code = $LASTEXITCODE
     "$(Get-Date -Format s) end $($s.name) exit $code" | Add-Content logs\run_stage3.log
-    if ($code -eq 3 -or $code -eq 4) { exit $code }
+    if ($code -eq 3 -or $code -eq 4 -or $code -eq 5) { exit $code }
 }
 "$(Get-Date -Format s) all steps finished" | Add-Content logs\run_stage3.log

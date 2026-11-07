@@ -102,25 +102,42 @@ SLEEP_RANGE_S = (10.0, 20.0)     # between downloads
 MAX_ATTEMPTS = 3
 MIN_AUDIO_FRACTION = 0.98
 
-EXIT_OK, EXIT_ERROR, EXIT_BLOCKED, EXIT_LOCKED = 0, 1, 3, 4
+EXIT_OK, EXIT_ERROR, EXIT_BLOCKED, EXIT_LOCKED, EXIT_SUSPECT = 0, 1, 3, 4, 5
+# Stop after this many real downloads in a row fail for reasons no pattern explains:
+# it may be a YouTube limit with new wording (PROTOCOL section 19, 12:40 IST).
+MAX_CONSECUTIVE_UNEXPLAINED = 4
+NET_RETRIES = 20          # in-run retries of one stream while the laptop's network is down
 
 # Same title screen as scripts/make_splits.py (COURT_RE).
 COURT_RE = re.compile(
     r"\bcourts?\b|high\s*court|supreme\s*court|judicial|judiciary|judge|tribunal|"
     r"\blitigation\b|e-?court|न्यायालय|अदालत|न्यायिक", re.I)
 BLOCK_RE = re.compile(
-    r"not a bot|confirm you.?re not|captcha|unusual traffic|too many requests|"
-    r"http error 429|\b429\b|sign.?in|log.?in to|/sorry/|consent\.youtube", re.I)
+    r"not a bot|confirm you.?re not|sign in to confirm(?! your age)|captcha|unusual traffic|"
+    r"too many requests|http error 429|status 429|429 too many|rate.?limited|"
+    r"isn.?t available,? try again later|/sorry/|consent\.youtube", re.I)
+# ffmpeg report lines: narrower, because "Failed to open segment 429" names a segment number.
+FF_BLOCK_RE = re.compile(r"http error 429|server returned 429|too many requests", re.I)
+# yt-dlp's "ffmpeg exited with code N" for AVERROR_HTTP_TOO_MANY_REQUESTS (-959591672 unsigned).
+FF_429_EXIT_RE = re.compile(r"ffmpeg exited with code (3335375624|-959591672)\b")
+# ffmpeg skipped or lost media: the audio would be spliced, so the download is not accepted.
+FF_PROBLEM_RE = re.compile(
+    r"failed to open segment|failed too many times, skipping|stream ends prematurely|"
+    r"http error \d{3}|server returned \d{3}|failed to resolve hostname|no such host is known", re.I)
 # The laptop's own connection is down (DNS or no route). Not a YouTube response:
 # the row is not charged an attempt, and the run waits for the network to return.
 NETWORK_DOWN_RE = re.compile(
     r"getaddrinfo failed|errno 1100[1-4]|name or service not known|"
     r"temporary failure in name resolution|nodename nor servname|"
-    r"network is unreachable|no route to host", re.I)
+    r"network is unreachable|no route to host|unreachable network|unreachable host|dead network|"
+    r"winerror 1005[01]|winerror 10065|error number -1005[01]|no such host is known|"
+    r"failed to resolve hostname|network down \(checked after the error\)", re.I)
+NETWORK_TCP_PROBES = (("one.one.one.one", 443), ("dns.google", 443))   # never YouTube
 NETWORK_PROBE_HOST = "www.youtube.com"
 NETWORK_WAIT_S = 30
 UNAVAILABLE_RE = re.compile(
     r"private video|members.only|join this channel|video unavailable|has been removed|"
+    r"confirm your age|age.restricted|"
     r"terminated|copyright|is not available|no longer available|requested format is not available|"
     r"no video formats|does not exist", re.I)
 URL_RE = re.compile(r"https?://\S+")
@@ -565,7 +582,7 @@ class YtDlpDownloader:
             rep = None
         old_rep = os.environ.get("FFREPORT")
         if rep and ":" not in rep:
-            os.environ["FFREPORT"] = f"file={rep}:level=16"
+            os.environ["FFREPORT"] = f"file={rep}:level=24"
         ydl = self._make_ydl(params)
         try:
             with ydl:
@@ -573,12 +590,17 @@ class YtDlpDownloader:
         except Blocked:
             raise
         except (DownloadError, ExtractorError) as e:
+            full = str(e)
             msg = sanitize(e)
-            ff = _ffreport_errors(report)
-            if BLOCK_RE.search(msg) or BLOCK_RE.search(ff):
+            ffs = _ffreport_scan(report)
+            ff = ffs["summary"]
+            if BLOCK_RE.search(full) or ffs["block"] or FF_429_EXIT_RE.search(full):
                 raise Blocked(msg + (" | ffmpeg: " + ff if ff else "")) from e
-            if UNAVAILABLE_RE.search(msg):
+            if UNAVAILABLE_RE.search(full):
                 raise Unavailable(msg) from e
+            m_net = NETWORK_DOWN_RE.search(full + " " + " ".join(ffs["problems"]))
+            if m_net and not NETWORK_DOWN_RE.search(msg):
+                msg = "network: " + m_net.group(0) + " | " + msg
             raise DownloadFailed(msg + (" | ffmpeg: " + ff if ff else "")) from e
         except Exception as e:                       # network and other errors
             raise DownloadFailed(f"{type(e).__name__}: {sanitize(e)}") from e
@@ -587,9 +609,18 @@ class YtDlpDownloader:
                 os.environ.pop("FFREPORT", None)
             else:
                 os.environ["FFREPORT"] = old_rep
-        ff = _ffreport_errors(report)
-        if BLOCK_RE.search(ff):
+        ffs = _ffreport_scan(report)
+        ff = ffs["summary"]
+        if ffs["block"]:
             raise Blocked("ffmpeg: " + ff)
+        if ffs["problems"]:
+            # ffmpeg exits 0 after skipping a segment; spliced audio would shift every time.
+            p0 = (info.get("requested_downloads") or [{}])[0].get("filepath")
+            if p0:
+                Path(p0).unlink(missing_ok=True)
+            m_net = NETWORK_DOWN_RE.search(" ".join(ffs["problems"]))
+            raise DownloadFailed(("network: " + m_net.group(0) + " | " if m_net else "")
+                                 + "ffmpeg skipped or lost media: " + ff)
         reqs = info.get("requested_downloads") or []
         path = Path(reqs[0]["filepath"]) if reqs and reqs[0].get("filepath") else None
         if path is None or not path.exists():
@@ -606,16 +637,42 @@ class YtDlpDownloader:
                 "title": info.get("title") or "", "duration": info.get("duration")}
 
 
-def _ffreport_errors(report: Path) -> str:
-    """Error lines from an ffmpeg report, without the command line (it holds URLs)."""
+def _ffreport_lines(report: Path) -> list:
+    """Lines of an ffmpeg report without the command line (it holds URLs and headers)."""
     if not report.exists():
-        return ""
+        return []
     try:
         lines = report.read_text(encoding="utf-8", errors="replace").splitlines()
     except OSError:
-        return ""
-    keep = [ln for ln in lines if ln.strip() and not ln.startswith(("Command line", '"', "ffmpeg started"))]
-    return sanitize(" ".join(keep[-6:]))
+        return []
+    out, skip_next = [], False
+    for ln in lines:
+        if skip_next:
+            skip_next = False
+            continue
+        if ln.startswith("Command line"):
+            skip_next = True          # the command itself is on the next line
+            continue
+        if not ln.strip() or ln.startswith(("ffmpeg started", "Report written")):
+            continue
+        out.append(URL_RE.sub("<url>", ln))
+    return out
+
+
+def _ffreport_scan(report: Path) -> dict:
+    """Whole-report scan. block: ffmpeg saw HTTP 429. problems: lines showing skipped or lost
+    media. summary: the matched lines first, then the last lines, cut to 400 characters."""
+    lines = _ffreport_lines(report)
+    block = [ln for ln in lines if FF_BLOCK_RE.search(ln)]
+    problems = [ln for ln in lines if FF_PROBLEM_RE.search(ln)]
+    picked = block + [ln for ln in problems if ln not in block]
+    rest = [ln for ln in lines[-6:] if ln not in picked]
+    return {"block": bool(block), "problems": problems,
+            "summary": sanitize(" ".join(picked[:4] + rest))}
+
+
+def _ffreport_errors(report: Path) -> str:
+    return _ffreport_scan(report)["summary"]
 
 
 # ---------------------------------------------------------------- run state
@@ -919,7 +976,7 @@ def process_video(r: dict, prev: dict | None, ctx: Ctx) -> dict:
         row.update(src_info)
         seconds = pcm.shape[0] / SR
         expected = min(float(r.get("duration_s") or DOWNLOAD_END_S), DOWNLOAD_END_S)
-        if seconds < MIN_AUDIO_FRACTION * expected - 2:
+        if seconds < expected - 2.0:
             raise DownloadFailed(f"short audio: {seconds:.1f} s of {expected:.0f} s expected")
         row["seconds"] = f"{seconds:.3f}"
         row["audio_sha256"] = sha256_pcm(pcm)
@@ -956,6 +1013,8 @@ def process_video(r: dict, prev: dict | None, ctx: Ctx) -> dict:
         log.warning("%s: unavailable: %s", vid, row["reason"])
     except DownloadFailed as e:
         row.update(status="failed", reason=sanitize(e), retryable="True", finished_utc=now_utc())
+        if not NETWORK_DOWN_RE.search(row["reason"]) and not ctx_network_up():
+            row["reason"] = sanitize("network down (checked after the error) | " + row["reason"])
         if NETWORK_DOWN_RE.search(row["reason"]):
             row["attempts"] = str(int((prev or {}).get("attempts") or 0))   # not charged
             row["_network_down"] = True
@@ -972,21 +1031,46 @@ def process_video(r: dict, prev: dict | None, ctx: Ctx) -> dict:
     return row
 
 
+def ctx_network_up() -> bool:
+    """Probe used right after a failed download (patched in tests)."""
+    return network_up()
+
+
 def network_up(host: str = NETWORK_PROBE_HOST) -> bool:
-    """True if the laptop can resolve host. A DNS lookup only: nothing is sent to YouTube."""
+    """True if the laptop can resolve host and open a TCP connection to a public resolver.
+    Nothing is sent to YouTube. The TCP step catches a link that is down while the
+    Windows DNS cache still answers."""
     try:
         socket.getaddrinfo(host, 443)
-        return True
     except OSError:
         return False
+    for h, port in NETWORK_TCP_PROBES:
+        try:
+            with socket.create_connection((h, port), timeout=5):
+                return True
+        except OSError:
+            continue
+    return False
 
 
-def wait_for_network(log, probe=network_up, sleep=time.sleep, wait_s: float = NETWORK_WAIT_S) -> float:
-    """Block until probe() is true. Returns the seconds waited (0 if the network was up)."""
+def wait_for_network(log, probe=None, sleep=time.sleep, wait_s: float = NETWORK_WAIT_S,
+                     stable: int = 1) -> float:
+    """Block until probe() is true `stable` times in a row (wait_s apart after the first).
+    Returns the seconds waited (0 if the network was up at once)."""
+    probe = probe or network_up
     waited = 0.0
-    while not probe():
+    ok = 0
+    while True:
+        if probe():
+            ok += 1
+            if ok >= stable:
+                break
+            sleep(wait_s)
+            waited += wait_s
+            continue
+        ok = 0
         if waited % 600 < wait_s:
-            log.warning("network down (cannot resolve %s); waiting, checking every %d s",
+            log.warning("network down (DNS for %s or the TCP probe failed); waiting, checking every %d s",
                         NETWORK_PROBE_HOST, wait_s)
         sleep(wait_s)
         waited += wait_s
@@ -1040,6 +1124,7 @@ def run(args, downloader=None, sleep=time.sleep, repo: Path = REPO, log=None) ->
         actions = plan(rows, manifest, ctx.extractors, ctx.trace_root, ctx.keep_root,
                        ctx.keep_splits, args.cuts, ctx.cut_splits, repo)
         todo = [a for a in actions if a[1] == "process"]
+        consecutive = 0
         log.info("run %s: splits=%s extractors=%s primary=%s cuts=%s keep=%s: %d streams, %d to process",
                  ctx.run_id, splits, ctx.extractors, ctx.primary, args.cuts, sorted(ctx.keep_splits),
                  len(actions), len(todo))
@@ -1064,21 +1149,32 @@ def run(args, downloader=None, sleep=time.sleep, repo: Path = REPO, log=None) ->
                 continue
             log.info("%s [%s]: %s (%s)", vid, r["split"], (r.get("title") or "")[:70], why)
             if not is_synthetic_row(r):
-                wait_for_network(log)
+                wait_for_network(log, sleep=sleep)
             row = process_video(r, manifest.get(vid), ctx)
-            if row.pop("_network_down", False):
+            tries = 0
+            while row.pop("_network_down", False) and tries < NET_RETRIES:
+                tries += 1
                 manifest[vid] = row
                 write_manifest(ctx.manifest_path, manifest)
-                wait_for_network(log)
-                log.info("%s: network is back; trying this stream again once", vid)
+                wait_for_network(log, sleep=sleep, stable=3)
+                log.info("%s: network is back; trying this stream again (%d of %d)", vid, tries, NET_RETRIES)
                 row = process_video(r, manifest.get(vid), ctx)
-                row.pop("_network_down", None)
+            row.pop("_network_down", None)
             blocked_exc = row.pop("_blocked", None)
+            if not is_synthetic_row(r) and blocked_exc is None:
+                unexplained = (row.get("status") == "failed" and row.get("retryable") == "True"
+                               and not NETWORK_DOWN_RE.search(row.get("reason") or ""))
+                consecutive = consecutive + 1 if unexplained else 0
             manifest[vid] = row
             write_manifest(ctx.manifest_path, manifest)
             if blocked_exc is not None:
                 log.error("%s: BLOCKED: %s. Stopping the run (no retry, no workaround).", vid, row["reason"])
                 return EXIT_BLOCKED
+            if consecutive >= MAX_CONSECUTIVE_UNEXPLAINED:
+                log.error("%d real downloads in a row failed for reasons no pattern explains. Stopping "
+                          "in case YouTube is limiting us under new wording (exit %d). Check the log.",
+                          consecutive, EXIT_SUSPECT)
+                return EXIT_SUSPECT
         n_done = sum(1 for r, _, _ in actions if manifest.get(r["video_id"], {}).get("status") == "done")
         log.info("run %s finished: %d of %d streams done; yt-dlp requests this run: %s",
                  ctx.run_id, n_done, len(actions), getattr(downloader, "total_requests", "n/a"))
