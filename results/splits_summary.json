@@ -1,0 +1,502 @@
+{
+ "what": "Pre-registered splits drawn from metadata only (no audio existed). Written by scripts/make_splits.py.",
+ "seed": 2026110701,
+ "splits_csv": "data/splits.csv",
+ "splits_csv_sha256": "94d13272de9f2cc3c7548d89daf02f7bdeb2fad0d55a049ae4e4eb08859af781",
+ "splits_csv_rows": 265,
+ "inputs_sha256": {
+  "candidates_india.csv": "70601e34d936fdf7ce4f76255b8a8a6453cf53acd2938296b1195d01bdd80068",
+  "candidates_negatives.csv": "f0773d8ff954eb6db45ad0ab64d2841db85a142c8bbe7fa41f7f913f99c4c5ff",
+  "time_axis_check.json": "2738ccf6d8294ff6e4d4842a05db1adfbfb94a91a74729e9ca81025681c9251c",
+  "grid_1s_meta.json": "cd8c6a3d60e3f81076a09a3a383cc921675a4695ed3e8d12403ac3c0bf1a5d48",
+  "grid_1s_valid_u8.npy": "5ff79788957c54ea447f202ffcc3a19ff5932af38f8f417dba150294c76d8354",
+  "grid_1s_src_u8.npy": "c75f1ecd1514946cb2e11ba3e9b8c56296a12122c0f4d0d507472c56d5388a01"
+ },
+ "frozen_code_sha256": {
+  "gunj/extract.py": "ecca86510ed2dbcc7f8d71895949f3df09e0e80257e272d5537f8a806a6d998d",
+  "gunj/match.py": "8810a350065256c2785720a1211fadca4c3bbe37b67a8cf44c465b9ed16f7343",
+  "gunj/synthetic.py": "60ebdead2ce873bf2cf7d56c8d1dcfc7d2914dfc73381070852fad88bcdd4680",
+  "gunj/reference.py": "0a8db5dd8fdac0aa9bbc9bee57fb9f7382a31fd4fff26fd75f6bd3c1edf04a4b"
+ },
+ "rules": {
+  "min_duration_s": 1200,
+  "archive_cap_exclusion_s": 41400,
+  "download_s": 3900,
+  "excerpt_start_s": 120,
+  "excerpt_lengths_min": [
+   10,
+   20,
+   40,
+   60
+  ],
+  "long_stream_s": 3720,
+  "min_valid_fraction": 0.9,
+  "junction_margin_s": 600,
+  "label_stable_min_r": 0.5,
+  "drift_running_median_windows": 3,
+  "targets": {
+   "dev": 5,
+   "calibration": 20,
+   "test": 150,
+   "test_per_channel_cap": 10,
+   "negatives": 50,
+   "synthetic_per_kind": 20
+  },
+  "unverified_channels": {
+   "shirdi_sansthan": "official status not verified",
+   "maharashtra_assembly": "official status not verified",
+   "sansad_tv_lok_sabha": "official status not verified",
+   "prd_live_kerala": "picked from search results; official status not verified",
+   "kerala_iprd": "picked from search results; official status not verified",
+   "mayapur_tv": "some streams may come from outside Mayapur (location uncertain)"
+  },
+  "court_title_regex": "\\bcourts?\\b|high\\s*court|supreme\\s*court|judicial|judiciary|judge|tribunal|\\blitigation\\b|e-?court|न्यायालय|अदालत|न्यायिक"
+ },
+ "reference": {
+  "t0_ist": "2020-12-20 17:21:01",
+  "length_s": 84046325
+ },
+ "india_candidates": {
+  "total": 424,
+  "excluded_by_reason": {
+   "eligible": 396,
+   "possible_12h_archive_cap": 23,
+   "span_valid_below_90pct": 5
+  },
+  "eligible": 396,
+  "eligible_label_stable": 144,
+  "eligible_label_stable_long_verified": 96,
+  "eligible_channels": 30
+ },
+ "negative_candidates": {
+  "total": 116,
+  "excluded_by_reason": {
+   "eligible": 116
+  }
+ },
+ "drawing_stats": {
+  "test_skipped_channel_cap": 12,
+  "test_skipped_time_overlap": 6,
+  "negative_quotas": {
+   "UC7E-LYc1wivk33iyt5bR5zQ": 3,
+   "UCb7SgjCKL3uidBkY2kU1Sfw": 11,
+   "UCfFbE37IX0a-XAKE9yw-CPQ": 5,
+   "UChFTAv9bS-LJjXSVkFBkK5g": 11,
+   "UCjWJO7L2VZWFSgPApBDu51Q": 10,
+   "UCyhM9-y17fHHp-laYCEvT2g": 10
+  }
+ },
+ "shortfalls_and_notes": [],
+ "splits": {
+  "dev": {
+   "n": 5,
+   "by_channel": {
+    "Bihar Vidhan Sabha TV": 1,
+    "HBCSE-TIFR": 1,
+    "International Centre for Theoretical Sciences": 1,
+    "PIB India": 1,
+    "Somnath Temple - Official Channel": 1
+   },
+   "by_venue_type": {
+    "conference": 1,
+    "government event": 1,
+    "lecture": 1,
+    "legislature": 1,
+    "religious": 1
+   },
+   "by_licence": {
+    "Creative Commons Attribution license (reuse allowed)": 1,
+    "standard (no Creative Commons licence shown)": 4
+   },
+   "by_half": null,
+   "by_country": null,
+   "by_excerpt_lengths": {
+    "10;20;40;60": 5
+   },
+   "total_hours": 12.5,
+   "label_stable": 5,
+   "unverified_channel_streams": 0,
+   "by_ref_file": {
+    "freq_III.csv": 1,
+    "freq_V.csv": 4
+   },
+   "abs_label_drift_s": {
+    "median": 8.0,
+    "max": 77.0
+   },
+   "abs_label_drift_gt_30s": 1,
+   "min_ref_valid_frac_span": 1.0,
+   "n_channels": 5,
+   "max_per_channel": 1,
+   "n_long_ge_62min": 5,
+   "streams": [
+    {
+     "video_id": "0UQkgkLTkwU",
+     "channel": "Bihar Vidhan Sabha TV",
+     "venue_type": "legislature",
+     "licence": "standard (no Creative Commons licence shown)",
+     "release_time_ist": "2023-02-28T10:56:44+05:30",
+     "select_rule": "dev:legislature:strict"
+    },
+    {
+     "video_id": "vojkV10P6PM",
+     "channel": "HBCSE-TIFR",
+     "venue_type": "lecture",
+     "licence": "Creative Commons Attribution license (reuse allowed)",
+     "release_time_ist": "2022-02-13T11:01:47+05:30",
+     "select_rule": "dev:lecture:strict+creative_commons"
+    },
+    {
+     "video_id": "VsvunHNhECs",
+     "channel": "International Centre for Theoretical Sciences",
+     "venue_type": "conference",
+     "licence": "standard (no Creative Commons licence shown)",
+     "release_time_ist": "2023-04-18T15:48:53+05:30",
+     "select_rule": "dev:conference:strict"
+    },
+    {
+     "video_id": "z-MeX7yiqPU",
+     "channel": "PIB India",
+     "venue_type": "government event",
+     "licence": "standard (no Creative Commons licence shown)",
+     "release_time_ist": "2023-01-26T09:01:14+05:30",
+     "select_rule": "dev:government event:strict"
+    },
+    {
+     "video_id": "8Seji0IG37U",
+     "channel": "Somnath Temple - Official Channel",
+     "venue_type": "religious",
+     "licence": "standard (no Creative Commons licence shown)",
+     "release_time_ist": "2023-03-16T06:25:48+05:30",
+     "select_rule": "dev:religious:strict"
+    }
+   ]
+  },
+  "calibration": {
+   "n": 20,
+   "by_channel": {
+    "Bihar Vidhan Sabha TV": 1,
+    "Delhi Assembly Television": 1,
+    "Department of Theoretical Physics, TIFR": 1,
+    "HBCSE-TIFR": 1,
+    "IIT Delhi": 1,
+    "IIT Kanpur": 1,
+    "IIT Madras": 1,
+    "ISRO Official": 1,
+    "IUCAA: Lectures, Colloquia & Live Streams": 1,
+    "Indian Institute of Science (IISc)": 1,
+    "International Centre for Theoretical Sciences": 1,
+    "Jharkhand Vidhansabha TV": 1,
+    "PIB India": 1,
+    "Punjab Vidhan Sabha": 1,
+    "Rajasthan Vidhan Sabha": 1,
+    "Ramakrishna Math & Ramakrishna Mission, Belur Math": 1,
+    "Sabha TV": 1,
+    "Somnath Temple - Official Channel": 1,
+    "Tata Institute of Fundamental Research": 1,
+    "UTTAR PRADESH VIDHAN SABHA": 1
+   },
+   "by_venue_type": {
+    "conference": 1,
+    "government event": 2,
+    "lecture": 8,
+    "legislature": 7,
+    "religious": 2
+   },
+   "by_licence": {
+    "Creative Commons Attribution license (reuse allowed)": 2,
+    "standard (no Creative Commons licence shown)": 18
+   },
+   "by_half": null,
+   "by_country": null,
+   "by_excerpt_lengths": {
+    "10;20;40;60": 20
+   },
+   "total_hours": 69.6,
+   "label_stable": 20,
+   "unverified_channel_streams": 0,
+   "by_ref_file": {
+    "freq_II.csv": 3,
+    "freq_III.csv": 1,
+    "freq_IV.csv": 2,
+    "freq_V.csv": 14
+   },
+   "abs_label_drift_s": {
+    "median": 11.5,
+    "max": 188.0
+   },
+   "abs_label_drift_gt_30s": 6,
+   "min_ref_valid_frac_span": 1.0,
+   "n_channels": 20,
+   "max_per_channel": 1,
+   "n_long_ge_62min": 20
+  },
+  "test": {
+   "n": 150,
+   "by_channel": {
+    "Bihar Vidhan Sabha TV": 9,
+    "Delhi Assembly Television": 6,
+    "Department of Theoretical Physics, TIFR": 1,
+    "IIT Delhi": 3,
+    "IIT Gandhinagar": 4,
+    "IIT Kanpur": 4,
+    "IIT Madras": 8,
+    "ISRO Official": 6,
+    "IUCAA: Lectures, Colloquia & Live Streams": 10,
+    "Indian Institute of Science (IISc)": 5,
+    "International Centre for Theoretical Sciences": 2,
+    "Jharkhand Vidhansabha TV": 5,
+    "Kerala Government ": 1,
+    "Maharashtra Assembly Live": 7,
+    "Mayapur TV": 9,
+    "Meghalaya Legislative Assembly Channel": 2,
+    "PIB India": 10,
+    "Punjab Vidhan Sabha": 2,
+    "Rajasthan Vidhan Sabha": 6,
+    "Ramakrishna Math & Ramakrishna Mission, Belur Math": 4,
+    "Reserve Bank of India": 9,
+    "SGPC, Sri Amritsar": 1,
+    "Sabha TV": 10,
+    "Shree Saibaba Sansthan Trust": 6,
+    "Somnath Temple - Official Channel": 4,
+    "Tata Institute of Fundamental Research": 2,
+    "UTTAR PRADESH VIDHAN SABHA": 10,
+    "prdlivekerala": 4
+   },
+   "by_venue_type": {
+    "conference": 2,
+    "government event": 30,
+    "lecture": 37,
+    "legislature": 57,
+    "religious": 24
+   },
+   "by_licence": {
+    "Creative Commons Attribution license (reuse allowed)": 3,
+    "standard (no Creative Commons licence shown)": 147
+   },
+   "by_half": null,
+   "by_country": null,
+   "by_excerpt_lengths": {
+    "10;20": 25,
+    "10;20;40": 17,
+    "10;20;40;60": 108
+   },
+   "total_hours": 369.0,
+   "label_stable": 39,
+   "unverified_channel_streams": 27,
+   "by_ref_file": {
+    "freq_I.csv": 27,
+    "freq_II.csv": 21,
+    "freq_III.csv": 38,
+    "freq_IV.csv": 17,
+    "freq_V.csv": 47
+   },
+   "abs_label_drift_s": {
+    "median": 58.0,
+    "max": 319.0
+   },
+   "abs_label_drift_gt_30s": 93,
+   "min_ref_valid_frac_span": 0.9895,
+   "n_channels": 28,
+   "max_per_channel": 10,
+   "n_long_ge_62min": 108
+  },
+  "negative": {
+   "n": 50,
+   "by_channel": {
+    "International Centre for Theoretical Physics": 11,
+    "Parliament of Sri Lanka": 10,
+    "Senate of Pakistan": 10,
+    "Senedd": 5,
+    "St Paul's Cathedral": 11,
+    "Vatican News": 3
+   },
+   "by_venue_type": {
+    "conference": 11,
+    "legislature": 25,
+    "religious": 14
+   },
+   "by_licence": {
+    "Creative Commons Attribution license (reuse allowed)": 9,
+    "standard (no Creative Commons licence shown)": 41
+   },
+   "by_half": {
+    "report": 25,
+    "threshold": 25
+   },
+   "by_country": {
+    "GB": 16,
+    "IT": 11,
+    "LK": 10,
+    "PK": 10,
+    "VA": 3
+   },
+   "by_excerpt_lengths": {
+    "10;20": 10,
+    "10;20;40": 5,
+    "10;20;40;60": 35
+   },
+   "total_hours": 131.8
+  },
+  "negative_synthetic": {
+   "n": 40,
+   "by_channel": {
+    "SYNTHETIC": 40
+   },
+   "by_venue_type": {
+    "synthetic": 40
+   },
+   "by_licence": {
+    "SYNTHETIC (generated by gunj/synthetic.py; no licence needed)": 40
+   },
+   "by_half": {
+    "report": 20,
+    "threshold": 20
+   },
+   "by_country": {
+    "SYNTHETIC": 40
+   },
+   "by_excerpt_lengths": {
+    "10;20;40;60": 40
+   },
+   "total_hours": 43.3
+  }
+ },
+ "analytic_random_guess": {
+  "full_10min": {
+   "positions": 84045741,
+   "p_hit": 7.257952547530041e-07,
+   "one_in": 1377799.0
+  },
+  "full_20min": {
+   "positions": 84045141,
+   "p_hit": 7.258004362203402e-07,
+   "one_in": 1377789.2
+  },
+  "full_40min": {
+   "positions": 84043941,
+   "p_hit": 7.258107993769592e-07,
+   "one_in": 1377769.5
+  },
+  "full_60min": {
+   "positions": 84042741,
+   "p_hit": 7.258211628295179e-07,
+   "one_in": 1377749.9
+  },
+  "90d_10min": {
+   "positions": 15552001,
+   "p_hit": 3.922324850673556e-06,
+   "one_in": 254950.8
+  },
+  "90d_20min": {
+   "positions": 15552001,
+   "p_hit": 3.922324850673556e-06,
+   "one_in": 254950.8
+  },
+  "90d_40min": {
+   "positions": 15552001,
+   "p_hit": 3.922324850673556e-06,
+   "one_in": 254950.8
+  },
+  "90d_60min": {
+   "positions": 15552001,
+   "p_hit": 3.922324850673556e-06,
+   "one_in": 254950.8
+  },
+  "1d_10min": {
+   "positions": 172801,
+   "p_hit": 0.00035300721639342365,
+   "one_in": 2832.8
+  },
+  "1d_20min": {
+   "positions": 172801,
+   "p_hit": 0.00035300721639342365,
+   "one_in": 2832.8
+  },
+  "1d_40min": {
+   "positions": 172801,
+   "p_hit": 0.00035300721639342365,
+   "one_in": 2832.8
+  },
+  "1d_60min": {
+   "positions": 172801,
+   "p_hit": 0.00035300721639342365,
+   "one_in": 2832.8
+  }
+ },
+ "wilson_upper_95_if_zero_false_matches": {
+  "negative_report_10min": {
+   "n": 25,
+   "upper": 0.1332
+  },
+  "negative_report_20min": {
+   "n": 25,
+   "upper": 0.1332
+  },
+  "negative_report_40min": {
+   "n": 19,
+   "upper": 0.1682
+  },
+  "negative_report_60min": {
+   "n": 17,
+   "upper": 0.1843
+  },
+  "negative_synthetic_report_10min": {
+   "n": 20,
+   "upper": 0.1611
+  },
+  "negative_synthetic_report_20min": {
+   "n": 20,
+   "upper": 0.1611
+  },
+  "negative_synthetic_report_40min": {
+   "n": 20,
+   "upper": 0.1611
+  },
+  "negative_synthetic_report_60min": {
+   "n": 20,
+   "upper": 0.1611
+  },
+  "all_report_10min": {
+   "n": 45,
+   "upper": 0.0787
+  },
+  "all_report_20min": {
+   "n": 45,
+   "upper": 0.0787
+  },
+  "all_report_40min": {
+   "n": 39,
+   "upper": 0.0897
+  },
+  "all_report_60min": {
+   "n": 37,
+   "upper": 0.0941
+  }
+ },
+ "negative_trials_per_half_and_length": {
+  "negative_threshold_10min": 25,
+  "negative_threshold_20min": 25,
+  "negative_threshold_40min": 21,
+  "negative_threshold_60min": 18,
+  "negative_report_10min": 25,
+  "negative_report_20min": 25,
+  "negative_report_40min": 19,
+  "negative_report_60min": 17,
+  "negative_synthetic_threshold_10min": 20,
+  "negative_synthetic_threshold_20min": 20,
+  "negative_synthetic_threshold_40min": 20,
+  "negative_synthetic_threshold_60min": 20,
+  "negative_synthetic_report_10min": 20,
+  "negative_synthetic_report_20min": 20,
+  "negative_synthetic_report_40min": 20,
+  "negative_synthetic_report_60min": 20
+ },
+ "test_trials_per_length": {
+  "10min": 150,
+  "20min": 150,
+  "40min": 125,
+  "60min": 108
+ },
+ "test_expected_chance_hits_full_scope_60min": 0.000109
+}
