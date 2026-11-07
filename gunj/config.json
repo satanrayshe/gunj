@@ -1,7 +1,32 @@
 {
-  "_note": "Settings read by 'gunj date'. confidence_threshold below is a PLACEHOLDER that has NOT been calibrated. It is not derived from any data. PROTOCOL.md sets the real value on the calibration half of the negative set; replace it then and set confidence_threshold_calibrated to true.",
-  "confidence_threshold": 0.1,
-  "confidence_threshold_calibrated": false,
+  "_note": "Settings read by 'gunj date'. confidence_threshold is CALIBRATED on the threshold half of the negative set (PROTOCOL.md section 10; results/threshold.json, written by scripts/set_threshold.py). The v2 (primary extractor) tau of each cell is in confidence_threshold_cells (excerpt minutes -> scope); confidence_threshold is the largest of them. The former placeholder 0.1 is not used for any result.",
+  "confidence_threshold": 0.4291962421223079,
+  "confidence_threshold_calibrated": true,
+  "confidence_threshold_extractor": "v2",
+  "confidence_threshold_cells": {
+    "10": {
+      "full": 0.16450797753215274,
+      "90d": 0.16450797753208302,
+      "1d": 0.4291962421223079
+    },
+    "20": {
+      "full": 0.22326001280909957,
+      "90d": 0.22326001280905028,
+      "1d": 0.32788112078646603
+    },
+    "40": {
+      "full": 0.062194167195980046,
+      "90d": 0.06368370900934851,
+      "1d": 0.3763390037805556
+    },
+    "60": {
+      "full": 0.0833659901657915,
+      "90d": 0.14115544645150835,
+      "1d": 0.233444640602249
+    }
+  },
+  "confidence_threshold_rule": "m = floor(0.01 n); tau = (m+1)-th largest threshold-half confidence + 0.0001 (PROTOCOL.md section 10). Trials with no runner-up count in n as no verdict.",
+  "confidence_threshold_source": "results/threshold.json",
   "confidence_definition": "atanh(r1) - atanh(r2): Fisher-z margin of the top candidate over the best candidate peak at least 60 s away",
   "top_k": 5
 }
