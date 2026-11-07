@@ -323,3 +323,28 @@ def test_order_seed_is_deterministic_and_ignores_file_order(tmp_path):
     assert s1 == s2                                         # file order does not matter
     assert s1 == sorted(s1, key=lambda v: hv.seeded_rank(2026110701, v))
     assert sorted(s1) == plain                              # same rows, only reordered
+
+
+def test_network_down_is_not_charged_and_waits(tmp_path):
+    assert hv.NETWORK_DOWN_RE.search("Unable to download API page: [Errno 11001] getaddrinfo failed")
+    assert not hv.NETWORK_DOWN_RE.search("HTTP Error 429: Too Many Requests")
+    assert not hv.NETWORK_DOWN_RE.search("Read timed out")
+    states = iter([False, False, True])
+    slept = []
+    waited = hv.wait_for_network(logging.getLogger("t"), probe=lambda: next(states),
+                                 sleep=slept.append, wait_s=5)
+    assert waited == 10 and slept == [5, 5]
+    assert hv.wait_for_network(logging.getLogger("t"), probe=lambda: True, sleep=slept.append) == 0
+
+
+def test_network_down_rows_are_retried_past_max_attempts():
+    import set_threshold as st
+    net = {"status": "failed", "retryable": "True", "attempts": "5",
+           "reason": "ERROR: [youtube] x: Unable to download API page: [Errno 11001] getaddrinfo failed"}
+    other = {"status": "failed", "retryable": "True", "attempts": str(hv.MAX_ATTEMPTS), "reason": "short audio"}
+    young = {"status": "failed", "retryable": "True", "attempts": "1", "reason": "short audio"}
+    gone = {"status": "failed", "retryable": "False", "attempts": "1", "reason": "This video is not available"}
+    assert not st.failed_is_final(net)
+    assert st.failed_is_final(other)
+    assert not st.failed_is_final(young)
+    assert st.failed_is_final(gone)

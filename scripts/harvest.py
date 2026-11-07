@@ -72,6 +72,7 @@ import logging
 import random
 import re
 import shutil
+import socket
 import subprocess
 import sys
 import time
@@ -110,6 +111,14 @@ COURT_RE = re.compile(
 BLOCK_RE = re.compile(
     r"not a bot|confirm you.?re not|captcha|unusual traffic|too many requests|"
     r"http error 429|\b429\b|sign.?in|log.?in to|/sorry/|consent\.youtube", re.I)
+# The laptop's own connection is down (DNS or no route). Not a YouTube response:
+# the row is not charged an attempt, and the run waits for the network to return.
+NETWORK_DOWN_RE = re.compile(
+    r"getaddrinfo failed|errno 1100[1-4]|name or service not known|"
+    r"temporary failure in name resolution|nodename nor servname|"
+    r"network is unreachable|no route to host", re.I)
+NETWORK_PROBE_HOST = "www.youtube.com"
+NETWORK_WAIT_S = 30
 UNAVAILABLE_RE = re.compile(
     r"private video|members.only|join this channel|video unavailable|has been removed|"
     r"terminated|copyright|is not available|no longer available|requested format is not available|"
@@ -764,7 +773,8 @@ def plan(split_rows, manifest: dict, extractors, trace_root: Path, keep_root: Pa
             else:
                 out.append((r, "process", "done row incomplete for this request"))
         elif m.get("status") == "failed":
-            if m.get("retryable") == "True" and int(m.get("attempts") or 0) < MAX_ATTEMPTS:
+            if m.get("retryable") == "True" and (int(m.get("attempts") or 0) < MAX_ATTEMPTS
+                                                 or NETWORK_DOWN_RE.search(m.get("reason") or "")):
                 out.append((r, "process", "retry"))
             else:
                 out.append((r, "skip", "failed (not retried)"))
@@ -946,7 +956,13 @@ def process_video(r: dict, prev: dict | None, ctx: Ctx) -> dict:
         log.warning("%s: unavailable: %s", vid, row["reason"])
     except DownloadFailed as e:
         row.update(status="failed", reason=sanitize(e), retryable="True", finished_utc=now_utc())
-        log.warning("%s: failed (retryable): %s", vid, row["reason"])
+        if NETWORK_DOWN_RE.search(row["reason"]):
+            row["attempts"] = str(int((prev or {}).get("attempts") or 0))   # not charged
+            row["_network_down"] = True
+            log.warning("%s: failed, the laptop's network is down (not charged an attempt): %s",
+                        vid, row["reason"])
+        else:
+            log.warning("%s: failed (retryable): %s", vid, row["reason"])
     except Exception as e:                                 # a bug or a bad file
         row.update(status="failed", reason=f"{type(e).__name__}: {sanitize(e)}", retryable="True",
                    finished_utc=now_utc())
@@ -954,6 +970,29 @@ def process_video(r: dict, prev: dict | None, ctx: Ctx) -> dict:
     finally:
         _rm(work)
     return row
+
+
+def network_up(host: str = NETWORK_PROBE_HOST) -> bool:
+    """True if the laptop can resolve host. A DNS lookup only: nothing is sent to YouTube."""
+    try:
+        socket.getaddrinfo(host, 443)
+        return True
+    except OSError:
+        return False
+
+
+def wait_for_network(log, probe=network_up, sleep=time.sleep, wait_s: float = NETWORK_WAIT_S) -> float:
+    """Block until probe() is true. Returns the seconds waited (0 if the network was up)."""
+    waited = 0.0
+    while not probe():
+        if waited % 600 < wait_s:
+            log.warning("network down (cannot resolve %s); waiting, checking every %d s",
+                        NETWORK_PROBE_HOST, wait_s)
+        sleep(wait_s)
+        waited += wait_s
+    if waited:
+        log.info("network back after %.0f s", waited)
+    return waited
 
 
 def _rm(p: Path) -> None:
@@ -1024,7 +1063,16 @@ def run(args, downloader=None, sleep=time.sleep, repo: Path = REPO, log=None) ->
                 log.info("%s: recovered a finished trace into the manifest", vid)
                 continue
             log.info("%s [%s]: %s (%s)", vid, r["split"], (r.get("title") or "")[:70], why)
+            if not is_synthetic_row(r):
+                wait_for_network(log)
             row = process_video(r, manifest.get(vid), ctx)
+            if row.pop("_network_down", False):
+                manifest[vid] = row
+                write_manifest(ctx.manifest_path, manifest)
+                wait_for_network(log)
+                log.info("%s: network is back; trying this stream again once", vid)
+                row = process_video(r, manifest.get(vid), ctx)
+                row.pop("_network_down", None)
             blocked_exc = row.pop("_blocked", None)
             manifest[vid] = row
             write_manifest(ctx.manifest_path, manifest)

@@ -83,6 +83,17 @@ RULE = ("m = floor(0.01 n); tau = (m+1)-th largest threshold-half confidence + 0
 FINAL = ("done", "failed", "skipped")
 
 
+def failed_is_final(m: dict) -> bool:
+    """A failed row is final only if the harvester will never retry it: not retryable, or
+    retryable with MAX_ATTEMPTS used up for a reason other than the laptop's network being
+    down (harvest.plan() retries network-down rows without limit)."""
+    if m.get("retryable") != "True":
+        return True
+    if ec.hv.NETWORK_DOWN_RE.search(m.get("reason") or ""):
+        return False
+    return int(m.get("attempts") or 0) >= ec.hv.MAX_ATTEMPTS
+
+
 def threshold_rows(splits: list) -> list:
     return [r for r in splits if r["split"] in ec.NEGATIVE_SPLITS and r.get("half") == "threshold"]
 
@@ -93,7 +104,7 @@ def readiness(rows: list, manifest: dict, repo: Path) -> tuple:
     for r in rows:
         m = manifest.get(r["video_id"])
         st = None if m is None else m.get("status")
-        if st not in FINAL:
+        if st not in FINAL or (st == "failed" and not failed_is_final(m)):
             not_ready.append({"video_id": r["video_id"], "split": r["split"],
                               "status": st or "not in manifest"})
         elif st == "done":

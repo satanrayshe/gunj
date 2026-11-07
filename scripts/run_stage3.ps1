@@ -23,9 +23,13 @@ $thr = (Import-Csv data\splits.csv |
 $steps = @(
     @{ name = 'synthetic';     args = @('--splits', 'negative_synthetic', '--extractors', 'v2,v1,naive') },
     @{ name = 'neg_threshold'; args = @('--splits', 'negative', "--only=$thr", '--extractors', 'v2,v1,naive') },
+    @{ name = 'neg_threshold'; args = @('--splits', 'negative', "--only=$thr", '--extractors', 'v2,v1,naive') },
+    @{ name = 'test';          args = @('--splits', 'test', '--extractors', 'v2,v1,naive', '--cuts', '--order-seed', '2026110701') },
+    @{ name = 'neg_report';    args = @('--splits', 'negative', '--extractors', 'v2,v1,naive') },
     @{ name = 'test';          args = @('--splits', 'test', '--extractors', 'v2,v1,naive', '--cuts', '--order-seed', '2026110701') },
     @{ name = 'neg_report';    args = @('--splits', 'negative', '--extractors', 'v2,v1,naive') }
 )
+# Each step appears twice: the second pass retries streams whose first try failed in a retryable way.
 
 foreach ($s in $steps) {
     "$(Get-Date -Format s) start $($s.name)" | Add-Content logs\run_stage3.log

@@ -281,6 +281,11 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - Fix: the Test harvest runs `scripts/harvest.py --order-seed 2026110701`. It processes the Test rows in ascending order of SHA-256("2026110701:" + video ID), which depends only on the ID and the split seed. With this order, the Test streams finished by the gate are a random sample of the Test split, as section 14 intends. `data/splits.csv` is unchanged.
   - The problem was found by checking the evaluation code against this file, before the Test harvest started.
 
+- **7 Nov 2026, 11:50 IST. A premature τ was discarded, and network loss no longer counts as a failed attempt (sections 10 and 17).** No Test audio had been obtained, and no Test search had been run.
+  - From about 10:18 IST the laptop lost its internet connection (DNS lookups failed with "getaddrinfo failed"). The harvester recorded 24 of the 25 threshold-half real negatives, all 150 Test streams and 8 report-half negatives as retryable failures within seconds each. No bot check, CAPTCHA, sign-in wall or HTTP 429 was met.
+  - `scripts/set_threshold.py` counted every "failed" row as final, so at 10:35 IST it wrote a τ from 1 real and 20 SYNTHETIC threshold-half negatives. That τ was deleted before it was committed or used, and `gunj/config.json` was restored. Its log line showed the naive extractor's τ values; no Test data existed.
+  - Fixes: a retryable failure is final only once the harvester will never retry it. The harvester checks a DNS lookup before each download and waits while the network is down. A failure caused by the laptop's network being down is not charged an attempt, and the stream is tried again once the network returns. The τ rule itself is unchanged.
+
 ## 20. How to check this file
 
 From the repo root:
