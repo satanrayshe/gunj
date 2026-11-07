@@ -57,7 +57,8 @@ Readings chosen where PROTOCOL leaves room:
    are shown beside the count.
 3. "Processed by the decision time" (section 15) means the stream's harvest
    finished (manifest finished_utc) at or before --decision-time (default
-   2026-11-07T22:00:00+05:30). Searches may run later; they do not depend on
+   2026-11-08T14:00:00+05:30, moved from 7 Nov 22:00 by the PROTOCOL
+   section 19 entry of 7 Nov 22:40). Searches may run later; they do not depend on
    the clock. Streams harvested later are in the results but not in the gate.
 4. Harvest health (section 15, condition 3), judged as of the decision
    time: no manifest row with finished_utc up to the decision time is
@@ -128,7 +129,7 @@ import eval_common as ec                  # noqa: E402
 from eval_common import EXTRACTORS, LENGTHS, PRIMARY, SCOPES, SCOPE_LABEL, HIT_S, COARSE_S  # noqa: E402
 from gunj import reference as gref        # noqa: E402
 
-DECISION_TIME = "2026-11-07T22:00:00+05:30"
+DECISION_TIME = "2026-11-08T14:00:00+05:30"   # moved from 7 Nov 22:00 (PROTOCOL section 19, 7 Nov 22:40)
 GATE_SCOPES = ("full", "90d")
 GATE_MIN_STREAMS = 5
 BLIND_FILES = [

@@ -305,6 +305,12 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - `scripts/set_threshold.py` retries a search whose record is missing, and refuses to set τ rather than crash.
   - None of this changes how τ, L, hits or confidence are computed.
 
+- **7 Nov 2026, 22:40 IST. The gate moves from Saturday 7 Nov 22:00 to Sunday 8 Nov 14:00 IST (section 15).** No Test search had been run, and no Test result had been computed or seen.
+  - Why: the harvest ran far slower than planned. The internet connection was down from 10:18 to 11:38. After that the connection was unstable (mobile hotspot). At 14:57 the harvester stopped itself after 4 unexplained failures in a row; the logs show dropped connections, not a block. It was restarted at 16:36.
+  - τ was computed at 17:44 but committed only at 22:35 (commit beadde1), and L was committed at 22:35 (commit 84ac47d). The coordinator's background check had been stopped for low memory, so the coordinator did not see τ arrive. By the text of section 15, the 22:00 gate is not met, and the only reason is that τ and L were not committed in time.
+  - Shrey agreed at about 22:30 IST to move the decision time to 8 Nov 14:00 IST. Everything else in section 15 is unchanged, including "If τ or L has not been committed by" the decision time. `scripts/evaluate.py` DECISION_TIME was changed to match.
+  - The Unstop v1 submission stays at 8 Nov 21:00.
+
 ## 20. How to check this file
 
 From the repo root:

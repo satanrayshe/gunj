@@ -47,7 +47,16 @@ def fixed_clock(monkeypatch):
     """evaluate.py's clock: 21:00 IST on 7 Nov, before the default decision time, unless a test moves it."""
     clock = {"now": dt.datetime(2026, 11, 7, 21, 0, tzinfo=IST)}
     monkeypatch.setattr(ev, "_now", lambda: clock["now"])
+    # These tests check the gate logic against the original decision time; the configured
+    # default moved to 8 Nov 14:00 (PROTOCOL section 19, 7 Nov 22:40) and is checked separately.
+    monkeypatch.setattr(ev, "DECISION_TIME", "2026-11-07T22:00:00+05:30")
     return clock
+
+
+def test_configured_decision_time_is_the_moved_gate():
+    import importlib
+    fresh = importlib.reload(ev)
+    assert fresh.DECISION_TIME == "2026-11-08T14:00:00+05:30"
 
 
 def unix_of(idx: int) -> int:
