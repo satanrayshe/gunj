@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 01:30 IST, by Claude (hackathon-work session).
+Last updated: 7 Nov 2026, 08:35 IST, by Claude (Gunj harvest and v2 workflow step).
 
 If the laptop was shut down or the session ended, a new Claude Code session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -20,18 +20,18 @@ If the laptop was shut down or the session ended, a new Claude Code session shou
 ## Steps
 | # | Step | Output that proves it is done | Status |
 |---|---|---|---|
-| 1 | Reference files downloaded and verified | `../data/enf-ref/freq_*.csv` match Mendeley SHA-256 | DONE 7 Nov 00:50 |
-| 2 | Reference series + gap map | `../data/derived/grid_1s_f32.npy`, `results/reference_summary.md` | running (workflow wf_378a5581-734) |
-| 3 | Core extractor, matcher, CLI, tests | `gunj/extract.py`, `gunj/match.py`, `pytest` passes | running |
-| 4 | Metadata-only candidate list | `data/candidates_india.csv`, `data/candidates_negatives.csv` | running |
-| 5 | Uniqueness curve (M4, reference only) | `results/uniqueness_table.csv` | waiting on 2+3 |
-| 6 | PROTOCOL.md + splits | `PROTOCOL.md`, `data/splits.csv` | waiting on 2+4 |
-| 7 | Hostile review of 2-6 | review notes in the workflow result | waiting |
-| 8 | Delete raw CSVs once step 2 is verified (re-downloadable; hashes kept) | `../data/enf-ref` empty, `grid_1s_meta.json` holds hashes | pending |
-| 9 | Dev + calibration audio harvest, extractor v2 tuned on dev, frozen | `data/harvest_manifest.csv`, git tag `extractor-v2` | pending |
+| 1 | Reference files downloaded and verified | hashes in `../data/derived/grid_1s_meta.json` | DONE 7 Nov 00:50 |
+| 2 | Reference series + gap map | `../data/derived/grid_1s_f32.npy`, `results/reference_summary.md` | DONE 7 Nov 05:20 (commit 598aad3) |
+| 3 | Core extractor, matcher, CLI, tests | `gunj/extract.py`, `gunj/match.py`, `pytest` passes | DONE (55 tests) |
+| 4 | Metadata-only candidate list | `data/candidates_india.csv`, `data/candidates_negatives.csv` | DONE (424 + 116) |
+| 5 | Uniqueness curve (M4, reference only) | `results/uniqueness_table.csv` | DONE |
+| 6 | PROTOCOL.md + splits | `PROTOCOL.md`, `data/splits.csv` | DONE, uncommitted until Shrey approves |
+| 7 | Hostile review of 2-6 | review notes | review agent failed (network); coordinator checks passed: tests, hashes, no media, no courts |
+| 8 | Delete raw CSVs once step 2 is verified (re-downloadable; hashes kept) | `../data/enf-ref` empty; keep `../data/derived/_parsed` (needed for label drift) | DONE 7 Nov 05:20 |
+| 9 | Dev + calibration audio harvest, extractor v2 tuned on dev, frozen | `data/harvest_manifest.csv`, git tag `extractor-v2`, `results/v2_tuning.md` | DONE 7 Nov 08:26. Dev 5/5 (FLAC kept in `media/keep`). v2 = candidate B1, tag `extractor-v2` on ad9c54f at 05:55. Calibration 19/20 (hG8oxgWwPYE not available on YouTube). 0 bot checks or 429s; 77 yt-dlp requests in all |
 | 10 | Shrey approves the PROTOCOL.md commit (pre-registration) | git commit "Pre-registration" | pending (needs Shrey) |
-| 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | pending |
-| 12 | Latency calibration, threshold from negatives, blind matching, gate numbers | `results/gate.md` | pending; gate Sat 7 Nov 22:00 IST |
+| 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | pending: waits for step 10. Command: `scripts\harvest.py --splits test,negative,negative_synthetic --extractors v2,v1,naive --keep-audio-splits dev --cuts` (SYNTHETIC negatives are generated, not downloaded) (see the harvest.py docstring). Dev and Calibration took 2 to 16 min per stream |
+| 12 | Latency calibration, threshold from negatives, blind matching, gate numbers | `results/gate.md` | partly done: Calibration searched (`results/calibration.md`). L is PENDING until tau exists (`results/threshold.json`, needs the negatives); rerun `scripts\calibrate_latency.py` then. PROVISIONAL v2 median o = 2 s over 8 locks (not L). Threshold, blind matching and gate not started; gate Sat 7 Nov 22:00 IST |
 | 13 | Results, Pages explorer, README, v1 video | `results/`, `site/`, `README.md` | pending; Shrey submits v1 by 8 Nov 21:00 |
 
 ## Resilience rules for every script

@@ -1,0 +1,2465 @@
+{
+ "written_ist": "2026-11-07T08:27:01+05:30",
+ "script": "scripts/calibrate_latency.py",
+ "protocol": "PROTOCOL.md section 6 (draft, not yet approved)",
+ "scope": "+-1 day around release time in IST",
+ "excerpt": "60 min, audio [120, 3720) s",
+ "frame0_offset_s": 128,
+ "max_abs_o_s": 600,
+ "range_flag_s": 60,
+ "threshold_file": "results/threshold.json",
+ "tau_available": false,
+ "primary_extractor": "v2",
+ "n_calibration_streams": 20,
+ "n_harvested": 19,
+ "latency": {
+  "v2": {
+   "n_streams": 19,
+   "o_all_s": [
+    66298,
+    50451,
+    0,
+    2,
+    -74417,
+    42,
+    80813,
+    -48836,
+    -48689,
+    -4,
+    5,
+    70169,
+    -86213,
+    2,
+    21852,
+    1486,
+    18,
+    -18,
+    -43006
+   ],
+   "tau": null,
+   "status": "PENDING: tau for (60 min, +-1 day) is not set yet (results/threshold.json missing)",
+   "L_s": null,
+   "provisional": {
+    "what": "PROVISIONAL, |o| <= 600 s only, no tau condition. Not L.",
+    "n": 8,
+    "values_s": [
+     -18,
+     -4,
+     0,
+     2,
+     2,
+     5,
+     18,
+     42
+    ],
+    "median_s": 2.0,
+    "median_rounded_s": 2,
+    "iqr_s": [
+     -1.0,
+     8.25
+    ],
+    "range_s": [
+     -18.0,
+     42.0
+    ],
+    "range_width_s": 60.0,
+    "constant_latency_holds": true
+   }
+  },
+  "v1": {
+   "n_streams": 19,
+   "o_all_s": [
+    -19956,
+    -12393,
+    18142,
+    -2,
+    81402,
+    -38302,
+    -3,
+    31869,
+    -10066,
+    1,
+    -23,
+    56804,
+    -86283,
+    2,
+    71622,
+    -23714,
+    69528,
+    -11,
+    64931
+   ],
+   "tau": null,
+   "status": "PENDING: tau for (60 min, +-1 day) is not set yet (results/threshold.json missing)",
+   "L_s": null,
+   "provisional": {
+    "what": "PROVISIONAL, |o| <= 600 s only, no tau condition. Not L.",
+    "n": 6,
+    "values_s": [
+     -23,
+     -11,
+     -3,
+     -2,
+     1,
+     2
+    ],
+    "median_s": -2.5,
+    "median_rounded_s": -2,
+    "iqr_s": [
+     -9.0,
+     0.25
+    ],
+    "range_s": [
+     -23.0,
+     2.0
+    ],
+    "range_width_s": 25.0,
+    "constant_latency_holds": true
+   }
+  },
+  "naive": {
+   "n_streams": 19,
+   "o_all_s": [
+    -63344,
+    58369,
+    -3880,
+    2,
+    -84657,
+    54892,
+    42094,
+    -33137,
+    22310,
+    1,
+    -34,
+    -5942,
+    66856,
+    3,
+    7357,
+    -35551,
+    69529,
+    59325,
+    -48892
+   ],
+   "tau": null,
+   "status": "PENDING: tau for (60 min, +-1 day) is not set yet (results/threshold.json missing)",
+   "L_s": null,
+   "provisional": {
+    "what": "PROVISIONAL, |o| <= 600 s only, no tau condition. Not L.",
+    "n": 4,
+    "values_s": [
+     -34,
+     1,
+     2,
+     3
+    ],
+    "median_s": 1.5,
+    "median_rounded_s": 2,
+    "iqr_s": [
+     -7.75,
+     2.25
+    ],
+    "range_s": [
+     -34.0,
+     3.0
+    ],
+    "range_width_s": 37.0,
+    "constant_latency_holds": true
+   }
+  }
+ },
+ "streams": [
+  {
+   "video_id": "vG0skjSIQSg",
+   "channel": "PIB India",
+   "venue_type": "government event",
+   "release_time_ist": "2021-11-26T17:37:52+05:30",
+   "D_s": 53.0,
+   "label_stable": true,
+   "drift_window_r": 0.5122,
+   "ref_src_file": "freq_II.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "6407c1e2773afd74b1a96f41e027357b46e638c321805a5f900c69cb729b3b3a",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.556,
+      "100 Hz": 1.705,
+      "150 Hz": 1.91,
+      "200 Hz": 1.931,
+      "250 Hz": 2.32,
+      "300 Hz": 2.203
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.569,
+      "100 Hz": 1.72,
+      "150 Hz": 1.916,
+      "200 Hz": 1.92,
+      "250 Hz": 2.336,
+      "300 Hz": 2.217
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.556,
+      "100 Hz": 1.705,
+      "150 Hz": 1.91,
+      "200 Hz": 1.931,
+      "250 Hz": 2.32,
+      "300 Hz": 2.203
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.569,
+      "100 Hz": 1.72,
+      "150 Hz": 1.916,
+      "200 Hz": 1.92,
+      "250 Hz": 2.336,
+      "300 Hz": 2.217
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.478
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.491
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2021-11-27 12:03:43",
+     "lock_index": 29529890,
+     "r1": 0.29191,
+     "r2": 0.28698,
+     "runner_up_start_ist": "2021-11-26 12:06:04",
+     "confidence": 0.00538,
+     "o_s": 66298,
+     "o_without_D_s": 66351,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2021-11-26 12:06:09",
+     "lock_index": 29443636,
+     "r1": 0.32485,
+     "r2": 0.32232,
+     "runner_up_start_ist": "2021-11-26 12:03:55",
+     "confidence": 0.00283,
+     "o_s": -19956,
+     "o_without_D_s": -19903,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2021-11-26 00:03:01",
+     "lock_index": 29400248,
+     "r1": 0.12659,
+     "r2": 0.12404,
+     "runner_up_start_ist": "2021-11-26 00:01:08",
+     "confidence": 0.00258,
+     "o_s": -63344,
+     "o_without_D_s": -63291,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "hG8oxgWwPYE",
+   "channel": "Indian Institute of Science (IISc)",
+   "venue_type": "lecture",
+   "release_time_ist": "2021-12-14T17:30:31+05:30",
+   "D_s": 54.0,
+   "label_stable": true,
+   "drift_window_r": 0.601,
+   "ref_src_file": "freq_II.csv",
+   "harvest_status": "failed",
+   "harvest_reason": "ERROR: [youtube] hG8oxgWwPYE: This video is not available"
+  },
+  {
+   "video_id": "GpREVZ1Lfic",
+   "channel": "Ramakrishna Math & Ramakrishna Mission, Belur Math",
+   "venue_type": "religious",
+   "release_time_ist": "2021-12-26T07:53:54+05:30",
+   "D_s": 51.0,
+   "label_stable": true,
+   "drift_window_r": 0.5274,
+   "ref_src_file": "freq_II.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "e638d506f0ae71adcea4a59627095098af3b11b2ba193c1a39ae480ff11f35c3",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.778,
+      "100 Hz": 2.06,
+      "150 Hz": 2.099,
+      "200 Hz": 2.094,
+      "250 Hz": 2.219,
+      "300 Hz": 2.12
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.757,
+      "100 Hz": 2.037,
+      "150 Hz": 2.089,
+      "200 Hz": 2.08,
+      "250 Hz": 2.201,
+      "300 Hz": 2.113
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.778,
+      "100 Hz": 2.06,
+      "150 Hz": 2.099,
+      "200 Hz": 2.094,
+      "250 Hz": 2.219,
+      "300 Hz": 2.12
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.757,
+      "100 Hz": 2.037,
+      "150 Hz": 2.089,
+      "200 Hz": 2.08,
+      "250 Hz": 2.201,
+      "300 Hz": 2.113
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.69
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.67
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2021-12-26 21:55:36",
+     "lock_index": 32071003,
+     "r1": 0.2011,
+     "r2": 0.18078,
+     "runner_up_start_ist": "2021-12-26 18:14:42",
+     "confidence": 0.02108,
+     "o_s": 50451,
+     "o_without_D_s": 50502,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2021-12-26 04:28:12",
+     "lock_index": 32008159,
+     "r1": 0.22369,
+     "r2": 0.21681,
+     "runner_up_start_ist": "2021-12-26 08:56:45",
+     "confidence": 0.00723,
+     "o_s": -12393,
+     "o_without_D_s": -12342,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2021-12-27 00:07:34",
+     "lock_index": 32078921,
+     "r1": 0.23012,
+     "r2": 0.20911,
+     "runner_up_start_ist": "2021-12-26 14:01:20",
+     "confidence": 0.02207,
+     "o_s": 58369,
+     "o_without_D_s": 58420,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "iTRtTwq6O_8",
+   "channel": "Bihar Vidhan Sabha TV",
+   "venue_type": "legislature",
+   "release_time_ist": "2022-03-14T13:33:26+05:30",
+   "D_s": 81.0,
+   "label_stable": true,
+   "drift_window_r": 0.501,
+   "ref_src_file": "freq_III.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "066122b183196bd887570d5f036700e8379ca3c0560234ebd0beef32424bfcc0",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 6.184,
+      "100 Hz": 2.031,
+      "150 Hz": 2.221,
+      "200 Hz": 2.159,
+      "250 Hz": 2.35,
+      "300 Hz": 2.268
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 5.738,
+      "100 Hz": 2.004,
+      "150 Hz": 2.208,
+      "200 Hz": 2.151,
+      "250 Hz": 2.337,
+      "300 Hz": 2.255
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 6.184,
+      "100 Hz": 2.031,
+      "150 Hz": 2.221,
+      "200 Hz": 2.159,
+      "250 Hz": 2.35,
+      "300 Hz": 2.268
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 5.738,
+      "100 Hz": 2.004,
+      "150 Hz": 2.208,
+      "200 Hz": 2.151,
+      "250 Hz": 2.337,
+      "300 Hz": 2.255
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.93
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.512
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-03-14 13:34:47",
+     "lock_index": 38780154,
+     "r1": 0.9363,
+     "r2": 0.89211,
+     "runner_up_start_ist": "2022-03-14 17:31:31",
+     "confidence": 0.275,
+     "o_s": 0,
+     "o_without_D_s": 81,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-03-14 18:37:09",
+     "lock_index": 38798296,
+     "r1": 0.57197,
+     "r2": 0.511,
+     "runner_up_start_ist": "2022-03-13 22:02:09",
+     "confidence": 0.08637,
+     "o_s": 18142,
+     "o_without_D_s": 18223,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-03-14 12:30:07",
+     "lock_index": 38776274,
+     "r1": 0.45925,
+     "r2": 0.43115,
+     "runner_up_start_ist": "2022-03-14 14:47:55",
+     "confidence": 0.03506,
+     "o_s": -3880,
+     "o_without_D_s": -3799,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "_YPQl5Qvyrw",
+   "channel": "UTTAR PRADESH VIDHAN SABHA",
+   "venue_type": "legislature",
+   "release_time_ist": "2022-12-06T11:38:43+05:30",
+   "D_s": 170.0,
+   "label_stable": true,
+   "drift_window_r": 0.741,
+   "ref_src_file": "freq_IV.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "f4bc13204126f5b411d0680e9e216909cb11e4ae522d96e746295839c93f12e2",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 2.69,
+      "100 Hz": 2.656,
+      "150 Hz": 2.018,
+      "200 Hz": 2.052,
+      "250 Hz": 2.027,
+      "300 Hz": 2.139
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 2.779,
+      "100 Hz": 2.747,
+      "150 Hz": 2.023,
+      "200 Hz": 2.045,
+      "250 Hz": 2.015,
+      "300 Hz": 2.134
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 2.69,
+      "100 Hz": 2.656,
+      "150 Hz": 2.018,
+      "200 Hz": 2.052,
+      "250 Hz": 2.027,
+      "300 Hz": 2.139
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 2.779,
+      "100 Hz": 2.747,
+      "150 Hz": 2.023,
+      "200 Hz": 2.045,
+      "250 Hz": 2.015,
+      "300 Hz": 2.134
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 2.57
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 2.655
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-12-06 11:41:35",
+     "lock_index": 61842162,
+     "r1": 0.9127,
+     "r2": 0.83344,
+     "runner_up_start_ist": "2022-12-05 14:45:35",
+     "confidence": 0.34416,
+     "o_s": 2,
+     "o_without_D_s": 172,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-12-06 11:41:31",
+     "lock_index": 61842158,
+     "r1": 0.55041,
+     "r2": 0.49663,
+     "runner_up_start_ist": "2022-12-05 14:44:53",
+     "confidence": 0.07415,
+     "o_s": -2,
+     "o_without_D_s": 168,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-12-06 11:41:35",
+     "lock_index": 61842162,
+     "r1": 0.47216,
+     "r2": 0.43155,
+     "runner_up_start_ist": "2022-12-06 16:16:21",
+     "confidence": 0.05105,
+     "o_s": 2,
+     "o_without_D_s": 172,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "LqIXARFCgs8",
+   "channel": "HBCSE-TIFR",
+   "venue_type": "lecture",
+   "release_time_ist": "2022-12-22T12:01:18+05:30",
+   "D_s": 188.0,
+   "label_stable": true,
+   "drift_window_r": 0.7586,
+   "ref_src_file": "freq_IV.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "bad28eeddf5c5d820e380d2827f24a6a624f6347c00b940bab396e534e0b26d0",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.854,
+      "100 Hz": 2.33,
+      "150 Hz": 2.009,
+      "200 Hz": 2.048,
+      "250 Hz": 2.041,
+      "300 Hz": 2.163
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.874,
+      "100 Hz": 2.392,
+      "150 Hz": 2.003,
+      "200 Hz": 2.058,
+      "250 Hz": 2.052,
+      "300 Hz": 2.181
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.854,
+      "100 Hz": 2.33,
+      "150 Hz": 2.009,
+      "200 Hz": 2.048,
+      "250 Hz": 2.041,
+      "300 Hz": 2.163
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.874,
+      "100 Hz": 2.392,
+      "150 Hz": 2.003,
+      "200 Hz": 2.058,
+      "250 Hz": 2.052,
+      "300 Hz": 2.181
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.732
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.755
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-12-21 15:24:09",
+     "lock_index": 63151516,
+     "r1": 0.37103,
+     "r2": 0.35723,
+     "runner_up_start_ist": "2022-12-21 19:44:44",
+     "confidence": 0.01591,
+     "o_s": -74417,
+     "o_without_D_s": -74229,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-12-23 10:41:08",
+     "lock_index": 63307335,
+     "r1": 0.34819,
+     "r2": 0.34027,
+     "runner_up_start_ist": "2022-12-23 11:51:33",
+     "confidence": 0.00898,
+     "o_s": 81402,
+     "o_without_D_s": 81590,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2022-12-21 12:33:29",
+     "lock_index": 63141276,
+     "r1": 0.15688,
+     "r2": 0.15269,
+     "runner_up_start_ist": "2022-12-21 12:32:04",
+     "confidence": 0.00429,
+     "o_s": -84657,
+     "o_without_D_s": -84469,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "EMnxXK50x4g",
+   "channel": "Sabha TV",
+   "venue_type": "legislature",
+   "release_time_ist": "2023-01-09T11:26:44+05:30",
+   "D_s": 0.0,
+   "label_stable": true,
+   "drift_window_r": 0.725,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "2a6608a18b3e048d46f8a02de712c539426ef1be3623a082918a0ef7ae24599e",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 11.296,
+      "100 Hz": 1.803,
+      "150 Hz": 2.037,
+      "200 Hz": 1.873,
+      "250 Hz": 2.424,
+      "300 Hz": 2.096
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 18.062,
+      "100 Hz": 1.794,
+      "150 Hz": 2.065,
+      "200 Hz": 1.858,
+      "250 Hz": 2.415,
+      "300 Hz": 2.106
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 11.296,
+      "100 Hz": 1.803,
+      "150 Hz": 2.037,
+      "200 Hz": 1.873,
+      "250 Hz": 2.424,
+      "300 Hz": 2.096
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 18.062,
+      "100 Hz": 1.794,
+      "150 Hz": 2.065,
+      "200 Hz": 1.858,
+      "250 Hz": 2.415,
+      "300 Hz": 2.106
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 3.869
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 6.262
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-09 11:27:26",
+     "lock_index": 64778913,
+     "r1": 0.80305,
+     "r2": 0.76111,
+     "runner_up_start_ist": "2023-01-09 13:39:54",
+     "confidence": 0.10831,
+     "o_s": 42,
+     "o_without_D_s": 42,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-09 00:48:22",
+     "lock_index": 64740569,
+     "r1": 0.56356,
+     "r2": 0.52266,
+     "runner_up_start_ist": "2023-01-09 19:31:35",
+     "confidence": 0.05805,
+     "o_s": -38302,
+     "o_without_D_s": -38302,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-10 02:41:36",
+     "lock_index": 64833763,
+     "r1": 0.47664,
+     "r2": 0.4515,
+     "runner_up_start_ist": "2023-01-09 17:45:53",
+     "confidence": 0.03204,
+     "o_s": 54892,
+     "o_without_D_s": 54892,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "VQcMyMB_lM4",
+   "channel": "Rajasthan Vidhan Sabha",
+   "venue_type": "legislature",
+   "release_time_ist": "2023-01-11T10:25:27+05:30",
+   "D_s": 0.0,
+   "label_stable": true,
+   "drift_window_r": 0.725,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "07be4665e0b8e66963ab3b6721a3489fd7638c86eae0a44175ffc95c2824f72a",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 191.311,
+      "100 Hz": 4.203,
+      "150 Hz": 15.0,
+      "200 Hz": 2.054,
+      "250 Hz": 3.855,
+      "300 Hz": 2.067
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 190.029,
+      "100 Hz": 3.979,
+      "150 Hz": 15.136,
+      "200 Hz": 2.062,
+      "250 Hz": 3.729,
+      "300 Hz": 2.061
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 191.311,
+      "100 Hz": 4.203,
+      "150 Hz": 15.0,
+      "200 Hz": 2.054,
+      "250 Hz": 3.855,
+      "300 Hz": 2.067
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 190.029,
+      "100 Hz": 3.979,
+      "150 Hz": 15.136,
+      "200 Hz": 2.062,
+      "250 Hz": 3.729,
+      "300 Hz": 2.061
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 191.489
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 190.126
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-12 08:52:20",
+     "lock_index": 65028807,
+     "r1": 0.09751,
+     "r2": 0.09331,
+     "runner_up_start_ist": "2023-01-11 19:52:38",
+     "confidence": 0.00423,
+     "o_s": 80813,
+     "o_without_D_s": 80813,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-11 10:25:24",
+     "lock_index": 64947991,
+     "r1": 0.08798,
+     "r2": 0.06899,
+     "runner_up_start_ist": "2023-01-11 01:37:36",
+     "confidence": 0.01911,
+     "o_s": -3,
+     "o_without_D_s": -3,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-11 22:07:01",
+     "lock_index": 64990088,
+     "r1": 0.06154,
+     "r2": 0.06048,
+     "runner_up_start_ist": "2023-01-12 10:08:21",
+     "confidence": 0.00106,
+     "o_s": 42094,
+     "o_without_D_s": 42094,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "K9HnEhg0Ryw",
+   "channel": "International Centre for Theoretical Sciences",
+   "venue_type": "conference",
+   "release_time_ist": "2023-01-30T15:19:59+05:30",
+   "D_s": 0.0,
+   "label_stable": true,
+   "drift_window_r": 0.7767,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "0e66b444737f174446d132722912db830b08f33be4d99f655b943a768f66e4d8",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.674,
+      "100 Hz": 1.911,
+      "150 Hz": 1.957,
+      "200 Hz": 1.963,
+      "250 Hz": 1.979,
+      "300 Hz": 2.101
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.673,
+      "100 Hz": 1.918,
+      "150 Hz": 1.96,
+      "200 Hz": 1.958,
+      "250 Hz": 1.972,
+      "300 Hz": 2.102
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.674,
+      "100 Hz": 1.911,
+      "150 Hz": 1.957,
+      "200 Hz": 1.963,
+      "250 Hz": 1.979,
+      "300 Hz": 2.101
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.673,
+      "100 Hz": 1.918,
+      "150 Hz": 1.96,
+      "200 Hz": 1.958,
+      "250 Hz": 1.972,
+      "300 Hz": 2.102
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.569
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.568
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-30 01:46:03",
+     "lock_index": 66558430,
+     "r1": 0.13763,
+     "r2": 0.12725,
+     "runner_up_start_ist": "2023-01-30 22:16:19",
+     "confidence": 0.01056,
+     "o_s": -48836,
+     "o_without_D_s": -48836,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-31 00:11:08",
+     "lock_index": 66639135,
+     "r1": 0.09153,
+     "r2": 0.08279,
+     "runner_up_start_ist": "2023-01-30 21:14:07",
+     "confidence": 0.0088,
+     "o_s": 31869,
+     "o_without_D_s": 31869,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-30 06:07:42",
+     "lock_index": 66574129,
+     "r1": 0.14641,
+     "r2": 0.14355,
+     "runner_up_start_ist": "2023-01-30 17:07:51",
+     "confidence": 0.00291,
+     "o_s": -33137,
+     "o_without_D_s": -33137,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "e3ZVBkf-o4c",
+   "channel": "IIT Madras",
+   "venue_type": "lecture",
+   "release_time_ist": "2023-01-31T08:44:54+05:30",
+   "D_s": 0.0,
+   "label_stable": true,
+   "drift_window_r": 0.7767,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "9b97015405fb9ee7bb5b81d7b60d9f9f822ce961db807a680651eebfd476f688",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.783,
+      "100 Hz": 1.85,
+      "150 Hz": 2.193,
+      "200 Hz": 2.07,
+      "250 Hz": 2.199,
+      "300 Hz": 2.189
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.838,
+      "100 Hz": 1.85,
+      "150 Hz": 2.222,
+      "200 Hz": 2.07,
+      "250 Hz": 2.211,
+      "300 Hz": 2.191
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.783,
+      "100 Hz": 1.85,
+      "150 Hz": 2.193,
+      "200 Hz": 2.07,
+      "250 Hz": 2.199,
+      "300 Hz": 2.189
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.838,
+      "100 Hz": 1.85,
+      "150 Hz": 2.222,
+      "200 Hz": 2.07,
+      "250 Hz": 2.211,
+      "300 Hz": 2.191
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.609
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.651
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-30 19:13:25",
+     "lock_index": 66621272,
+     "r1": 0.88093,
+     "r2": 0.8783,
+     "runner_up_start_ist": "2023-01-30 19:35:36",
+     "confidence": 0.01166,
+     "o_s": -48689,
+     "o_without_D_s": -48689,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-31 05:57:08",
+     "lock_index": 66659895,
+     "r1": 0.26379,
+     "r2": 0.22446,
+     "runner_up_start_ist": "2023-01-30 19:19:08",
+     "confidence": 0.04183,
+     "o_s": -10066,
+     "o_without_D_s": -10066,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-01-31 14:56:44",
+     "lock_index": 66692271,
+     "r1": 0.47001,
+     "r2": 0.46492,
+     "runner_up_start_ist": "2023-01-30 11:55:57",
+     "confidence": 0.0065,
+     "o_s": 22310,
+     "o_without_D_s": 22310,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "SyeWgVRLrcE",
+   "channel": "IIT Delhi",
+   "venue_type": "lecture",
+   "release_time_ist": "2023-02-16T16:30:14+05:30",
+   "D_s": -6.0,
+   "label_stable": true,
+   "drift_window_r": 0.7181,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "b3834ae6faffcb7ff9c62fb00f09a88bc726415e1f749a66f6fa47d8d4520749",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 6.741,
+      "100 Hz": 4.639,
+      "150 Hz": 2.733,
+      "200 Hz": 2.048,
+      "250 Hz": 2.132,
+      "300 Hz": 2.106
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 7.064,
+      "100 Hz": 4.827,
+      "150 Hz": 2.768,
+      "200 Hz": 2.051,
+      "250 Hz": 2.131,
+      "300 Hz": 2.095
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 6.741,
+      "100 Hz": 4.639,
+      "150 Hz": 2.733,
+      "200 Hz": 2.048,
+      "250 Hz": 2.132,
+      "300 Hz": 2.106
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 7.064,
+      "100 Hz": 4.827,
+      "150 Hz": 2.768,
+      "200 Hz": 2.051,
+      "250 Hz": 2.131,
+      "300 Hz": 2.095
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 5.846
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 6.184
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-02-16 16:30:04",
+     "lock_index": 68080271,
+     "r1": 0.98458,
+     "r2": 0.81023,
+     "runner_up_start_ist": "2023-02-15 18:29:04",
+     "confidence": 1.30097,
+     "o_s": -4,
+     "o_without_D_s": -10,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-02-16 16:30:09",
+     "lock_index": 68080276,
+     "r1": 0.80986,
+     "r2": 0.76072,
+     "runner_up_start_ist": "2023-02-15 18:28:56",
+     "confidence": 0.1287,
+     "o_s": 1,
+     "o_without_D_s": -5,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-02-16 16:30:09",
+     "lock_index": 68080276,
+     "r1": 0.75658,
+     "r2": 0.71699,
+     "runner_up_start_ist": "2023-02-15 18:28:55",
+     "confidence": 0.08675,
+     "o_s": 1,
+     "o_without_D_s": -5,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "-IdXGesTb1M",
+   "channel": "Punjab Vidhan Sabha",
+   "venue_type": "legislature",
+   "release_time_ist": "2023-03-06T15:00:34+05:30",
+   "D_s": -8.0,
+   "label_stable": true,
+   "drift_window_r": 0.7097,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "5f17f9d2d0f0e97729f9d19d3343fccddb7a28cb12240b41b4ce1fb7db3f715f",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.231,
+      "100 Hz": 1.882,
+      "150 Hz": 2.0,
+      "200 Hz": 2.151,
+      "250 Hz": 2.009,
+      "300 Hz": 2.117
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.752,
+      "100 Hz": 1.903,
+      "150 Hz": 2.007,
+      "200 Hz": 2.154,
+      "250 Hz": 2.007,
+      "300 Hz": 2.11
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.231,
+      "100 Hz": 1.882,
+      "150 Hz": 2.0,
+      "200 Hz": 2.151,
+      "250 Hz": 2.009,
+      "300 Hz": 2.117
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.752,
+      "100 Hz": 1.903,
+      "150 Hz": 2.007,
+      "200 Hz": 2.154,
+      "250 Hz": 2.007,
+      "300 Hz": 2.11
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 3.956
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.458
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-06 15:00:31",
+     "lock_index": 69630098,
+     "r1": 0.9958,
+     "r2": 0.94212,
+     "runner_up_start_ist": "2023-03-07 04:59:56",
+     "confidence": 1.32485,
+     "o_s": 5,
+     "o_without_D_s": -3,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-06 15:00:03",
+     "lock_index": 69630070,
+     "r1": 0.714,
+     "r2": 0.69401,
+     "runner_up_start_ist": "2023-03-06 19:23:31",
+     "confidence": 0.03964,
+     "o_s": -23,
+     "o_without_D_s": -31,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-06 14:59:52",
+     "lock_index": 69630059,
+     "r1": 0.65991,
+     "r2": 0.64128,
+     "runner_up_start_ist": "2023-03-06 19:23:31",
+     "confidence": 0.03231,
+     "o_s": -34,
+     "o_without_D_s": -42,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "m9f41P9bmr8",
+   "channel": "Department of Theoretical Physics, TIFR",
+   "venue_type": "lecture",
+   "release_time_ist": "2023-03-09T18:32:17+05:30",
+   "D_s": -8.0,
+   "label_stable": true,
+   "drift_window_r": 0.7097,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "e17d3ea6091eaffa7e6894b75fe77af0b78e92f755696d42f5b844d8f5e34794",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.673,
+      "100 Hz": 1.84,
+      "150 Hz": 1.943,
+      "200 Hz": 1.957,
+      "250 Hz": 2.136,
+      "300 Hz": 2.137
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.67,
+      "100 Hz": 1.85,
+      "150 Hz": 1.95,
+      "200 Hz": 1.959,
+      "250 Hz": 2.143,
+      "300 Hz": 2.138
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.673,
+      "100 Hz": 1.84,
+      "150 Hz": 1.943,
+      "200 Hz": 1.957,
+      "250 Hz": 2.136,
+      "300 Hz": 2.137
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.67,
+      "100 Hz": 1.85,
+      "150 Hz": 1.95,
+      "200 Hz": 1.959,
+      "250 Hz": 2.143,
+      "300 Hz": 2.138
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.584
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.584
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-10 14:01:38",
+     "lock_index": 69972165,
+     "r1": 0.16948,
+     "r2": 0.16133,
+     "runner_up_start_ist": "2023-03-09 01:20:15",
+     "confidence": 0.00837,
+     "o_s": 70169,
+     "o_without_D_s": 70161,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-10 10:18:53",
+     "lock_index": 69958800,
+     "r1": 0.16978,
+     "r2": 0.13944,
+     "runner_up_start_ist": "2023-03-09 22:16:07",
+     "confidence": 0.03108,
+     "o_s": 56804,
+     "o_without_D_s": 56796,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-09 16:53:07",
+     "lock_index": 69896054,
+     "r1": 0.09459,
+     "r2": 0.09362,
+     "runner_up_start_ist": "2023-03-09 02:05:26",
+     "confidence": 0.00098,
+     "o_s": -5942,
+     "o_without_D_s": -5950,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "sBRG3VwJWn8",
+   "channel": "Somnath Temple - Official Channel",
+   "venue_type": "religious",
+   "release_time_ist": "2023-03-17T06:32:08+05:30",
+   "D_s": -10.0,
+   "label_stable": true,
+   "drift_window_r": 0.7218,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "4c16b16325f536b4f84b31e3e578f7425dc54533c771377a62e09a7ae6feb45b",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.612,
+      "100 Hz": 1.984,
+      "150 Hz": 2.216,
+      "200 Hz": 2.089,
+      "250 Hz": 2.069,
+      "300 Hz": 2.133
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.623,
+      "100 Hz": 2.018,
+      "150 Hz": 2.199,
+      "200 Hz": 2.097,
+      "250 Hz": 2.073,
+      "300 Hz": 2.135
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.612,
+      "100 Hz": 1.984,
+      "150 Hz": 2.216,
+      "200 Hz": 2.089,
+      "250 Hz": 2.069,
+      "300 Hz": 2.133
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.623,
+      "100 Hz": 2.018,
+      "150 Hz": 2.199,
+      "200 Hz": 2.097,
+      "250 Hz": 2.073,
+      "300 Hz": 2.135
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.485
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.496
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-16 06:35:05",
+     "lock_index": 70463772,
+     "r1": 0.14646,
+     "r2": 0.1391,
+     "runner_up_start_ist": "2023-03-18 01:13:53",
+     "confidence": 0.00751,
+     "o_s": -86213,
+     "o_without_D_s": -86223,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-16 06:33:55",
+     "lock_index": 70463702,
+     "r1": 0.16684,
+     "r2": 0.16631,
+     "runner_up_start_ist": "2023-03-18 01:12:46",
+     "confidence": 0.00055,
+     "o_s": -86283,
+     "o_without_D_s": -86293,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-18 01:06:14",
+     "lock_index": 70616841,
+     "r1": 0.10477,
+     "r2": 0.10288,
+     "runner_up_start_ist": "2023-03-18 00:19:55",
+     "confidence": 0.00191,
+     "o_s": 66856,
+     "o_without_D_s": 66846,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "aTL452sxXOA",
+   "channel": "Jharkhand Vidhansabha TV",
+   "venue_type": "legislature",
+   "release_time_ist": "2023-03-21T10:08:34+05:30",
+   "D_s": -13.0,
+   "label_stable": true,
+   "drift_window_r": 0.6917,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "9779de1c90f5cc1a2248e47e3cce4ecfa0d390222714e0f99b56088b222ae290",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 9.662,
+      "100 Hz": 4.789,
+      "150 Hz": 2.176,
+      "200 Hz": 2.311,
+      "250 Hz": 2.084,
+      "300 Hz": 2.112
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 9.741,
+      "100 Hz": 4.879,
+      "150 Hz": 2.21,
+      "200 Hz": 2.306,
+      "250 Hz": 2.075,
+      "300 Hz": 2.115
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 9.662,
+      "100 Hz": 4.789,
+      "150 Hz": 2.176,
+      "200 Hz": 2.311,
+      "250 Hz": 2.084,
+      "300 Hz": 2.112
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 9.741,
+      "100 Hz": 4.879,
+      "150 Hz": 2.21,
+      "200 Hz": 2.306,
+      "250 Hz": 2.075,
+      "300 Hz": 2.115
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 9.192
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 9.234
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-21 10:08:23",
+     "lock_index": 70908570,
+     "r1": 0.99856,
+     "r2": 0.83426,
+     "runner_up_start_ist": "2023-03-20 12:22:16",
+     "confidence": 2.41685,
+     "o_s": 2,
+     "o_without_D_s": -11,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-21 10:08:23",
+     "lock_index": 70908570,
+     "r1": 0.82485,
+     "r2": 0.71438,
+     "runner_up_start_ist": "2023-03-20 14:20:24",
+     "confidence": 0.27572,
+     "o_s": 2,
+     "o_without_D_s": -11,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-21 10:08:24",
+     "lock_index": 70908571,
+     "r1": 0.74834,
+     "r2": 0.63357,
+     "runner_up_start_ist": "2023-03-20 14:20:16",
+     "confidence": 0.22181,
+     "o_s": 3,
+     "o_without_D_s": -10,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "x_qqekigiRk",
+   "channel": "IIT Kanpur",
+   "venue_type": "lecture",
+   "release_time_ist": "2023-03-21T18:01:13+05:30",
+   "D_s": -13.0,
+   "label_stable": true,
+   "drift_window_r": 0.6917,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "8f007cb700b30dd1860d6a3b58d49fdeee5178416164fcc4e2f539bdc69122e8",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.667,
+      "100 Hz": 1.941,
+      "150 Hz": 1.879,
+      "200 Hz": 2.078,
+      "250 Hz": 2.089,
+      "300 Hz": 2.116
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.671,
+      "100 Hz": 1.939,
+      "150 Hz": 1.874,
+      "200 Hz": 2.075,
+      "250 Hz": 2.082,
+      "300 Hz": 2.117
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.667,
+      "100 Hz": 1.941,
+      "150 Hz": 1.879,
+      "200 Hz": 2.078,
+      "250 Hz": 2.089,
+      "300 Hz": 2.116
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.671,
+      "100 Hz": 1.939,
+      "150 Hz": 1.874,
+      "200 Hz": 2.075,
+      "250 Hz": 2.082,
+      "300 Hz": 2.117
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.567
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.568
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-22 00:05:12",
+     "lock_index": 70958779,
+     "r1": 0.13324,
+     "r2": 0.13259,
+     "runner_up_start_ist": "2023-03-21 23:40:12",
+     "confidence": 0.00066,
+     "o_s": 21852,
+     "o_without_D_s": 21839,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-22 13:54:42",
+     "lock_index": 71008549,
+     "r1": 0.14554,
+     "r2": 0.14331,
+     "runner_up_start_ist": "2023-03-20 21:24:09",
+     "confidence": 0.00227,
+     "o_s": 71622,
+     "o_without_D_s": 71609,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-21 20:03:37",
+     "lock_index": 70944284,
+     "r1": 0.15783,
+     "r2": 0.1396,
+     "runner_up_start_ist": "2023-03-21 20:18:17",
+     "confidence": 0.01865,
+     "o_s": 7357,
+     "o_without_D_s": 7344,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "bIKIzl-h3Qo",
+   "channel": "ISRO Official",
+   "venue_type": "government event",
+   "release_time_ist": "2023-03-26T08:31:20+05:30",
+   "D_s": -13.0,
+   "label_stable": true,
+   "drift_window_r": 0.5748,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "3b4daa763baf924591d53ebcd2d5618db087af2185bf1393afd7d615419a577f",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.583,
+      "100 Hz": 1.744,
+      "150 Hz": 1.945,
+      "200 Hz": 1.862,
+      "250 Hz": 1.907,
+      "300 Hz": 2.073
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.583,
+      "100 Hz": 1.744,
+      "150 Hz": 1.938,
+      "200 Hz": 1.858,
+      "250 Hz": 1.899,
+      "300 Hz": 2.073
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.583,
+      "100 Hz": 1.744,
+      "150 Hz": 1.945,
+      "200 Hz": 1.862,
+      "250 Hz": 1.907,
+      "300 Hz": 2.073
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.583,
+      "100 Hz": 1.744,
+      "150 Hz": 1.938,
+      "200 Hz": 1.858,
+      "250 Hz": 1.899,
+      "300 Hz": 2.073
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.492
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.494
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-26 08:55:53",
+     "lock_index": 71336220,
+     "r1": 0.21247,
+     "r2": 0.20993,
+     "runner_up_start_ist": "2023-03-26 23:59:14",
+     "confidence": 0.00266,
+     "o_s": 1486,
+     "o_without_D_s": 1473,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-26 01:55:53",
+     "lock_index": 71311020,
+     "r1": 0.175,
+     "r2": 0.16684,
+     "runner_up_start_ist": "2023-03-26 23:59:12",
+     "confidence": 0.0084,
+     "o_s": -23714,
+     "o_without_D_s": -23727,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-25 22:38:36",
+     "lock_index": 71299183,
+     "r1": 0.10698,
+     "r2": 0.098,
+     "runner_up_start_ist": "2023-03-26 03:00:30",
+     "confidence": 0.00907,
+     "o_s": -35551,
+     "o_without_D_s": -35564,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "A5sSLP2xhhI",
+   "channel": "Delhi Assembly Television",
+   "venue_type": "legislature",
+   "release_time_ist": "2023-03-28T14:16:32+05:30",
+   "D_s": -13.0,
+   "label_stable": true,
+   "drift_window_r": 0.5748,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "49f8bc05fcd6ed5f6cacecc344b141c6f5198e32be24ed8918bffa63863c0121",
+   "hum": {
+    "v2__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 3.973,
+      "100 Hz": 1.691,
+      "150 Hz": 1.84,
+      "200 Hz": 2.02,
+      "250 Hz": 2.157,
+      "300 Hz": 1.968
+     }
+    },
+    "v2__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.043,
+      "100 Hz": 1.693,
+      "150 Hz": 1.85,
+      "200 Hz": 2.026,
+      "250 Hz": 2.168,
+      "300 Hz": 1.968
+     }
+    },
+    "v1__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 3.973,
+      "100 Hz": 1.691,
+      "150 Hz": 1.84,
+      "200 Hz": 2.02,
+      "250 Hz": 2.157,
+      "300 Hz": 1.968
+     }
+    },
+    "v1__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 4.043,
+      "100 Hz": 1.693,
+      "150 Hz": 1.85,
+      "200 Hz": 2.026,
+      "250 Hz": 2.168,
+      "300 Hz": 1.968
+     }
+    },
+    "naive__full": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 3.866
+     }
+    },
+    "naive__x60": {
+     "present": true,
+     "median_peak_to_floor": {
+      "50 Hz": 3.938
+     }
+    }
+   },
+   "hum_present_v1_full": true,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-28 14:16:37",
+     "lock_index": 71528264,
+     "r1": 0.10991,
+     "r2": 0.09841,
+     "runner_up_start_ist": "2023-03-28 14:48:40",
+     "confidence": 0.01162,
+     "o_s": 18,
+     "o_without_D_s": 5,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-29 09:35:07",
+     "lock_index": 71597774,
+     "r1": 0.08879,
+     "r2": 0.08536,
+     "runner_up_start_ist": "2023-03-29 04:05:08",
+     "confidence": 0.00346,
+     "o_s": 69528,
+     "o_without_D_s": 69515,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-03-29 09:35:08",
+     "lock_index": 71597775,
+     "r1": 0.0825,
+     "r2": 0.08064,
+     "runner_up_start_ist": "2023-03-29 03:09:43",
+     "confidence": 0.00187,
+     "o_s": 69529,
+     "o_without_D_s": 69516,
+     "positions_searched": 172801,
+     "trace_hum_flag": true
+    }
+   }
+  },
+  {
+   "video_id": "4HJm6AlzO1o",
+   "channel": "Tata Institute of Fundamental Research",
+   "venue_type": "lecture",
+   "release_time_ist": "2023-04-28T17:04:19+05:30",
+   "D_s": 4.0,
+   "label_stable": true,
+   "drift_window_r": 0.6676,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "05e082f893940c8a16c1fa547795205fc8a3dd49f5a6c8caca3a6dd0dc8cba2b",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.843,
+      "100 Hz": 2.44,
+      "150 Hz": 2.036,
+      "200 Hz": 2.163,
+      "250 Hz": 1.922,
+      "300 Hz": 2.024
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.867,
+      "100 Hz": 2.476,
+      "150 Hz": 2.043,
+      "200 Hz": 2.173,
+      "250 Hz": 1.931,
+      "300 Hz": 2.021
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.843,
+      "100 Hz": 2.44,
+      "150 Hz": 2.036,
+      "200 Hz": 2.163,
+      "250 Hz": 1.922,
+      "300 Hz": 2.024
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.867,
+      "100 Hz": 2.476,
+      "150 Hz": 2.043,
+      "200 Hz": 2.173,
+      "250 Hz": 1.931,
+      "300 Hz": 2.021
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.763
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.783
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-04-28 17:04:05",
+     "lock_index": 74216712,
+     "r1": 0.4801,
+     "r2": 0.4015,
+     "runner_up_start_ist": "2023-04-29 02:19:49",
+     "confidence": 0.09768,
+     "o_s": -18,
+     "o_without_D_s": -14,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-04-28 17:04:12",
+     "lock_index": 74216719,
+     "r1": 0.26341,
+     "r2": 0.24813,
+     "runner_up_start_ist": "2023-04-28 20:56:40",
+     "confidence": 0.01636,
+     "o_s": -11,
+     "o_without_D_s": -7,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-04-29 09:33:08",
+     "lock_index": 74276055,
+     "r1": 0.1773,
+     "r2": 0.17653,
+     "runner_up_start_ist": "2023-04-28 00:29:32",
+     "confidence": 0.00079,
+     "o_s": 59325,
+     "o_without_D_s": 59329,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  },
+  {
+   "video_id": "lQ_kCdVnees",
+   "channel": "IUCAA: Lectures, Colloquia & Live Streams",
+   "venue_type": "lecture",
+   "release_time_ist": "2023-05-30T14:17:36+05:30",
+   "D_s": 4.0,
+   "label_stable": true,
+   "drift_window_r": 0.5035,
+   "ref_src_file": "freq_V.csv",
+   "harvest_status": "done",
+   "harvest_reason": "",
+   "seconds": 3900.0,
+   "audio_sha256": "e64c3781bbf75d9d03369b6cb6c5bea2806f88e2f12906b8a390b064056ee3b7",
+   "hum": {
+    "v2__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.643,
+      "100 Hz": 2.099,
+      "150 Hz": 1.869,
+      "200 Hz": 2.048,
+      "250 Hz": 2.153,
+      "300 Hz": 2.157
+     }
+    },
+    "v2__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.648,
+      "100 Hz": 2.099,
+      "150 Hz": 1.869,
+      "200 Hz": 2.048,
+      "250 Hz": 2.157,
+      "300 Hz": 2.157
+     }
+    },
+    "v1__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.643,
+      "100 Hz": 2.099,
+      "150 Hz": 1.869,
+      "200 Hz": 2.048,
+      "250 Hz": 2.153,
+      "300 Hz": 2.157
+     }
+    },
+    "v1__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.648,
+      "100 Hz": 2.099,
+      "150 Hz": 1.869,
+      "200 Hz": 2.048,
+      "250 Hz": 2.157,
+      "300 Hz": 2.157
+     }
+    },
+    "naive__full": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.545
+     }
+    },
+    "naive__x60": {
+     "present": false,
+     "median_peak_to_floor": {
+      "50 Hz": 1.55
+     }
+    }
+   },
+   "hum_present_v1_full": false,
+   "locks": {
+    "v2": {
+     "extractor": "v2",
+     "weighted_correlation": true,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-05-30 02:20:54",
+     "lock_index": 76928521,
+     "r1": 0.18022,
+     "r2": 0.17002,
+     "runner_up_start_ist": "2023-05-29 19:59:58",
+     "confidence": 0.01052,
+     "o_s": -43006,
+     "o_without_D_s": -43002,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "v1": {
+     "extractor": "v1",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-05-31 08:19:51",
+     "lock_index": 77036458,
+     "r1": 0.18474,
+     "r2": 0.17839,
+     "runner_up_start_ist": "2023-05-29 18:25:57",
+     "confidence": 0.00656,
+     "o_s": 64931,
+     "o_without_D_s": 64935,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    },
+    "naive": {
+     "extractor": "naive",
+     "weighted_correlation": false,
+     "n_frames": 3585,
+     "lock_start_ist": "2023-05-30 00:42:48",
+     "lock_index": 76922635,
+     "r1": 0.14986,
+     "r2": 0.14819,
+     "runner_up_start_ist": "2023-05-31 05:10:07",
+     "confidence": 0.00171,
+     "o_s": -48892,
+     "o_without_D_s": -48888,
+     "positions_searched": 172801,
+     "trace_hum_flag": false
+    }
+   }
+  }
+ ],
+ "note": "Calibration only. No Dev or Test trace was read or searched."
+}
