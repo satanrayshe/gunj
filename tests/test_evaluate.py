@@ -8,6 +8,7 @@ check is replaced by a stand-in where a test needs it to pass).
 from __future__ import annotations
 
 import csv
+import datetime as dt
 import json
 import sys
 from pathlib import Path
@@ -34,6 +35,19 @@ SPLIT_COLS = ["video_id", "split", "half", "channel", "venue_type", "country", "
               "synthetic_seed", "title"]
 MAN_COLS = ["video_id", "split", "status", "reason", "retryable", "trace_path", "finished_utc",
             "hum_present_v1", "hum_max_median_ratio_v1", "source_format"]
+
+
+IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+NET_REASON = ("ERROR: [youtube] {vid}: Unable to download API page: [Errno 11001] getaddrinfo failed "
+              "(caused by TransportError('[Errno 11001] getaddrinfo failed'))")
+
+
+@pytest.fixture(autouse=True)
+def fixed_clock(monkeypatch):
+    """evaluate.py's clock: 21:00 IST on 7 Nov, before the default decision time, unless a test moves it."""
+    clock = {"now": dt.datetime(2026, 11, 7, 21, 0, tzinfo=IST)}
+    monkeypatch.setattr(ev, "_now", lambda: clock["now"])
+    return clock
 
 
 def unix_of(idx: int) -> int:
@@ -93,8 +107,9 @@ def srow(vid, split, idx, half="", lengths="10;20", stable="True"):
             "synthetic_seed": "7" if split == "negative_synthetic" else "", "title": "SYNTHETIC"}
 
 
-def mrow(vid, split, status="done", finished="2026-11-07T10:00:00+00:00", hum="True", synthetic=False, reason=""):
-    return {"video_id": vid, "split": split, "status": status, "reason": reason,
+def mrow(vid, split, status="done", finished="2026-11-07T10:00:00+00:00", hum="True", synthetic=False, reason="",
+         retryable=""):
+    return {"video_id": vid, "split": split, "status": status, "reason": reason, "retryable": retryable,
             "trace_path": f"traces/{split}/{vid}.npz" if status == "done" else "",
             "finished_utc": finished, "hum_present_v1": hum if status == "done" else "",
             "hum_max_median_ratio_v1": "4.0" if hum == "True" else "1.5",
@@ -374,6 +389,8 @@ def test_real_mode_gate(world, monkeypatch):
     for name in ("test_results.csv", "gate.md", "flow_table.md", "evaluation.json", "false_matches.json"):
         txt = (repo / "results" / name).read_text(encoding="utf-8")
         assert str(Path.home()) not in txt and str(Path.home()).replace("\\", "/") not in txt
+    assert not (repo / "results" / "gate_frozen.json").exists()          # before the decision time
+    assert e["gate_freeze"]["status"] == "this run started before the decision time"
     # decision time before the harvest finished: nothing counts
     assert run_ev(world, "--decision-time", "2026-11-07T12:00:00+05:30") == 0
     g = json.loads((repo / "results" / "evaluation.json").read_text(encoding="utf-8"))["gate"]
@@ -448,3 +465,207 @@ def test_no_absolute_paths_under_results(tmp_path):
     ec.write_json_atomic(tmp_path / "elsewhere.json", {"p": str(repo)}, repo)    # outside results/: allowed
     ec.write_json_atomic(repo / "results" / "y.json", {"p": "traces/test/a.npz"}, repo)
     assert not list((repo / "results").glob("*.tmp"))
+
+
+# ------------------------------------------------- review fixes (7 Nov)
+
+def _utc(s):
+    return pd.Timestamp(s).to_pydatetime()
+
+
+def test_harvest_health_skips_network_down_and_judges_at_decision_time(tmp_path):
+    logs = tmp_path / "logs"
+    logs.mkdir()
+    decision = _utc("2026-11-07T22:00:00+05:30")
+    net = mrow("N1", "test", status="failed", reason=NET_REASON.format(vid="N1"), retryable="True",
+               finished="2026-11-07T16:28:00+00:00")                       # 21:58 IST
+    man = {"E": mrow("E", "test", finished="2026-11-07T16:20:00+00:00"), "N1": net}
+    h = ec.harvest_health(man, logs, decision, tmp_path)
+    # a network-down failure is not a download: the latest real download is E, done
+    assert h["ok"] is True and h["most_recent_download"]["video_id"] == "E"
+    assert [x["video_id"] for x in h["network_down_rows"]] == ["N1"]
+    # an unavailable or other failure still counts
+    man["U"] = mrow("U", "test", status="failed", reason="This video is not available", retryable="False",
+                    finished="2026-11-07T16:25:00+00:00")
+    h = ec.harvest_health(man, logs, decision, tmp_path)
+    assert h["ok"] is False and h["most_recent_download"]["video_id"] == "U"
+    del man["U"]
+    # a block after the decision time does not fail the 22:00 gate; one before it does
+    man["B1"] = mrow("B1", "test", status="blocked", reason="HTTP Error 429", finished="2026-11-07T16:45:00+00:00")
+    h = ec.harvest_health(man, logs, decision, tmp_path)
+    assert h["blocked_rows"] == [] and h["ok"] is True
+    assert ec.harvest_health(man, logs, None, tmp_path)["blocked_rows"] == ["B1"]
+    man["B1"]["finished_utc"] = "2026-11-07T16:10:00+00:00"
+    assert ec.harvest_health(man, logs, decision, tmp_path)["blocked_rows"] == ["B1"]
+    man["B1"]["finished_utc"] = ""                                         # unreadable time: still counts
+    assert ec.harvest_health(man, logs, decision, tmp_path)["blocked_rows"] == ["B1"]
+
+
+def test_harvest_health_keeps_attempts_a_later_retry_overwrote(tmp_path):
+    """F failed at 21:58 IST and its retry finished after 22:00: the 22:00 answer must not change."""
+    logs = tmp_path / "logs"
+    logs.mkdir()
+    decision = _utc("2026-11-07T22:00:00+05:30")
+    man = {"E": mrow("E", "test", finished="2026-11-07T16:20:00+00:00"),
+           "F": mrow("F", "test", status="failed", reason="short audio: 3000 s of 3900 s", retryable="True",
+                     finished="2026-11-07T16:28:00+00:00"),
+           "G": mrow("G", "test", finished="2026-11-07T17:00:00+00:00")}      # G's retry: done at 22:30 IST
+    log_lines = [
+        "2026-11-07T21:50:00+0530 INFO E: done, 3900.0 s audio, extraction 60 s, trace traces/test/E.npz",
+        "2026-11-07T21:58:00+0530 WARNING F: failed (retryable): short audio: 3000 s of 3900 s",
+        "2026-11-07T21:59:00+0530 WARNING G: failed, the laptop's network is down (not charged an attempt): "
+        + NET_REASON.format(vid="G"),
+        "2026-11-07T23:30:00+0530 INFO F: done, 3900.0 s audio, extraction 60 s, trace traces/test/F.npz",
+    ]
+    (logs / "harvest_test.log").write_text("\n".join(log_lines) + "\n", encoding="utf-8")
+    h1 = ec.harvest_health(man, logs, decision, tmp_path)
+    assert h1["ok"] is False and h1["most_recent_download"]["video_id"] == "F"
+    # the retry overwrites F's manifest row after the decision time; the logs still hold the failure
+    man["F"] = mrow("F", "test", finished="2026-11-07T18:00:00+00:00")
+    h2 = ec.harvest_health(man, logs, decision, tmp_path)
+    assert h2["ok"] is False and h2["most_recent_download"]["video_id"] == "F"
+    assert h2["most_recent_download"]["status"] == "failed"
+    assert h2["most_recent_download"]["source"] == "logs/harvest_test.log line 2"
+    assert "G" in [x["video_id"] for x in h2["network_down_rows"]]
+    # without the failure line, E (done at 21:50 IST) is the latest download by 22:00
+    (logs / "harvest_test.log").write_text("\n".join(log_lines[:1] + log_lines[2:]) + "\n", encoding="utf-8")
+    h3 = ec.harvest_health(man, logs, decision, tmp_path)
+    assert h3["ok"] is True and h3["most_recent_download"]["video_id"] == "E"
+
+
+def test_redact_paths_and_manifest_reason_with_path_does_not_stop_the_gate(world, monkeypatch):
+    repo = world["repo"]
+    home = str(Path.home())
+    s = ec.redact_paths(f"x {repo}\\media\\tmp\\a.m4a; {str(repo).replace(chr(92), '/')}/b; "
+                        f"{repr(str(repo))}; {home.upper()}\\cache\\c", repo)
+    assert "<repo>" in s and "<home>" in s
+    ec.check_no_abs_paths(s, repo)                                  # does not raise
+    ec.check_no_abs_paths(json.dumps(s), repo)
+    assert ec.redact_paths(None, repo) is None and ec.redact_paths("", repo) == ""
+    # a Windows rename failure with the repr-doubled path, as yt-dlp reports it
+    tmpf = repo / "media" / "tmp" / "TES-FAIL.src.m4a.part"
+    bad = (f"ERROR: Unable to rename file: [WinError 32] The process cannot access the file because it is "
+           f"being used by another process: {str(tmpf)!r} -> {str(tmpf.with_suffix(''))!r}")
+    man = read_csv(repo / "data" / "harvest_manifest.csv")
+    for m in man:
+        if m["video_id"] == "TES-FAIL":
+            m.update(reason=bad, retryable="True", finished_utc="2026-11-07T16:20:00+00:00")
+    write_csv(repo / "data" / "harvest_manifest.csv", MAN_COLS, man)
+    with open(repo / "logs" / "harvest_test.log", "a", encoding="utf-8") as f:
+        f.write(f"2026-11-07T21:50:00+0530 WARNING TES-FAIL: failed (retryable): {bad}\n")
+    assert run_st(world) == 0
+    _pass_git(monkeypatch)
+    assert run_ev(world) == 0
+    for name in ("test_results.csv", "gate.md", "flow_table.md", "evaluation.json"):
+        txt = (repo / "results" / name).read_text(encoding="utf-8")
+        assert "<repo>" in txt, name
+        ec.check_no_abs_paths(txt, repo)
+    e = json.loads((repo / "results" / "evaluation.json").read_text(encoding="utf-8"))
+    assert e["health"]["most_recent_download"]["video_id"] == "TES-FAIL"
+    assert e["health"]["most_recent_download"]["reason"].count("<repo>") == 2
+
+
+def test_network_down_rows_count_as_not_attempted(world, tmp_path):
+    repo = world["repo"]
+    splits = read_csv(repo / "data" / "splits.csv")
+    splits.append(srow("CAL-NET", "calibration", 185_000))
+    write_csv(repo / "data" / "splits.csv", SPLIT_COLS, splits)
+    man = read_csv(repo / "data" / "harvest_manifest.csv")
+    man.append(mrow("CAL-NET", "calibration", status="failed", reason=NET_REASON.format(vid="CAL-NET"),
+                    retryable="True", finished="2026-11-07T05:10:00+00:00"))
+    write_csv(repo / "data" / "harvest_manifest.csv", MAN_COLS, man)
+    out = tmp_path / "p"
+    assert run_ev(world, "--practice", "--out", str(out), "--no-negatives") == 0
+    e = json.loads((out / "evaluation.json").read_text(encoding="utf-8"))
+    steps = {s["step"]: s["n"] for s in e["flow"]["steps"]}
+    assert steps["selected"] == 9 and steps["download attempted"] == 7 and steps["audio obtained"] == 6
+    reasons = e["flow"]["drops"][0]["reasons"]
+    assert reasons[ev.NETWORK_DOWN_BUCKET] == ["CAL-NET"] and reasons["not attempted yet"] == ["CAL-LATER"]
+    assert all("getaddrinfo" not in k for k in e["flow"]["drops"][1]["reasons"])
+    rows = read_csv(out / "test_results.csv")
+    assert not _rows_for(rows, "CAL-NET") and len(_rows_for(rows, "CAL-FAIL")) == 1
+    gate_md = (out / "gate.md").read_text(encoding="utf-8")
+    assert "Attempted but no audio" in gate_md and "CAL-NET" not in gate_md.split("Attempted but no audio")[-1]
+
+
+def test_transient_read_error_is_not_cached(world, tmp_path, monkeypatch):
+    repo = world["repo"]
+    ref = gref.load(world["ref_dir"])
+    jobs = [ec.Job("calibration", "CAL-0", "traces/calibration/CAL-0.npz", unix_of(20_000), [10])]
+    real_task, seen = ec.search_task, []
+
+    def locked(t):                                    # the file cannot be read (e.g. briefly locked)
+        r = real_task(dict(t, trace_abs=str(repo / "traces" / "calibration" / "gone.npz")))
+        seen.append(r)
+        return r
+
+    monkeypatch.setattr(ec, "search_task", locked)
+    recs, timing = ec.run_searches(jobs, tmp_path / "c", ref, world["ref_dir"], 1, repo=repo)
+    assert recs == {} and timing["streams_not_cached_read_error"] == 1
+    assert not (tmp_path / "c" / "calibration" / "CAL-0.json").exists()
+    assert seen and all(r["transient"] and r["error"].startswith("FileNotFoundError") for r in seen)
+    assert all("<repo>" in r["error"] and str(repo) not in r["error"] for r in seen)
+    monkeypatch.setattr(ec, "search_task", real_task)
+    recs, timing = ec.run_searches(jobs, tmp_path / "c", ref, world["ref_dir"], 1, repo=repo)
+    assert timing["streams_to_search"] == 1 and timing["streams_searched"] == 1
+    assert all(s["ok"] and "transient" not in s for s in recs["calibration/CAL-0"]["searches"])
+    # an error from the trace content (no 60-min excerpt key) is a result, not transient
+    r = ec.search_task({"key": "k", "ext": "v2", "length_min": 60, "scope": "full", "release_ts": unix_of(20_000),
+                        "trace_abs": str(repo / "traces" / "calibration" / "CAL-0.npz"), "repo": str(repo)})
+    assert r["ok"] is False and "transient" not in r and r.get("trace_sha256")
+
+
+def test_cached_search_error_with_a_path_is_redacted(world):
+    repo = world["repo"]
+    ref = gref.load(world["ref_dir"])
+    s = {"ext": "v2", "length_min": 10, "scope": "full", "error": f"PermissionError: [Errno 13] {repo}\\x.npz",
+         "candidates": [], "confidence": None}
+    out = ev.evaluate_search(s, {"hum": {}}, 100, 60, None, ref, repo)
+    assert "<repo>" in out["verdict_reason"] and str(repo) not in out["verdict_reason"]
+
+
+def test_gate_is_frozen_after_the_decision_time(world, monkeypatch, fixed_clock):
+    repo = world["repo"]
+    assert run_st(world) == 0
+    _pass_git(monkeypatch)
+    fixed_clock["now"] = dt.datetime(2026, 11, 7, 22, 30, tzinfo=IST)
+    assert run_ev(world, "--no-negatives") == 0
+    fz_path = repo / "results" / "gate_frozen.json"
+    assert fz_path.exists()
+    gate_md = (repo / "results" / "gate.md").read_text(encoding="utf-8")
+    assert "FROZEN" in gate_md and "GATE MET" in gate_md
+    e1 = json.loads((repo / "results" / "evaluation.json").read_text(encoding="utf-8"))
+    assert e1["gate_freeze"]["status"] == "frozen this run" and e1["gate"]["gate_met"] is True
+    # later: a block line is found that would change a recomputed gate; the frozen gate stays
+    with open(repo / "logs" / "harvest_test.log", "a", encoding="utf-8") as f:
+        f.write("2026-11-07T21:30:00+0530 ERROR TES-LATER: BLOCKED: HTTP Error 429 (SYNTHETIC)\n")
+    assert ec.harvest_health(ec.read_manifest(repo / "data" / "harvest_manifest.csv"), repo / "logs",
+                             _utc("2026-11-07T22:00:00+05:30"), repo)["ok"] is False
+    fixed_clock["now"] = dt.datetime(2026, 11, 7, 23, 30, tzinfo=IST)
+    assert run_ev(world, "--no-negatives") == 0
+    assert (repo / "results" / "gate.md").read_text(encoding="utf-8") == gate_md
+    e2 = json.loads((repo / "results" / "evaluation.json").read_text(encoding="utf-8"))
+    assert e2["gate_freeze"]["status"] == "frozen" and e2["gate"] == e1["gate"] and e2["health"] == e1["health"]
+    # a deleted gate.md is restored from the frozen file, unchanged
+    (repo / "results" / "gate.md").unlink()
+    assert run_ev(world, "--no-negatives") == 0
+    assert (repo / "results" / "gate.md").read_text(encoding="utf-8") == gate_md
+    # another decision time cannot overwrite the frozen gate
+    assert run_ev(world, "--no-negatives", "--decision-time", "2026-11-07T23:00:00+05:30") == 2
+    assert (repo / "results" / "gate.md").read_text(encoding="utf-8") == gate_md
+
+
+def test_gate_not_frozen_while_a_stream_harvested_in_time_is_unsearched(world, monkeypatch, fixed_clock):
+    repo = world["repo"]
+    assert run_st(world) == 0
+    _pass_git(monkeypatch)
+    fixed_clock["now"] = dt.datetime(2026, 11, 7, 22, 5, tzinfo=IST)               # within the grace period
+    assert run_ev(world, "--no-negatives") == 0
+    assert not (repo / "results" / "gate_frozen.json").exists()
+    fixed_clock["now"] = dt.datetime(2026, 11, 7, 22, 30, tzinfo=IST)
+    (repo / "traces" / "test" / "TES-1.npz").write_bytes(b"not a zip file")      # cannot be searched this run
+    assert run_ev(world, "--no-negatives") == 0
+    assert not (repo / "results" / "gate_frozen.json").exists()
+    e = json.loads((repo / "results" / "evaluation.json").read_text(encoding="utf-8"))
+    assert "TES-1" in e["gate_freeze"]["status"]
+    assert "Not frozen yet" in (repo / "results" / "gate.md").read_text(encoding="utf-8")

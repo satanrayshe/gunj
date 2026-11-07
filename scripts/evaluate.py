@@ -30,6 +30,8 @@ Outputs (in results/, or the --out folder for --practice):
   test_results.csv   one row per stream x excerpt length x extractor x scope
   flow_table.md      the flow table (section 16) and the M2 cell counts
   gate.md            section 15 gate
+  gate_frozen.json   the gate as frozen by the first complete run after the
+                     decision time (reading 10)
   false_matches.md / false_matches.json   M3 on the report-half negatives
   evaluation.json    everything above in machine-readable form, plus timing
   search_cache/<split>/<video_id>.json    raw search output per stream
@@ -39,7 +41,13 @@ Readings chosen where PROTOCOL leaves room:
    is split further by extractor and scope, so each row has exactly one set
    of top-5 candidates, r, confidence, verdict and error. A stream whose
    download failed has one row with its harvest status and empty search
-   fields; streams not yet attempted appear only in the flow table.
+   fields; streams not yet attempted appear only in the flow table. A stream
+   whose last try failed because the laptop's network was down
+   (eval_common.network_down_row: failed, retryable, reason matching
+   harvest.NETWORK_DOWN_RE) counts as not attempted yet (PROTOCOL section 19,
+   11:50 IST: network loss is not a failed attempt): it has no row in
+   test_results.csv and the flow table lists it under "not attempted yet
+   (network down at last try; will be retried)".
 2. Gate extractor: the gate (section 15) counts locks of the primary
    extractor (v2) only; v1 and the naive baseline are shown beside it as
    description. A stream counts if, for at least one excerpt length, its top
@@ -51,13 +59,21 @@ Readings chosen where PROTOCOL leaves room:
    finished (manifest finished_utc) at or before --decision-time (default
    2026-11-07T22:00:00+05:30). Searches may run later; they do not depend on
    the clock. Streams harvested later are in the results but not in the gate.
-4. Harvest health (section 15, condition 3): no manifest row is "blocked",
-   no harvest log line (logs/harvest_*.log, logs/run_stage3.log) up to the
-   decision time shows BLOCKED, a harvester exit code 3, or a WARNING/ERROR
-   matching the harvester's own block pattern; and the most recent YouTube
-   download attempt (any split, latest finished_utc, SYNTHETIC rows
-   excluded) has status "done". A failed attempt for any reason (even
-   "video not available") makes "its most recent download succeeded" false.
+4. Harvest health (section 15, condition 3), judged as of the decision
+   time: no manifest row with finished_utc up to the decision time is
+   "blocked"; no harvest log line (logs/harvest_*.log, logs/run_stage3.log)
+   up to the decision time shows BLOCKED, a harvester exit code 3, or a
+   WARNING/ERROR matching the harvester's own block pattern; and the most
+   recent YouTube download attempt up to the decision time (any split,
+   SYNTHETIC streams excluded) has status "done". The attempts are the
+   manifest rows plus the timestamped outcome lines of the append-only
+   harvest logs, so a retry after the decision time that overwrites a
+   manifest row does not change the answer. A failed attempt for any reason
+   (even "video not available") makes "its most recent download succeeded"
+   false, except a failure caused by the laptop's network being down
+   (harvest.NETWORK_DOWN_RE, PROTOCOL section 19, 11:50 IST): it never
+   reached YouTube, is not a download attempt, and is skipped when finding
+   the most recent download. gate.md lists those skipped rows.
 5. One L for all extractors: T* = release time in IST + L + D, with L from
    results/latency.json (the primary extractor's L, section 6). With
    status "latency not calibrated" L is 0 and every result says so.
@@ -74,6 +90,19 @@ Readings chosen where PROTOCOL leaves room:
    is >= tau for its cell, with and without the hum-flag condition; real and
    SYNTHETIC separately and together. M5 (edit detection) and the M3
    reliability plot are not computed here.
+10. The gate is frozen once. The first real run that starts at least 10 min
+   after the decision time (FREEZE_GRACE: the harvester writes a manifest
+   row seconds after its finished_utc) and finds every Test stream harvested
+   by the decision time searched writes gate.md and results/gate_frozen.json
+   (the gate and health dicts and the gate.md text). Every later run (hourly, and the full results) keeps
+   gate.md and the gate and health sections of evaluation.json as frozen and
+   only updates the other outputs. A run with a different --decision-time
+   than the frozen one refuses (exit 2). Runs before then write an INTERIM or
+   "not frozen yet" gate.md.
+11. Harvest reasons, log lines and search errors are passed through
+   eval_common.redact_paths (<repo>, <home>) before they reach any output,
+   so a local path in a failure message cannot stop the run;
+   check_no_abs_paths stays as the last guard.
 """
 from __future__ import annotations
 
@@ -108,6 +137,19 @@ BLIND_FILES = [
     "gunj/config.json", "gunj/match.py", "gunj/match_v2.py", "gunj/reference.py", "data/splits.csv",
 ]
 TEST_LENGTH_TOTAL = 533       # excerpts per extractor over the 150 Test streams (108x4 + 17x3 + 25x2)
+GATE_FROZEN_NAME = "gate_frozen.json"
+# The harvester writes a stream's manifest row a few seconds after its finished_utc, so the
+# freezing run must start a little after the decision time (reading 10).
+FREEZE_GRACE = dt.timedelta(minutes=10)
+NETWORK_DOWN_BUCKET = "not attempted yet (network down at last try; will be retried)"
+
+
+def _now() -> dt.datetime:
+    return dt.datetime.now(ec.IST)
+
+
+def _utc_iso(t: dt.datetime) -> str:
+    return t.astimezone(dt.timezone.utc).isoformat(timespec="seconds")
 
 COLUMNS = [
     "mode", "video_id", "split", "channel", "venue_type", "release_time_ist", "label_drift_s",
@@ -135,7 +177,7 @@ def truth_index(ref, release_ts: int, L: int, D: float) -> int:
     return ref.index_of(rel_ist + pd.Timedelta(seconds=float(L) + float(D)), check=False)
 
 
-def evaluate_search(s: dict, rec: dict, tstar: int, tstar0: int, tau, ref) -> dict:
+def evaluate_search(s: dict, rec: dict, tstar: int, tstar0: int, tau, ref, repo: Path = ec.REPO) -> dict:
     """Apply sections 9 and 15 to one cached search."""
     ext, m = s["ext"], s["length_min"]
     hum = ec.trace_hum(rec, ext, f"x{m}")
@@ -145,7 +187,7 @@ def evaluate_search(s: dict, rec: dict, tstar: int, tstar0: int, tau, ref) -> di
     conf = s.get("confidence")
     conf_ge = conf is not None and tau is not None and conf >= tau
     if s.get("error"):
-        reason = "search could not run: " + s["error"]
+        reason = "search could not run: " + ec.redact_paths(s["error"], repo)
     elif top is None:
         reason = "no admissible reference window in the scope"
     elif not hum_flag:
@@ -188,11 +230,11 @@ def _n(v, nd=None):
 
 # ----------------------------------------------------------------- tables
 
-def stream_state(r: dict, m: dict | None, rec: dict | None, decision_utc) -> dict:
+def stream_state(r: dict, m: dict | None, rec: dict | None, decision_utc, repo: Path = ec.REPO) -> dict:
     st = None if m is None else m.get("status")
     fin = None if m is None else ec.parse_utc(m.get("finished_utc"))
     return {"video_id": r["video_id"], "status": st or "not attempted",
-            "reason": "" if m is None else (m.get("reason") or ""),
+            "reason": "" if m is None else ec.redact_paths(m.get("reason") or "", repo),
             "by_decision": fin is not None and fin <= decision_utc,
             "hum_m1": None if m is None or m.get("hum_present_v1") in (None, "") else m.get("hum_present_v1") == "True",
             "hum_m1_max": None if m is None else (m.get("hum_max_median_ratio_v1") or None),
@@ -200,7 +242,7 @@ def stream_state(r: dict, m: dict | None, rec: dict | None, decision_utc) -> dic
 
 
 def build_rows(mode: str, stream_rows: list, manifest: dict, records: dict, tau_table, lat: dict,
-               ref, decision_utc) -> tuple:
+               ref, decision_utc, repo: Path = ec.REPO) -> tuple:
     """CSV rows and per-stream evaluated searches."""
     csv_rows, per_stream = [], {}
     L = lat["L_s"]
@@ -208,7 +250,7 @@ def build_rows(mode: str, stream_rows: list, manifest: dict, records: dict, tau_
         vid = r["video_id"]
         m = manifest.get(vid)
         rec = records.get(f"{r['split']}/{vid}")
-        stt = stream_state(r, m, rec, decision_utc)
+        stt = stream_state(r, m, rec, decision_utc, repo)
         base = {"mode": mode, "video_id": vid, "split": r["split"], "channel": r.get("channel"),
                 "venue_type": r.get("venue_type"), "release_time_ist": r.get("release_time_ist"),
                 "label_drift_s": r.get("label_drift_s"), "label_stable": r.get("label_stable"),
@@ -216,7 +258,7 @@ def build_rows(mode: str, stream_rows: list, manifest: dict, records: dict, tau_
                 "harvest_reason": stt["reason"], "harvested_by_decision_time": _b(stt["by_decision"]),
                 "hum_present_v1_full": _b(stt["hum_m1"]), "hum_max_median_ratio_v1_full": stt["hum_m1_max"] or "",
                 "L_s": L, "latency_status": lat["status"]}
-        if m is None:
+        if m is None or ec.network_down_row(m):        # not attempted yet (reading 1)
             continue
         if rec is None:
             csv_rows.append(base)
@@ -226,7 +268,8 @@ def build_rows(mode: str, stream_rows: list, manifest: dict, records: dict, tau_
         tstar0 = truth_index(ref, int(r["release_timestamp"]), L, 0.0)
         evs = []
         for s in rec["searches"]:
-            ev = evaluate_search(s, rec, tstar, tstar0, ec.tau_of(tau_table, s["ext"], s["length_min"], s["scope"]), ref)
+            ev = evaluate_search(s, rec, tstar, tstar0, ec.tau_of(tau_table, s["ext"], s["length_min"], s["scope"]),
+                                 ref, repo)
             evs.append(ev)
             top, ru, srch = ev["top"], ev["runner_up"], ev["search"]
             csv_rows.append({**base,
@@ -235,7 +278,7 @@ def build_rows(mode: str, stream_rows: list, manifest: dict, records: dict, tau_
                 "trace_hum_max_median_ratio": _n(ev["hum_max"]),
                 "trace_hum_median_peak_to_floor": json.dumps(ev["hum_meds"] or {}, separators=(",", ":")),
                 "n_frames": srch.get("n_frames", ""), "weighted_correlation": _b(srch.get("weighted")),
-                "positions_searched": srch.get("n_positions", ""), "search_error": srch.get("error") or "",
+                "positions_searched": srch.get("n_positions", ""), "search_error": ec.redact_paths(srch.get("error") or "", repo),
                 "top1_start_ist": "" if top is None else top["start_ist"], "r1": "" if top is None else _n(top["r"], 6),
                 "runner_up_start_ist": "" if ru is None else ru["start_ist"], "r2": "" if ru is None else _n(ru["r"], 6),
                 "margin": _n(srch.get("margin"), 6), "confidence": _n(ev["conf"]), "tau": _n(ev["tau"]),
@@ -258,7 +301,7 @@ def gate_cells(evs: list, ext: str = PRIMARY) -> list:
     return [e for e in evs if e["ext"] == ext and e["scope"] in GATE_SCOPES]
 
 
-def flow_table(stream_rows: list, manifest: dict, per_stream: dict) -> dict:
+def flow_table(stream_rows: list, manifest: dict, per_stream: dict, repo: Path = ec.REPO) -> dict:
     """Section 16 flow: selected -> attempted -> audio -> trace -> hum -> match -> hit."""
     steps, drops = [], []
     sel = [r["video_id"] for r in stream_rows]
@@ -267,10 +310,13 @@ def flow_table(stream_rows: list, manifest: dict, per_stream: dict) -> dict:
     for v in sel:
         m = manifest.get(v)
         st = None if m is None else m.get("status")
-        if st in ("done", "failed", "blocked"):
+        if ec.network_down_row(m):                     # reading 1: not a download attempt
+            d.setdefault(NETWORK_DOWN_BUCKET, []).append(v)
+        elif st in ("done", "failed", "blocked"):
             att.append(v)
         else:
-            d.setdefault("not attempted yet" if m is None else f"{st}: {m.get('reason') or ''}", []).append(v)
+            d.setdefault("not attempted yet" if m is None
+                         else f"{st}: {ec.redact_paths(m.get('reason') or '', repo)}", []).append(v)
     steps.append(("download attempted", att)); drops.append(d)
     aud, d = [], {}
     for v in att:
@@ -278,7 +324,7 @@ def flow_table(stream_rows: list, manifest: dict, per_stream: dict) -> dict:
         if m["status"] == "done":
             aud.append(v)
         else:
-            d.setdefault(f"{m['status']}: {m.get('reason') or ''}", []).append(v)
+            d.setdefault(f"{m['status']}: {ec.redact_paths(m.get('reason') or '', repo)}", []).append(v)
     steps.append(("audio obtained", aud)); drops.append(d)
     tr, d = [], {}
     for v in aud:
@@ -454,15 +500,23 @@ def write_flow_md(path: Path, d: dict, repo: Path) -> None:
     ec.write_text_atomic(path, "\n".join(L) + "\n", repo)
 
 
-def write_gate_md(path: Path, d: dict, per_stream: dict, repo: Path) -> None:
+def gate_md_text(d: dict, per_stream: dict) -> str:
     g, h = d["gate"], d["health"]
     p = g["by_extractor"][PRIMARY]
     final = d["after_decision_time"]
+    fz = d.get("gate_freeze") or {}
     L = ["# Gate, Saturday 7 November 2026, 22:00 IST (PROTOCOL.md section 15)\n"] + header_lines(d)
     L.append(f"Generated by `scripts/evaluate.py` at {d['written_ist']}. Decision time: {d['decision_time']}. "
              + ("This run is after the decision time: only streams harvested by then are counted."
                 if final else "**INTERIM**: this run is before the decision time; streams harvested later "
                               "are not in it yet.") + "\n")
+    if fz.get("status") == "frozen this run":
+        L.append(f"**FROZEN**: this run started at {fz['run_started_ist']}, after the decision time and its "
+                 f"{int(FREEZE_GRACE.total_seconds() // 60)}-min grace, and every "
+                 f"Test stream harvested by then was searched. Later runs keep this file and the gate in "
+                 f"`evaluation.json` unchanged (`{fz['file']}`).\n")
+    elif final and fz.get("status"):
+        L.append(f"Not frozen yet: {fz['status']}. A later run freezes the gate.\n")
     L.append(f"## Verdict: {'GATE MET' if g['gate_met'] else 'GATE NOT MET'}\n")
     L.append(f"1 and 2. Test streams that lock blind (primary extractor {PRIMARY}; top candidate in the full or "
              f"+-90-day scope within {HIT_S} s of T* for at least one excerpt length, with confidence >= tau of "
@@ -483,6 +537,11 @@ def write_gate_md(path: Path, d: dict, per_stream: dict, repo: Path) -> None:
              f"{h['most_recent_download']['video_id']} ({h['most_recent_download']['split']}) "
              f"{h['most_recent_download']['status']} at {h['most_recent_download']['finished_utc']}"
              + (f", {h['most_recent_download']['reason']}" if h["most_recent_download"].get("reason") else "")) + ".")
+    nd = h.get("network_down_rows") or []
+    nd_txt = ", ".join(f"{x['video_id']} at {x['finished_utc']}" for x in nd[-12:])
+    L.append(f"   - Failures caused by the laptop's network being down, skipped as not download attempts "
+             f"(PROTOCOL section 19, 11:50 IST): {len(nd)}"
+             + (f" ({nd_txt}{'; the latest 12 shown' if len(nd) > 12 else ''})" if nd else "") + ".")
     for x in h["log_matches"][:20]:
         L.append(f"   - `{x['file']}` line {x['line']}: {x['text']}")
     L.append(f"- tau and L committed by the decision time: {g['tau_L_committed_note']}.")
@@ -529,7 +588,38 @@ def write_gate_md(path: Path, d: dict, per_stream: dict, repo: Path) -> None:
     fl = [s for s in d["flow"]["drops"][1]["reasons"].items()] if len(d["flow"]["drops"]) > 1 else []
     if fl:
         L.append("\nAttempted but no audio (not in N): " + "; ".join(f"{k}: {', '.join(v)}" for k, v in fl) + ".")
-    ec.write_text_atomic(path, "\n".join(L) + "\n", repo)
+    return "\n".join(L) + "\n"
+
+
+def write_gate_md(path: Path, d: dict, per_stream: dict, repo: Path) -> str:
+    text = gate_md_text(d, per_stream)
+    ec.write_text_atomic(path, text, repo)
+    return text
+
+
+def gate_unsearched(stream_rows: list, manifest: dict, per_stream: dict, decision_utc) -> list:
+    """Streams harvested (done) by the decision time that have no search record yet."""
+    out = []
+    for r in stream_rows:
+        m = manifest.get(r["video_id"]) or {}
+        fin = ec.parse_utc(m.get("finished_utc"))
+        if m.get("status") == "done" and fin is not None and fin <= decision_utc and r["video_id"] not in per_stream:
+            out.append(r["video_id"])
+    return out
+
+
+def load_frozen_gate(path: Path):
+    """The frozen gate (reading 10), or None if there is none. Raises ValueError if unreadable."""
+    path = Path(path)
+    if not path.exists():
+        return None
+    try:
+        fz = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise ValueError(f"cannot read {path.name}: {e}") from e
+    if not isinstance(fz, dict) or not all(k in fz for k in ("decision_utc", "gate", "health", "gate_md")):
+        raise ValueError(f"{path.name} lacks decision_utc, gate, health or gate_md")
+    return fz
 
 
 def write_m3_md(path: Path, d: dict, repo: Path) -> None:
@@ -605,11 +695,24 @@ def main(argv=None, repo: Path = ec.REPO) -> int:
 
 def _run(args, repo: Path, out_dir: Path, log) -> int:
     t_run = time.time()
+    started = _now()
     mode = "practice" if args.practice else "real"
     split = "calibration" if args.practice else "test"
     decision_utc = dt.datetime.fromisoformat(args.decision_time)
     if decision_utc.tzinfo is None:
         decision_utc = decision_utc.replace(tzinfo=ec.IST)              # a naive time is IST
+    frozen_path = out_dir / GATE_FROZEN_NAME
+    frozen = None
+    if mode == "real":                                                   # reading 10
+        try:
+            frozen = load_frozen_gate(frozen_path)
+        except ValueError as e:
+            log.error("REFUSING: %s; the frozen gate must not be recomputed", e)
+            return 2
+        if frozen is not None and frozen["decision_utc"] != _utc_iso(decision_utc):
+            log.error("REFUSING: %s froze the gate for decision time %s; this run asks for %s",
+                      ec.rel(frozen_path, repo), frozen.get("decision_time"), args.decision_time)
+            return 2
     splits = ec.read_splits(ec.resolve(args.splits_csv, repo))
     manifest = ec.read_manifest(ec.resolve(args.manifest, repo))
     blinding = None
@@ -674,7 +777,7 @@ def _run(args, repo: Path, out_dir: Path, log) -> int:
     ctx = dict(args=args, repo=repo, out_dir=out_dir, log=log, mode=mode, split=split, stream_rows=stream_rows,
                manifest=manifest, tau_table=tau_table, lat=lat, ref=ref, decision_utc=decision_utc,
                blinding=blinding, commits=commits, thr_path=thr_path, lat_path=lat_path, t_run=t_run,
-               jobs=jobs, neg_jobs=neg_jobs)
+               jobs=jobs, neg_jobs=neg_jobs, started=started, frozen=frozen, frozen_path=frozen_path)
     # Phase 1: the Test (or practice) streams, with whatever negatives are cached already, so a
     # slow M3 search never delays gate.md. Phase 2: the remaining negatives, then write again.
     records, timing = ec.run_searches(jobs, cache_dir, ref, args.ref, args.workers, log, repo)
@@ -694,11 +797,34 @@ def write_report(ctx: dict, records: dict, neg_recs: dict, timing: dict, timing_
     decision_utc, blinding, commits, thr_path, lat_path = (ctx[k] for k in ("decision_utc", "blinding", "commits",
                                                                             "thr_path", "lat_path"))
     jobs, neg_jobs, t_run = ctx["jobs"], ctx["neg_jobs"], ctx["t_run"]
-    csv_rows, per_stream = build_rows(mode, stream_rows, manifest, records, tau_table, lat, ref, decision_utc)
-    flow = flow_table(stream_rows, manifest, per_stream)
+    csv_rows, per_stream = build_rows(mode, stream_rows, manifest, records, tau_table, lat, ref, decision_utc, repo)
+    flow = flow_table(stream_rows, manifest, per_stream, repo)
     m2 = m2_cells(per_stream)
-    health = ec.harvest_health(manifest, repo / "logs", decision_utc, repo)
-    gate = gate_eval(per_stream, health, commits, decision_utc, mode)
+    frozen, frozen_path, started = ctx.get("frozen"), ctx.get("frozen_path"), ctx.get("started")
+    freeze_now = False
+    if frozen is not None:                                   # reading 10: never recomputed
+        health, gate = frozen["health"], frozen["gate"]
+        gate_freeze = {"status": "frozen", "file": ec.rel(frozen_path, repo),
+                       "frozen_ist": frozen.get("frozen_ist"), "run_started_ist": frozen.get("run_started_ist")}
+    else:
+        health = ec.harvest_health(manifest, repo / "logs", decision_utc, repo)
+        gate = gate_eval(per_stream, health, commits, decision_utc, mode)
+        gate_freeze = None
+        if mode == "real":
+            unsearched = gate_unsearched(stream_rows, manifest, per_stream, decision_utc)
+            freeze_now = started is not None and started >= decision_utc + FREEZE_GRACE and not unsearched
+            if freeze_now:
+                status = "frozen this run"
+            elif started is None or started < decision_utc:
+                status = "this run started before the decision time"
+            elif started < decision_utc + FREEZE_GRACE:
+                status = (f"this run started less than {int(FREEZE_GRACE.total_seconds() // 60)} min after "
+                          "the decision time")
+            else:
+                status = (f"{len(unsearched)} stream(s) harvested by the decision time have no search yet: "
+                          + ", ".join(unsearched))
+            gate_freeze = {"status": status, "file": ec.rel(frozen_path, repo),
+                           "run_started_ist": None if started is None else started.isoformat(timespec="seconds")}
     neg_records = [neg_recs[j.key] for j in neg_jobs if j.key in neg_recs]
     m3 = m3_cells(neg_records, tau_table)
 
@@ -726,7 +852,7 @@ def write_report(ctx: dict, records: dict, neg_recs: dict, timing: dict, timing_
                                                       if k != "per_stream_search_seconds"},
         "run_seconds": round(time.time() - t_run, 1),
     }
-    now = dt.datetime.now(ec.IST)
+    now = _now()
     files = {k: ec.rel(out_dir / v, repo) for k, v in (("csv", "test_results.csv"), ("flow", "flow_table.md"),
              ("gate", "gate.md"), ("m3_md", "false_matches.md"), ("m3_json", "false_matches.json"),
              ("json", "evaluation.json"))}
@@ -741,14 +867,34 @@ def write_report(ctx: dict, records: dict, neg_recs: dict, timing: dict, timing_
          "latency": lat, "latency_line": latency_line, "tau_available": tau_table is not None,
          "blinding": blinding, "commits": commits, "files": files,
          "n_selected": len(stream_rows), "n_with_trace": len(jobs),
-         "flow": flow, "m2": m2, "gate": gate, "health": health,
+         "flow": flow, "m2": m2, "gate": gate, "health": health, "gate_freeze": gate_freeze,
          "m3_counts": {"real": sum(1 for r in neg_records if r["split"] == "negative"),
                        "SYNTHETIC": sum(1 for r in neg_records if r["split"] == "negative_synthetic"),
                        "harvested_not_yet_searched": m3_pending},
          "m3": m3, "timing": timing_out}
     write_csv(out_dir / "test_results.csv", csv_rows, repo)
     write_flow_md(out_dir / "flow_table.md", d, repo)
-    write_gate_md(out_dir / "gate.md", d, per_stream, repo)
+    if frozen is not None:
+        gate_path = out_dir / "gate.md"
+        try:
+            same = gate_path.read_text(encoding="utf-8") == frozen["gate_md"]
+        except OSError:
+            same = False
+        if not same:
+            log.warning("gate.md differs from the frozen gate; restoring it from %s", ec.rel(frozen_path, repo))
+            ec.write_text_atomic(gate_path, frozen["gate_md"], repo)
+    else:
+        gate_text = write_gate_md(out_dir / "gate.md", d, per_stream, repo)
+        if freeze_now:
+            fz = {"note": "PROTOCOL.md section 15 gate, frozen by the first real evaluate.py run that started after "
+                          "the decision time with every Test stream harvested by then searched. Later runs reuse "
+                          "it and never recompute or overwrite gate.md (evaluate.py reading 10).",
+                  "decision_time": args.decision_time, "decision_utc": _utc_iso(decision_utc),
+                  "run_started_ist": gate_freeze["run_started_ist"], "frozen_ist": d["written_ist"],
+                  "gate": gate, "health": health, "gate_md": gate_text}
+            ec.write_json_atomic(frozen_path, fz, repo)
+            ctx["frozen"] = fz
+            log.info("gate frozen: %s", ec.rel(frozen_path, repo))
     write_m3_md(out_dir / "false_matches.md", d, repo)
     ec.write_json_atomic(out_dir / "false_matches.json", {"written_ist": d["written_ist"], "mode": mode,
                                                          "counts": d["m3_counts"], "cells": m3}, repo)

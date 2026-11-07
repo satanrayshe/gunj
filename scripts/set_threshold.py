@@ -314,12 +314,23 @@ def _run(args, repo: Path, log) -> int:
                           "recorded deviation (PROTOCOL section 19).", relp)
                 return 2
     ref = ref or gref.load(args.ref)
-    records, timing = ec.run_searches(_jobs(done), ec.resolve(args.cache_dir, repo), ref, args.ref, args.workers,
-                                      log, repo)
+    lost = []
+    for attempt in range(3):
+        records, timing = ec.run_searches(_jobs(done), ec.resolve(args.cache_dir, repo), ref, args.ref,
+                                          args.workers, log, repo)
+        lost = [r["video_id"] for r, _ in done if f"{r['split']}/{r['video_id']}" not in records]
+        if not lost or args.cache_only:
+            break
+        log.warning("no search record yet for %s (a transient read error is not cached); retrying in 30 s",
+                    ", ".join(lost))
+        time.sleep(30)
     if args.cache_only:
         log.info("cache-only run: %d of %d threshold-half streams searched and cached; %d not ready. tau not set.",
                  len(records), len(rows), len(not_ready))
         return 0
+    if lost:
+        log.error("REFUSING to set tau: still no search record for %s after 3 tries.", ", ".join(lost))
+        return 2
     cells, missing = build_cells(done, records)
     negs = []
     for r in rows:

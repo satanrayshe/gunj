@@ -8,7 +8,13 @@
   of its trace file, the reference (t0, length), the matcher code or
   CACHE_VERSION changed. The cache holds raw search output only (positions,
   r, confidence); tau, L, D, hits and verdicts are applied afterwards, so the
-  cache never depends on them.
+  cache never depends on them. A stream with any search that could not read
+  its trace file (an OSError, e.g. a file briefly locked) is not cached, so
+  the next run searches it again; errors from the trace content (ValueError,
+  KeyError) are cached as that search's result.
+- Local paths: error text is passed through redact_paths (<repo>, <home>)
+  before it is stored; check_no_abs_paths stays as the last guard for every
+  file written under results/.
 - Pool: searches run in a spawn pool of max(1, min(4, cpu_count - 2))
   workers, one task per (extractor, excerpt length, scope). Each worker
   loads the reference once with np.load(mmap_mode='r') (gunj.reference.load).
@@ -112,16 +118,36 @@ def parse_utc(s: str | None):
     return t if t.tzinfo else t.replace(tzinfo=dt.timezone.utc)
 
 
-def _abs_path_markers(repo: Path) -> list:
-    out = set()
-    for base in (repo.resolve(), Path.home()):
+def _abs_path_marker_pairs(repo: Path) -> list:
+    """(marker, placeholder) for the repo and the home folder, each as written with '\\',
+    '/' and doubled '\\'. Longest first, so the repo is replaced before the home folder."""
+    out = {}
+    for base, label in ((Path(repo).resolve(), "<repo>"), (Path.home(), "<home>")):
         s = str(base)
-        out.update({s, s.replace("\\", "/"), s.replace("\\", "\\\\")})
-    return [m for m in out if len(m) > 3]
+        for m in (s, s.replace("\\", "/"), s.replace("\\", "\\\\")):
+            if len(m) > 3:
+                out.setdefault(m, label)
+    return sorted(out.items(), key=lambda kv: -len(kv[0]))
+
+
+def _abs_path_markers(repo: Path) -> list:
+    return [m for m, _ in _abs_path_marker_pairs(repo)]
+
+
+def redact_paths(s, repo: Path = REPO):
+    """Replace absolute local paths (repo, home) in a raw string with <repo> and <home>,
+    case-insensitively. Uses the same markers as check_no_abs_paths. Apply it to raw text,
+    before any JSON encoding. Non-strings are returned unchanged."""
+    if not isinstance(s, str) or not s:
+        return s
+    for m, label in _abs_path_marker_pairs(repo):
+        s = re.sub(re.escape(m), lambda _: label, s, flags=re.I)
+    return s
 
 
 def check_no_abs_paths(text: str, repo: Path = REPO) -> None:
-    """Refuse to write a file under results/ that holds an absolute local path."""
+    """Refuse to write a file under results/ that holds an absolute local path (the last guard;
+    text from outside, such as harvest reasons and search errors, is passed through redact_paths)."""
     low = text.lower()
     for m in _abs_path_markers(repo):
         if m.lower() in low:
@@ -319,17 +345,25 @@ def _cand(ref, c):
 
 
 def search_task(t: dict) -> dict:
-    """One search: (stream, extractor, excerpt length, scope). Runs in a worker."""
+    """One search: (stream, extractor, excerpt length, scope). Runs in a worker.
+
+    An OSError (the file could not be read, e.g. briefly locked) is marked transient:
+    run_searches does not cache that stream, so the next run searches it again. ValueError
+    and KeyError come from the trace content and are kept as the search's result. Error
+    text has local paths redacted."""
     ref = _REF
     t0 = time.perf_counter()
     out = {"key": t["key"], "ext": t["ext"], "length_min": int(t["length_min"]), "scope": t["scope"]}
+    repo = Path(t.get("repo") or REPO)
     try:
         data = Path(t["trace_abs"]).read_bytes()
         out["trace_sha256"] = hashlib.sha256(data).hexdigest()
         with np.load(io.BytesIO(data), allow_pickle=False) as z:
             got = cl.run_search(z, t["ext"], ref, int(t["release_ts"]), int(t["length_min"]), t["scope"], k=TOP_K)
     except (ValueError, OSError, KeyError) as e:
-        out.update(ok=False, error=f"{type(e).__name__}: {str(e)[:200]}")
+        out.update(ok=False, error=f"{type(e).__name__}: {redact_paths(str(e), repo)[:200]}")
+        if isinstance(e, OSError):
+            out["transient"] = True
         got = None
     if got is None and "error" not in out:
         out.update(ok=False, error="no such excerpt in the trace file")
@@ -367,7 +401,7 @@ SCOPE_COST = {"full": 0, "90d": 1, "1d": 2}
 EXT_COST = {"v2": 0, "v1": 1, "naive": 2}
 
 
-def plan_tasks(job: Job, files: set, trace_abs: Path) -> tuple:
+def plan_tasks(job: Job, files: set, trace_abs: Path, repo: Path = REPO) -> tuple:
     """Tasks for one stream, plus the listed lengths that have no trace."""
     tasks, missing = [], []
     for m in job.lengths:
@@ -378,7 +412,8 @@ def plan_tasks(job: Job, files: set, trace_abs: Path) -> tuple:
             have_any = True
             for scope in SCOPES:
                 tasks.append({"key": job.key, "ext": ext, "length_min": int(m), "scope": scope,
-                              "trace_abs": str(trace_abs), "release_ts": int(job.release_ts)})
+                              "trace_abs": str(trace_abs), "release_ts": int(job.release_ts),
+                              "repo": str(repo)})
         if not have_any:
             missing.append(int(m))
     # longest searches first, for a better spread over the workers
@@ -429,12 +464,12 @@ def run_searches(jobs: list, cache_dir: Path, ref, ref_dir=None, workers: int | 
                       type(e).__name__, e)
             n_unreadable += 1
             continue
-        tasks, missing = plan_tasks(job, files, tabs)
+        tasks, missing = plan_tasks(job, files, tabs, repo)
         pending[job.key] = {"job": job, "sha": sha, "meta": meta, "missing": missing,
                             "n_tasks": len(tasks), "results": [], "t_first": None}
         all_tasks.extend(tasks)
     timing = {"workers": workers, "streams_cached": n_cached, "streams_to_search": len(pending),
-              "streams_unreadable": n_unreadable,
+              "streams_unreadable": n_unreadable, "streams_not_cached_read_error": 0,
               "tasks": len(all_tasks), "wall_seconds": 0.0, "streams_searched": 0,
               "per_stream_search_seconds": {}}
     if not search:
@@ -453,6 +488,12 @@ def run_searches(jobs: list, cache_dir: Path, ref, ref_dir=None, workers: int | 
         shas = {r.get("trace_sha256") for r in p["results"] if r.get("trace_sha256")}
         if shas and shas != {p["sha"]}:
             log.warning("%s: trace file changed during the search; not cached, will be searched again", key)
+            return
+        bad = [r for r in p["results"] if r.get("transient") or not r.get("trace_sha256")]
+        if bad:
+            timing["streams_not_cached_read_error"] += 1
+            log.warning("%s: %d search(es) could not read the trace file (%s); not cached, "
+                        "will be searched again next run", key, len(bad), bad[0].get("error"))
             return
         searches = sorted((_strip(r) for r in p["results"]), key=_order_key)
         secs = round(sum(r["seconds"] for r in searches), 3)
@@ -502,7 +543,7 @@ def run_searches(jobs: list, cache_dir: Path, ref, ref_dir=None, workers: int | 
 
 
 def _strip(r: dict) -> dict:
-    return {k: v for k, v in r.items() if k not in ("key", "trace_sha256")}
+    return {k: v for k, v in r.items() if k not in ("key", "trace_sha256", "transient")}
 
 
 # ---------------------------------------------------------------- lookups
@@ -578,26 +619,72 @@ def _parse_log_ts(date: str, tz: str | None):
     return t if t.tzinfo else t.replace(tzinfo=IST)       # run_stage3.log: local time (IST)
 
 
+# A harvester line that ends one stream's attempt: "<video_id>: done, ...", ": failed ...",
+# ": unavailable: ...", ": unexpected error: ..." or ": BLOCKED: ..." (scripts/harvest.py).
+LOG_OUTCOME_RE = re.compile(r"^(\S+): (done|failed|unavailable|unexpected error|BLOCKED)\b(.*)$")
+_OUTCOME_STATUS = {"done": "done", "failed": "failed", "unavailable": "failed",
+                   "unexpected error": "failed", "BLOCKED": "blocked"}
+
+
+def network_down_row(m: dict | None) -> bool:
+    """A failed, retryable manifest row whose reason says the laptop's own network was down
+    (harvest.NETWORK_DOWN_RE). Not a download attempt: nothing reached YouTube, the row is
+    not charged an attempt and the harvester tries the stream again (PROTOCOL section 19,
+    11:50 IST). The same test as set_threshold.failed_is_final."""
+    return (m is not None and m.get("status") == "failed" and m.get("retryable") == "True"
+            and hv.NETWORK_DOWN_RE.search(m.get("reason") or "") is not None)
+
+
+def _is_real_row(r: dict) -> bool:
+    return not is_synthetic(r) and r.get("source_format") != "SYNTHETIC"
+
+
 def harvest_health(manifest: dict, logs_dir: Path, decision_utc=None, repo: Path = REPO) -> dict:
-    """PROTOCOL section 15 condition 3, from the manifest and the harvest logs.
+    """PROTOCOL section 15 condition 3, from the manifest and the harvest logs, as of
+    ``decision_utc`` (if given; otherwise everything counts).
 
     - No manifest row is "blocked" (the harvester's status for a bot check,
-      sign-in wall, CAPTCHA or HTTP 429).
-    - No harvest log line says BLOCKED, and no WARNING or ERROR line matches
-      the harvester's own block pattern (harvest.BLOCK_RE); run_stage3.log
-      shows no harvester exit code 3.
-    - The most recent YouTube download attempt (latest finished_utc among
-      non-SYNTHETIC rows) has status "done".
-    Only rows and log lines up to ``decision_utc`` count, if it is given.
+      sign-in wall, CAPTCHA or HTTP 429) with finished_utc at or before the
+      decision time. A blocked row whose time cannot be read counts.
+    - No harvest log line up to the decision time says BLOCKED, and no WARNING
+      or ERROR line matches the harvester's own block pattern (harvest.BLOCK_RE);
+      run_stage3.log shows no harvester exit code 3.
+    - The most recent YouTube download attempt at or before the decision time
+      (non-SYNTHETIC streams) has status "done". The attempts are the union of
+      the manifest rows (finished_utc) and the timestamped outcome lines of the
+      harvest logs (LOG_OUTCOME_RE). The logs are append-only, so they keep an
+      attempt whose manifest row a later retry has overwritten; the result does
+      not depend on when this is run.
+    - A failure caused by the laptop's network being down (network_down_row for
+      manifest rows; a failed or unexpected-error log line matching
+      harvest.NETWORK_DOWN_RE) is not a download attempt and is skipped when
+      finding the most recent download (PROTOCOL section 19, 11:50 IST). These
+      are listed in network_down_rows. Unavailable and other failures count.
+    Reasons and log text have local paths redacted.
     """
     def in_time(t):
         return t is not None and (decision_utc is None or t <= decision_utc)
 
     rows = list(manifest.values())
-    blocked = [r["video_id"] for r in rows if r.get("status") == "blocked"]
-    real = [r for r in rows if not is_synthetic(r) and r.get("source_format") != "SYNTHETIC"
-            and r.get("status") in ("done", "failed", "blocked") and in_time(parse_utc(r.get("finished_utc")))]
-    latest = max(real, key=lambda r: parse_utc(r["finished_utc"])) if real else None
+    by_vid = {r.get("video_id"): r for r in rows}
+    blocked = []
+    for r in rows:
+        if r.get("status") != "blocked":
+            continue
+        t = parse_utc(r.get("finished_utc"))
+        if t is None or in_time(t):
+            blocked.append(r["video_id"])
+    events, net_down = [], []
+    for r in rows:
+        if not _is_real_row(r) or r.get("status") not in ("done", "failed", "blocked"):
+            continue
+        t = parse_utc(r.get("finished_utc"))
+        if not in_time(t):
+            continue
+        ev = {"video_id": r["video_id"], "split": r.get("split"), "status": r.get("status"),
+              "reason": redact_paths(r.get("reason") or "", repo), "finished_utc": r.get("finished_utc"),
+              "source": "manifest", "_t": t}
+        (net_down if network_down_row(r) else events).append(ev)
     hits = []
     logs_dir = Path(logs_dir)
     files = sorted(logs_dir.glob("harvest_*.log")) + ([logs_dir / "run_stage3.log"] if (logs_dir / "run_stage3.log").exists() else [])
@@ -618,13 +705,31 @@ def harvest_health(manifest: dict, logs_dir: Path, decision_utc=None, repo: Path
                 level = (m.group(3) if m else "") or ""
                 bad = "BLOCKED" in ln or (level in ("WARNING", "ERROR") and hv.BLOCK_RE.search(ln) is not None)
             if bad:
-                hits.append({"file": rel(f, repo), "line": i, "text": hv.sanitize(ln)[:240]})
-    latest_d = None if latest is None else {
-        "video_id": latest["video_id"], "split": latest.get("split"), "status": latest.get("status"),
-        "reason": latest.get("reason"), "finished_utc": latest.get("finished_utc")}
+                hits.append({"file": rel(f, repo), "line": i, "text": redact_paths(hv.sanitize(ln), repo)[:240]})
+            if stage or ts is None:
+                continue
+            o = LOG_OUTCOME_RE.match(m.group(4) or "")
+            row = by_vid.get(o.group(1)) if o else None
+            if row is None or not _is_real_row(row):
+                continue
+            kind = o.group(2)
+            text = redact_paths(hv.sanitize(o.group(3).lstrip(" :,")), repo)
+            ev = {"video_id": o.group(1), "split": row.get("split"), "status": _OUTCOME_STATUS[kind],
+                  "reason": "" if kind == "done" else f"{kind}: {text}"[:400],
+                  "finished_utc": ts.astimezone(dt.timezone.utc).isoformat(timespec="seconds"),
+                  "source": f"{rel(f, repo)} line {i}", "_t": ts}
+            is_net = kind in ("failed", "unexpected error") and hv.NETWORK_DOWN_RE.search(o.group(3)) is not None
+            (net_down if is_net else events).append(ev)
+    latest = max(events, key=lambda e: (e["_t"], e["source"] != "manifest")) if events else None
+    latest_d = None if latest is None else {k: v for k, v in latest.items() if k != "_t"}
+    nd = {}
+    for e in sorted(net_down, key=lambda e: e["_t"]):
+        nd[e["video_id"]] = {"video_id": e["video_id"], "split": e["split"], "finished_utc": e["finished_utc"]}
     ok_latest = latest is not None and latest.get("status") == "done"
     return {"blocked_rows": blocked, "log_matches": hits, "most_recent_download": latest_d,
             "most_recent_download_succeeded": ok_latest,
-            "n_real_download_rows": len(real),
+            "n_real_download_rows": sum(1 for e in events if e["source"] == "manifest"),
+            "n_download_log_lines": sum(1 for e in events if e["source"] != "manifest"),
+            "network_down_rows": sorted(nd.values(), key=lambda e: parse_utc(e["finished_utc"])),
             "log_files_scanned": [rel(f, repo) for f in files],
             "ok": (not blocked) and (not hits) and ok_latest}
