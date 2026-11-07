@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gunj: dating Indian recordings from mains hum</title>
+<meta name="description" content="Gunj matches the mains-hum frequency in a recording against a public one-second log of India's grid frequency to estimate when it was recorded. Results explorer with a pre-registered evaluation.">
+<meta name="color-scheme" content="dark light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script>
+  try {
+    var t = localStorage.getItem("gunj-theme");
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+</script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#/" aria-label="Gunj, overview">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Gunj</span>
+    </a>
+    <span class="brand-tag">dating Indian recordings from mains hum</span>
+    <nav class="nav" aria-label="Primary">
+      <a href="#/" data-route="overview">Overview</a>
+      <a href="#/clips" data-route="clips">Clips</a>
+    </nav>
+    <button id="theme-toggle" class="btn btn-quiet" type="button" aria-label="Switch to light theme">Light</button>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+  <noscript>
+    <section class="wrap"><p>This explorer needs JavaScript to draw its charts. The numbers it shows are in <code>data/overview.json</code> and <code>data/clips.json</code>.</p></section>
+  </noscript>
+  <section class="wrap"><p class="loading" role="status">Loading data</p></section>
+</main>
+<footer class="foot">
+  <div class="wrap" id="foot"></div>
+</footer>
+<div id="live" class="sr-only" aria-live="polite"></div>
+</body>
+</html>
