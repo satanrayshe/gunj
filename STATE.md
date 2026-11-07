@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 7 Nov 2026, 09:05 IST, by the coordinator session.
+Last updated: 7 Nov 2026, 09:08 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -29,8 +29,9 @@ If the laptop was shut down or the session ended, a new coding session should:
 | 7 | Hostile review of 2-6 | review notes | review agent failed (network); coordinator checks passed: tests, hashes, no media, no courts |
 | 8 | Delete raw CSVs once step 2 is verified (re-downloadable; hashes kept) | `../data/enf-ref` empty; keep `../data/derived/_parsed` (needed for label drift) | DONE 7 Nov 05:20 |
 | 9 | Dev + calibration audio harvest, extractor v2 tuned on dev, frozen | `data/harvest_manifest.csv`, git tag `extractor-v2`, `results/v2_tuning.md` | DONE 7 Nov 08:26. Dev 5/5 (FLAC kept in `media/keep`). v2 = candidate B1, tag `extractor-v2` on ef1d27e at 05:55. Calibration 19/20 (hG8oxgWwPYE not available on YouTube). 0 bot checks or 429s; 77 yt-dlp requests in all |
-| 10 | Shrey approves the PROTOCOL.md commit (pre-registration) | git commit "Pre-registration" | pending (needs Shrey) |
-| 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | pending: waits for step 10. Run `powershell -NoProfile -ExecutionPolicy Bypass -File scriptsun_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYNTHETIC negatives, then threshold-half negatives, then Test in row order with `--cuts`, then report-half negatives. Re-run the same command after any shutdown. Progress is in `logs/run_stage3.log` and `logs/harvest_<step>.log` |
+| 10 | Shrey approves the PROTOCOL.md commit (pre-registration) | git commit "Pre-registration" | DONE: Shrey wrote "approved" at 09:05 IST on 7 Nov; commit 2485706 |
+| 11 | Test + negative harvest (resumable manifest) | `data/harvest_manifest.csv` all rows done/failed | RUNNING since 09:05 IST on 7 Nov (detached). To restart after a shutdown, run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts
+un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYNTHETIC negatives, then threshold-half negatives, then Test in row order with `--cuts`, then report-half negatives. Re-run the same command after any shutdown. Progress is in `logs/run_stage3.log` and `logs/harvest_<step>.log` |
 | 12 | Threshold, latency, blind matching, gate numbers | `results/threshold.json`, `results/latency.json`, `results/gate.md` | `scripts/set_threshold.py` and `scripts/evaluate.py` are being written by a helper agent (started 09:00; no commits by agents). Order: set_threshold, commit; calibrate_latency (writes latency.json), commit; commit evaluate.py; then evaluate.py on Test. PROVISIONAL v2 median o = 2 s over 8 Calibration locks (not L). Gate Sat 7 Nov 22:00 IST |
 | 13 | Results, Pages explorer, README, v1 video | `results/`, `site/`, `README.md` | pending; Shrey submits v1 by 8 Nov 21:00 |
 
