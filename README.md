@@ -6,7 +6,7 @@ The stream in this screenshot is from the Calibration split, which was used to s
 
 Gunj dates Indian recordings from mains hum. It extracts the hum's frequency once per second and searches a public one-second log of India's grid frequency for the moment that trace fits.
 
-Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecurity track. Explorer: [pending: GitHub Pages URL]. Video: [pending: video link].
+Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecurity track. Explorer: https://satanrayshe.github.io/gunj/. Video: [pending: video link].
 
 > [!IMPORTANT]
 > **What Gunj does**
