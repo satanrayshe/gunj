@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 8 Nov 2026, 00:20 IST, by the coordinator session.
+Last updated: 8 Nov 2026, 17:15 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -50,6 +50,9 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 
 - 8 Nov 00:13: first real scoring run done. INTERIM (decision time 14:00): N = 31 Test streams processed, 8 locks (S1, D = 0: 2), health ok. Hourly scoring loop running detached since 00:15 (`logs/run_eval_loop.ps1`, pid 57980, log `logs/run_eval.log`); it stops after `results/gate_frozen.json` exists or at 16:00. If the laptop restarts, run that script again. After the freeze: commit results/gate.md, gate_frozen.json, test_results.csv, flow_table.md, evaluation.json, false_matches.*, search_cache/test; then `scripts/export_site_data.py` and `scripts/fill_results.py`, and commit site/data and docs/screens.
 - Pre-push: two expected hits for the path grep are the guard regexes in `scripts/export_site_data.py` and `scripts/fill_results.py`.
+
+- 8 Nov 05:30: YouTube bot check ('Sign in to confirm you're not a bot') on vMIFXzQiZMA. The harvester stopped (exit 3) as PROTOCOL section 17 requires. 126 of 150 Test streams were harvested; the report-half real negatives were never reached. Do NOT run --clear-block or any further YouTube download without Shrey's explicit decision.
+- 8 Nov 07:31 to 17:03: the scoring loop stopped (the session ended); no run happened after 07:31. At 17:04 the frozen gate run: GATE NOT MET (condition 3, the bot check); conditions 1-2 met with 38 of 126 locks (9 with D = 0). Committed 0bd1215. Section 15 says switch to Wet Ground when the gate is not met: that decision is Shrey's.
 
 ## Before any push (Shrey runs the push)
 - `git log --format=%B | grep -ci 'cl[a]ude'` and `git grep -i -l 'cl[a]ude'` must both come back empty, apart from one known false hit: a physicist's name in a lecture title in `data/meta_flat/theory_tifr.json` (YouTube metadata, not attribution). Commits carry no Co-Authored-By trailer.
