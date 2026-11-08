@@ -1,0 +1,1067 @@
+{
+ "note": "PROTOCOL.md section 15 gate, frozen by the first real evaluate.py run that started after the decision time with every Test stream harvested by then searched. Later runs reuse it and never recompute or overwrite gate.md (evaluate.py reading 10).",
+ "decision_time": "2026-11-08T14:00:00+05:30",
+ "decision_utc": "2026-11-08T08:30:00+00:00",
+ "run_started_ist": "2026-11-08T17:04:30+05:30",
+ "frozen_ist": "2026-11-08T17:04:35+05:30",
+ "gate": {
+  "N_processed": 126,
+  "by_extractor": {
+   "v2": {
+    "n_streams_with_lock": 38,
+    "n_streams_with_hit": 48,
+    "n_streams_with_lock_D0": 9,
+    "n_streams_with_confident_hit": 30,
+    "locked_streams": [
+     "3dxthmsAvWE",
+     "3j8-qlHHnIE",
+     "5LW0lKI1jx8",
+     "8YaC-FzdRPA",
+     "8gsXSa4UzaQ",
+     "BvFUpGaie2E",
+     "DfjXpqRP2uE",
+     "FGPtrBiqhJY",
+     "FU27mso1GaE",
+     "HDfWJP4QYo0",
+     "I9SJk-TTrBg",
+     "JSCPPnRAJZY",
+     "JfAbDuKRUqQ",
+     "K3atjTKsNiA",
+     "KVblO36WdiY",
+     "LHBG6cdgdsU",
+     "Lza3R2AyHmM",
+     "Q0QZ3Je68Sc",
+     "S8xr4terOXE",
+     "TbqOkXM630s",
+     "WYoKaThec_k",
+     "Y2nNag-70w4",
+     "YoJlliek2Sg",
+     "a6u8ZkZ5D58",
+     "aFwlCwTZmU8",
+     "bFlgoacpxZU",
+     "hwnKuf3aciU",
+     "jgtDaCE6HUk",
+     "kwRCr1M3ONo",
+     "l1qc3tk3bxw",
+     "l8-ZICFYjRA",
+     "mqDrSP29cPE",
+     "n8HWbA8edWs",
+     "r-dKUfuPxLQ",
+     "sv6D2j7Ats0",
+     "vXH6fVeWn5s",
+     "vyBSiPQEXRg",
+     "xgYK-TBnCOY"
+    ]
+   },
+   "v1": {
+    "n_streams_with_lock": 19,
+    "n_streams_with_hit": 29,
+    "n_streams_with_lock_D0": 5,
+    "n_streams_with_confident_hit": 18,
+    "locked_streams": [
+     "3dxthmsAvWE",
+     "3j8-qlHHnIE",
+     "5LW0lKI1jx8",
+     "8YaC-FzdRPA",
+     "8gsXSa4UzaQ",
+     "FU27mso1GaE",
+     "HDfWJP4QYo0",
+     "I9SJk-TTrBg",
+     "JSCPPnRAJZY",
+     "K3atjTKsNiA",
+     "KVblO36WdiY",
+     "YoJlliek2Sg",
+     "a6u8ZkZ5D58",
+     "bFlgoacpxZU",
+     "hwnKuf3aciU",
+     "kwRCr1M3ONo",
+     "r-dKUfuPxLQ",
+     "sv6D2j7Ats0",
+     "vXH6fVeWn5s"
+    ]
+   },
+   "naive": {
+    "n_streams_with_lock": 13,
+    "n_streams_with_hit": 22,
+    "n_streams_with_lock_D0": 4,
+    "n_streams_with_confident_hit": 11,
+    "locked_streams": [
+     "3dxthmsAvWE",
+     "3j8-qlHHnIE",
+     "5LW0lKI1jx8",
+     "8YaC-FzdRPA",
+     "8gsXSa4UzaQ",
+     "K3atjTKsNiA",
+     "Q0QZ3Je68Sc",
+     "YoJlliek2Sg",
+     "a6u8ZkZ5D58",
+     "bFlgoacpxZU",
+     "hwnKuf3aciU",
+     "kwRCr1M3ONo",
+     "vXH6fVeWn5s"
+    ]
+   }
+  },
+  "condition_1_2_met": true,
+  "condition_3_met": false,
+  "tau_L_committed_in_time": true,
+  "tau_L_committed_note": "both committed at or before the decision time",
+  "gate_met": false
+ },
+ "health": {
+  "blocked_rows": [
+   "vMIFXzQiZMA"
+  ],
+  "log_matches": [
+   {
+    "file": "logs/harvest_test.log",
+    "line": 3678,
+    "text": "2026-11-08T05:30:42+0530 ERROR yt-dlp: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to manually pass c"
+   },
+   {
+    "file": "logs/harvest_test.log",
+    "line": 3679,
+    "text": "2026-11-08T05:30:42+0530 ERROR vMIFXzQiZMA: BLOCKED: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to m"
+   },
+   {
+    "file": "logs/run_stage3.log",
+    "line": 34,
+    "text": "2026-11-08T05:30:42 end test exit 3"
+   }
+  ],
+  "most_recent_download": {
+   "video_id": "vMIFXzQiZMA",
+   "split": "test",
+   "status": "blocked",
+   "reason": "BLOCKED: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to manually pass cookies. Also see <url> for tips on effectively exporting YouTube cookies. Stopping the run (no retry, no workaround).",
+   "finished_utc": "2026-11-08T00:00:42+00:00",
+   "source": "logs/harvest_test.log line 3679"
+  },
+  "most_recent_download_succeeded": false,
+  "n_real_download_rows": 195,
+  "n_download_log_lines": 206,
+  "network_down_rows": [
+   {
+    "video_id": "zQSjO3YREkM",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:56:55+00:00"
+   },
+   {
+    "video_id": "ywyVa9vg_8I",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:57:16+00:00"
+   },
+   {
+    "video_id": "khGY6LfPAFg",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:57:36+00:00"
+   },
+   {
+    "video_id": "oUDSNQNiSF4",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:57:56+00:00"
+   },
+   {
+    "video_id": "IZWuBJLiCpo",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:58:17+00:00"
+   },
+   {
+    "video_id": "HLv3qCzNZeg",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:58:43+00:00"
+   },
+   {
+    "video_id": "KoQO99loe7w",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:59:03+00:00"
+   },
+   {
+    "video_id": "u904MOjSW98",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:59:28+00:00"
+   },
+   {
+    "video_id": "VJD6EKr3L2Q",
+    "split": "negative",
+    "finished_utc": "2026-11-07T04:59:48+00:00"
+   },
+   {
+    "video_id": "ukNywpx1lTU",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:00:13+00:00"
+   },
+   {
+    "video_id": "6AZmW33FWtg",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:00:37+00:00"
+   },
+   {
+    "video_id": "vnLf1UJQexk",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:00:58+00:00"
+   },
+   {
+    "video_id": "ffyLMIR8Nn4",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:01:25+00:00"
+   },
+   {
+    "video_id": "5dga-aa83BA",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:01:48+00:00"
+   },
+   {
+    "video_id": "vtPfH9O7goA",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:02:09+00:00"
+   },
+   {
+    "video_id": "aI-0eNhefTI",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:02:34+00:00"
+   },
+   {
+    "video_id": "L_i6sIwAUWM",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:03:24+00:00"
+   },
+   {
+    "video_id": "s5X_Ob_24vA",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:03:48+00:00"
+   },
+   {
+    "video_id": "CkvFZ7RjqW4",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:04:07+00:00"
+   },
+   {
+    "video_id": "jCO79PXuX7c",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:04:27+00:00"
+   },
+   {
+    "video_id": "N4gwdN5b-nc",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:04:45+00:00"
+   },
+   {
+    "video_id": "w7vTo-YtYNE",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:05:11+00:00"
+   },
+   {
+    "video_id": "ShTDH36Xmtc",
+    "split": "negative",
+    "finished_utc": "2026-11-07T05:05:31+00:00"
+   },
+   {
+    "video_id": "pio5HGWJ1YU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:05:41+00:00"
+   },
+   {
+    "video_id": "FvSsbK7Vw8o",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:06:02+00:00"
+   },
+   {
+    "video_id": "SveOAKoRdc0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:06:29+00:00"
+   },
+   {
+    "video_id": "oi-hEUpGu94",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:06:50+00:00"
+   },
+   {
+    "video_id": "LHBG6cdgdsU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:07:13+00:00"
+   },
+   {
+    "video_id": "ceA6Wntd2TI",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:07:35+00:00"
+   },
+   {
+    "video_id": "Y2CXHcMHBdo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:07:59+00:00"
+   },
+   {
+    "video_id": "ylzbYy_bmY4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:08:19+00:00"
+   },
+   {
+    "video_id": "FmmdjDtH2C4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:09:08+00:00"
+   },
+   {
+    "video_id": "dlIWopHCct0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:09:28+00:00"
+   },
+   {
+    "video_id": "Wm9xeZMGD_M",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:09:48+00:00"
+   },
+   {
+    "video_id": "SORey4LvJ5M",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:10:12+00:00"
+   },
+   {
+    "video_id": "R7nJpR5-noQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:10:33+00:00"
+   },
+   {
+    "video_id": "RRpofEIsshY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:10:55+00:00"
+   },
+   {
+    "video_id": "BTEvNWyhqFo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:11:17+00:00"
+   },
+   {
+    "video_id": "A58YRZy5Kk8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:11:40+00:00"
+   },
+   {
+    "video_id": "rA5lOl5pw1Y",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:11:58+00:00"
+   },
+   {
+    "video_id": "O5mw90PhtL0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:12:17+00:00"
+   },
+   {
+    "video_id": "9j9k7SAQ28Y",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:12:45+00:00"
+   },
+   {
+    "video_id": "l1qc3tk3bxw",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:13:09+00:00"
+   },
+   {
+    "video_id": "8gsXSa4UzaQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:13:31+00:00"
+   },
+   {
+    "video_id": "M_ZyLwOOrfw",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:13:49+00:00"
+   },
+   {
+    "video_id": "Xn977AYzkQ0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:14:08+00:00"
+   },
+   {
+    "video_id": "HDfWJP4QYo0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:14:31+00:00"
+   },
+   {
+    "video_id": "3dxthmsAvWE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:14:51+00:00"
+   },
+   {
+    "video_id": "aFwlCwTZmU8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:15:14+00:00"
+   },
+   {
+    "video_id": "xqzppuVzui0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:15:35+00:00"
+   },
+   {
+    "video_id": "wvHxQFWlKMU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:15:55+00:00"
+   },
+   {
+    "video_id": "WFbE0dcn66M",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:16:19+00:00"
+   },
+   {
+    "video_id": "5Z4tYmXR2j4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:16:39+00:00"
+   },
+   {
+    "video_id": "eEJdGpEayes",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:17:01+00:00"
+   },
+   {
+    "video_id": "NbZEKd-MfHo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:17:19+00:00"
+   },
+   {
+    "video_id": "shJ3TGaE7WE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:17:40+00:00"
+   },
+   {
+    "video_id": "FpHjg8d4M7Q",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:18:04+00:00"
+   },
+   {
+    "video_id": "tmgoHMm1Hxw",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:18:31+00:00"
+   },
+   {
+    "video_id": "J5LFyE7lPps",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:18:52+00:00"
+   },
+   {
+    "video_id": "YoJlliek2Sg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:19:10+00:00"
+   },
+   {
+    "video_id": "Koxi9RMCsvo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:19:37+00:00"
+   },
+   {
+    "video_id": "rIb-jwhW2jA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:19:57+00:00"
+   },
+   {
+    "video_id": "XaDYtGPPCyQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:20:19+00:00"
+   },
+   {
+    "video_id": "iLVcqsodwD8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:20:38+00:00"
+   },
+   {
+    "video_id": "kbY0_YqILoo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:21:04+00:00"
+   },
+   {
+    "video_id": "21OUXsm8jw4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:21:25+00:00"
+   },
+   {
+    "video_id": "FtHtRNzuyaY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:21:49+00:00"
+   },
+   {
+    "video_id": "xD2yQmoHXr4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:22:10+00:00"
+   },
+   {
+    "video_id": "k2SjEydgt4I",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:22:32+00:00"
+   },
+   {
+    "video_id": "qIH4Be6uy4E",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:22:54+00:00"
+   },
+   {
+    "video_id": "GaPY-7DBsyo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:23:20+00:00"
+   },
+   {
+    "video_id": "OtToQ3Zdi-k",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:23:39+00:00"
+   },
+   {
+    "video_id": "QCsXKDT092s",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:23:59+00:00"
+   },
+   {
+    "video_id": "tqMHkxbSMLs",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:24:25+00:00"
+   },
+   {
+    "video_id": "jgtDaCE6HUk",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:24:45+00:00"
+   },
+   {
+    "video_id": "DwChzaDoN3I",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:25:11+00:00"
+   },
+   {
+    "video_id": "vXH6fVeWn5s",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:25:37+00:00"
+   },
+   {
+    "video_id": "pVHKY0T_kek",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:26:03+00:00"
+   },
+   {
+    "video_id": "6GyfTrFpEto",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:26:24+00:00"
+   },
+   {
+    "video_id": "dSz9F2QRULg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:26:50+00:00"
+   },
+   {
+    "video_id": "BAxsVU6HFOA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:27:14+00:00"
+   },
+   {
+    "video_id": "XjEdBDDpoDc",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:27:39+00:00"
+   },
+   {
+    "video_id": "I9SJk-TTrBg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:28:03+00:00"
+   },
+   {
+    "video_id": "2LMJZeWPCFw",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:28:24+00:00"
+   },
+   {
+    "video_id": "BvFUpGaie2E",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:28:50+00:00"
+   },
+   {
+    "video_id": "nEysAHozP-w",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:29:14+00:00"
+   },
+   {
+    "video_id": "UicqB7meHDM",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:29:36+00:00"
+   },
+   {
+    "video_id": "n8HWbA8edWs",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:30:01+00:00"
+   },
+   {
+    "video_id": "b0L7NgGgzUA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:30:22+00:00"
+   },
+   {
+    "video_id": "juw1pt_s2lM",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:30:44+00:00"
+   },
+   {
+    "video_id": "AfdcLFPAHRw",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:31:09+00:00"
+   },
+   {
+    "video_id": "TZ0uJsf7oR8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:31:27+00:00"
+   },
+   {
+    "video_id": "Pf9YCmNCgZ8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:31:51+00:00"
+   },
+   {
+    "video_id": "QPpJ3z744M8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:32:13+00:00"
+   },
+   {
+    "video_id": "zXAweRhHJYg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:32:31+00:00"
+   },
+   {
+    "video_id": "LHhd6zDMBTo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:32:51+00:00"
+   },
+   {
+    "video_id": "a6u8ZkZ5D58",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:33:17+00:00"
+   },
+   {
+    "video_id": "IBksvCS3wMk",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:33:42+00:00"
+   },
+   {
+    "video_id": "TaoxSB6IMS4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:34:05+00:00"
+   },
+   {
+    "video_id": "wBgeVvbDD4o",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:34:31+00:00"
+   },
+   {
+    "video_id": "JSCPPnRAJZY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:34:50+00:00"
+   },
+   {
+    "video_id": "EbfEo0XsiOQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:35:08+00:00"
+   },
+   {
+    "video_id": "tAI0KEXe5q8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:35:28+00:00"
+   },
+   {
+    "video_id": "pN0hQ3aTYtI",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:35:47+00:00"
+   },
+   {
+    "video_id": "rf9wKyi59dQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:36:09+00:00"
+   },
+   {
+    "video_id": "KPX5NdOsnD4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:36:29+00:00"
+   },
+   {
+    "video_id": "MiVw1X1m6QE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:36:54+00:00"
+   },
+   {
+    "video_id": "JfAbDuKRUqQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:37:22+00:00"
+   },
+   {
+    "video_id": "nkhZfSKirSY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:37:46+00:00"
+   },
+   {
+    "video_id": "kwRCr1M3ONo",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:38:12+00:00"
+   },
+   {
+    "video_id": "WUG769V1Sb0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:38:35+00:00"
+   },
+   {
+    "video_id": "Q0QZ3Je68Sc",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:38:53+00:00"
+   },
+   {
+    "video_id": "TrhxTdKTsU0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:39:17+00:00"
+   },
+   {
+    "video_id": "SW6klEkJS3k",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:39:42+00:00"
+   },
+   {
+    "video_id": "Lza3R2AyHmM",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:40:00+00:00"
+   },
+   {
+    "video_id": "mr-RQ0nNaRE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:40:26+00:00"
+   },
+   {
+    "video_id": "PFVFHXdXAQM",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:40:51+00:00"
+   },
+   {
+    "video_id": "fPDBSEhmgnk",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:41:09+00:00"
+   },
+   {
+    "video_id": "DWU1HzW-2Z4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:41:29+00:00"
+   },
+   {
+    "video_id": "bFlgoacpxZU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:41:49+00:00"
+   },
+   {
+    "video_id": "-NHuRZ4hV5A",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:42:16+00:00"
+   },
+   {
+    "video_id": "HWXDknXzP6g",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:42:35+00:00"
+   },
+   {
+    "video_id": "lr91aM3nbW0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:43:00+00:00"
+   },
+   {
+    "video_id": "FU27mso1GaE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:43:19+00:00"
+   },
+   {
+    "video_id": "Y2nNag-70w4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:43:47+00:00"
+   },
+   {
+    "video_id": "vyBSiPQEXRg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:44:11+00:00"
+   },
+   {
+    "video_id": "kCMs4zOJJIc",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:44:36+00:00"
+   },
+   {
+    "video_id": "mqDrSP29cPE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:44:57+00:00"
+   },
+   {
+    "video_id": "oQc1M0eaXa4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:45:25+00:00"
+   },
+   {
+    "video_id": "zsoaUz2qtXg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:45:45+00:00"
+   },
+   {
+    "video_id": "sv6D2j7Ats0",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:46:06+00:00"
+   },
+   {
+    "video_id": "3j8-qlHHnIE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:46:26+00:00"
+   },
+   {
+    "video_id": "r-dKUfuPxLQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:46:46+00:00"
+   },
+   {
+    "video_id": "S8xr4terOXE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:47:06+00:00"
+   },
+   {
+    "video_id": "DfjXpqRP2uE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:47:28+00:00"
+   },
+   {
+    "video_id": "JOUqQMzdzdE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:47:53+00:00"
+   },
+   {
+    "video_id": "salY0f-uZAk",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:48:12+00:00"
+   },
+   {
+    "video_id": "hAscBpsiDnE",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:48:37+00:00"
+   },
+   {
+    "video_id": "hwnKuf3aciU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:48:57+00:00"
+   },
+   {
+    "video_id": "u4-kZVwUUAg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:49:22+00:00"
+   },
+   {
+    "video_id": "FGPtrBiqhJY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:49:46+00:00"
+   },
+   {
+    "video_id": "KVblO36WdiY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:50:13+00:00"
+   },
+   {
+    "video_id": "W7ba8v6KQxU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:50:36+00:00"
+   },
+   {
+    "video_id": "RClyo9kVm4o",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:50:54+00:00"
+   },
+   {
+    "video_id": "ybc1WY6n1B4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:51:18+00:00"
+   },
+   {
+    "video_id": "7uXi91jf-aY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:51:38+00:00"
+   },
+   {
+    "video_id": "UASrmxzio2Y",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:52:00+00:00"
+   },
+   {
+    "video_id": "PCsGYRmMlqQ",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:52:26+00:00"
+   },
+   {
+    "video_id": "n8rBL1FAZOA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:52:49+00:00"
+   },
+   {
+    "video_id": "aZINS062D3s",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:53:09+00:00"
+   },
+   {
+    "video_id": "VJYVv5Wot3o",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:53:34+00:00"
+   },
+   {
+    "video_id": "FEXNIVvArJk",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:53:51+00:00"
+   },
+   {
+    "video_id": "t4ZXeFF0Bcg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:54:14+00:00"
+   },
+   {
+    "video_id": "5LW0lKI1jx8",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:54:38+00:00"
+   },
+   {
+    "video_id": "8YaC-FzdRPA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:55:01+00:00"
+   },
+   {
+    "video_id": "BYdBud_14jY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:55:25+00:00"
+   },
+   {
+    "video_id": "WYoKaThec_k",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:55:50+00:00"
+   },
+   {
+    "video_id": "pZm3yYmy6-g",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:56:13+00:00"
+   },
+   {
+    "video_id": "K3atjTKsNiA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:56:40+00:00"
+   },
+   {
+    "video_id": "ogqvTVsO4a4",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:56:58+00:00"
+   },
+   {
+    "video_id": "lc-Y-9iXNIU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:57:17+00:00"
+   },
+   {
+    "video_id": "tl-TwJQPUPg",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:57:42+00:00"
+   },
+   {
+    "video_id": "BsDB4Y5hLeU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:58:07+00:00"
+   },
+   {
+    "video_id": "xgYK-TBnCOY",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:58:31+00:00"
+   },
+   {
+    "video_id": "l8-ZICFYjRA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:58:55+00:00"
+   },
+   {
+    "video_id": "pkkh6Gy2qUU",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:59:17+00:00"
+   },
+   {
+    "video_id": "vMIFXzQiZMA",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:59:35+00:00"
+   },
+   {
+    "video_id": "V1Fmw-UCw8Q",
+    "split": "test",
+    "finished_utc": "2026-11-07T05:59:58+00:00"
+   },
+   {
+    "video_id": "qhB3qNmNx94",
+    "split": "test",
+    "finished_utc": "2026-11-07T06:00:17+00:00"
+   },
+   {
+    "video_id": "oDOWNjRiT20",
+    "split": "test",
+    "finished_utc": "2026-11-07T06:00:41+00:00"
+   },
+   {
+    "video_id": "B1D6_AOFzwo",
+    "split": "test",
+    "finished_utc": "2026-11-07T06:01:01+00:00"
+   },
+   {
+    "video_id": "iZpoKVGpQAk",
+    "split": "test",
+    "finished_utc": "2026-11-07T06:01:25+00:00"
+   },
+   {
+    "video_id": "HNBb4ltVQug",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:01:35+00:00"
+   },
+   {
+    "video_id": "bi3P-qbJiQw",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:02:00+00:00"
+   },
+   {
+    "video_id": "-jBfcJT6UlE",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:02:22+00:00"
+   },
+   {
+    "video_id": "awsz6rzKahs",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:02:49+00:00"
+   },
+   {
+    "video_id": "NMynm1U7KH0",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:03:16+00:00"
+   },
+   {
+    "video_id": "vbK11uzWHAA",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:03:39+00:00"
+   },
+   {
+    "video_id": "T6lmG4sSHkI",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:04:00+00:00"
+   },
+   {
+    "video_id": "87C-oH6Jgz0",
+    "split": "negative",
+    "finished_utc": "2026-11-07T06:04:26+00:00"
+   },
+   {
+    "video_id": "iq-GmSmIzMo",
+    "split": "negative",
+    "finished_utc": "2026-11-07T08:47:41+00:00"
+   },
+   {
+    "video_id": "TbqOkXM630s",
+    "split": "test",
+    "finished_utc": "2026-11-07T14:34:25+00:00"
+   }
+  ],
+  "log_files_scanned": [
+   "logs/harvest_calibration.log",
+   "logs/harvest_dev.log",
+   "logs/harvest_neg_report.log",
+   "logs/harvest_neg_threshold.log",
+   "logs/harvest_synthetic.log",
+   "logs/harvest_test.log",
+   "logs/run_stage3.log"
+  ],
+  "ok": false
+ },
+ "gate_md": "# Gate, Saturday 7 November 2026, 22:00 IST (PROTOCOL.md section 15)\n\nGenerated by `scripts/evaluate.py` at 2026-11-08T17:04:35+05:30. Decision time: 2026-11-08T14:00:00+05:30. This run is after the decision time: only streams harvested by then are counted.\n\n**FROZEN**: this run started at 2026-11-08T17:04:30+05:30, after the decision time and its 10-min grace, and every Test stream harvested by then was searched. Later runs keep this file and the gate in `evaluation.json` unchanged (`results/gate_frozen.json`).\n\n## Verdict: GATE NOT MET\n\n1 and 2. Test streams that lock blind (primary extractor v2; top candidate in the full or +-90-day scope within 30 s of T* for at least one excerpt length, with confidence >= tau of that cell): **38** of N = 126 processed (need 5): met.\n   - Locked streams: 3dxthmsAvWE, 3j8-qlHHnIE, 5LW0lKI1jx8, 8YaC-FzdRPA, 8gsXSa4UzaQ, BvFUpGaie2E, DfjXpqRP2uE, FGPtrBiqhJY, FU27mso1GaE, HDfWJP4QYo0, I9SJk-TTrBg, JSCPPnRAJZY, JfAbDuKRUqQ, K3atjTKsNiA, KVblO36WdiY, LHBG6cdgdsU, Lza3R2AyHmM, Q0QZ3Je68Sc, S8xr4terOXE, TbqOkXM630s, WYoKaThec_k, Y2nNag-70w4, YoJlliek2Sg, a6u8ZkZ5D58, aFwlCwTZmU8, bFlgoacpxZU, hwnKuf3aciU, jgtDaCE6HUk, kwRCr1M3ONo, l1qc3tk3bxw, l8-ZICFYjRA, mqDrSP29cPE, n8HWbA8edWs, r-dKUfuPxLQ, sv6D2j7Ats0, vXH6fVeWn5s, vyBSiPQEXRg, xgYK-TBnCOY.\n   - S1 (D = 0, no label-drift correction): 9 streams.\n   - Hit regardless of tau (condition 1 alone): 48; confident hits (also hum flag set): 30.\n   - v1 (description only, not the gate): 19 lock, 5 with D = 0.\n   - naive (description only, not the gate): 13 lock, 4 with D = 0.\n3. Harvest health: NOT met. Blocked manifest rows: vMIFXzQiZMA. Log lines showing a block: 3. Most recent download: vMIFXzQiZMA (test) blocked at 2026-11-08T00:00:42+00:00, BLOCKED: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to manually pass cookies. Also see <url> for tips on effectively exporting YouTube cookies. Stopping the run (no retry, no workaround)..\n   - Failures caused by the laptop's network being down, skipped as not download attempts (PROTOCOL section 19, 11:50 IST): 182 (B1D6_AOFzwo at 2026-11-07T06:01:01+00:00, iZpoKVGpQAk at 2026-11-07T06:01:25+00:00, HNBb4ltVQug at 2026-11-07T06:01:35+00:00, bi3P-qbJiQw at 2026-11-07T06:02:00+00:00, -jBfcJT6UlE at 2026-11-07T06:02:22+00:00, awsz6rzKahs at 2026-11-07T06:02:49+00:00, NMynm1U7KH0 at 2026-11-07T06:03:16+00:00, vbK11uzWHAA at 2026-11-07T06:03:39+00:00, T6lmG4sSHkI at 2026-11-07T06:04:00+00:00, 87C-oH6Jgz0 at 2026-11-07T06:04:26+00:00, iq-GmSmIzMo at 2026-11-07T08:47:41+00:00, TbqOkXM630s at 2026-11-07T14:34:25+00:00; the latest 12 shown).\n   - `logs/harvest_test.log` line 3678: 2026-11-08T05:30:42+0530 ERROR yt-dlp: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to manually pass c\n   - `logs/harvest_test.log` line 3679: 2026-11-08T05:30:42+0530 ERROR vMIFXzQiZMA: BLOCKED: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to m\n   - `logs/run_stage3.log` line 34: 2026-11-08T05:30:42 end test exit 3\n- tau and L committed by the decision time: both committed at or before the decision time.\n\n## Inputs\n\n- L = 2 s (calibrated; `results/latency.json`). T* = release time in IST + L + D.\n- tau: `results/threshold.json`\n- `results/threshold.json`: commit beadde1d623bc2d99f8a5cb3dfed90906e1c82dd at 2026-11-07T22:35:17+05:30\n- `results/latency.json`: commit 84ac47dc49bcff9dc6eef60ab09c71d1243deaf0 at 2026-11-07T22:35:56+05:30\n- `scripts/evaluate.py`: commit 6d010bb63355f895ca3865433e227cb0b111f4ca at 2026-11-07T22:40:20+05:30\n- Blinding check (git): passed: 11 files committed and unmodified (results/threshold.json, results/latency.json, scripts/evaluate.py, scripts/eval_common.py, scripts/calibrate_latency.py, scripts/harvest.py, gunj/config.json, gunj/match.py, gunj/match_v2.py, gunj/reference.py, data/splits.csv)\n\n## Every processed stream (N = 126), hits and misses\n\nPrimary extractor v2. e = implied start of the top candidate − T* (s); conf = atanh(r1) − atanh(r2); LOCK = |e| ≤ 30 s and conf ≥ tau. e(D=0) is S1.\n\n| stream | venue | D (s) | stable | M1 hum | min | full: e / conf / tau | full e(D=0) | +-90 d: e / conf / tau | +-90 d e(D=0) | result |\n|---|---|---|---|---|---|---|---|---|---|---|\n| pio5HGWJ1YU | religious | -9.0 | False | False | 10 | +5747040 / 0.004 / 0.165 | +5747031 | +5747040 / 0.011 / 0.165 | +5747031 | miss |\n| | | | | | 20 | +76287231 / 0.007 / 0.223 | +76287222 | +4100010 / 0.005 / 0.223 | +4100001 | miss |\n| | | | | | 40 | +45232824 / 0.006 / 0.062 | +45232815 | +703158 / 0.021 / 0.064 | +703149 | miss |\n| OtToQ3Zdi-k | religious | -9.0 | False | False | 10 | +12764041 / 0.010 / 0.165 | +12764032 | +6796585 / 0.006 / 0.165 | +6796576 | miss |\n| | | | | | 20 | +58711359 / 0.004 / 0.223 | +58711350 | +481358 / 0.006 / 0.223 | +481349 | miss |\n| | | | | | 40 | +48278482 / 0.000 / 0.062 | +48278473 | +847633 / 0.005 / 0.064 | +847624 | miss |\n| | | | | | 60 | +50318853 / 0.000 / 0.083 | +50318844 | +5726065 / 0.002 / 0.141 | +5726056 | miss |\n| xD2yQmoHXr4 | government event | -8.0 | False | False | 10 | +44332457 / 0.010 / 0.165 | +44332449 | -870783 / 0.007 / 0.165 | -870791 | miss |\n| | | | | | 20 | +40217201 / 0.007 / 0.223 | +40217193 | +4531185 / 0.000 / 0.223 | +4531177 | miss |\n| lc-Y-9iXNIU | legislature | -8.0 | False | True | 10 | +36331153 / 0.009 / 0.165 | +36331145 | -109750 / 0.001 / 0.165 | -109758 | miss |\n| | | | | | 20 | -11 / 0.015 / 0.223 | -19 | -11 / 0.059 / 0.223 | -19 | hit below tau full,90d |\n| aZINS062D3s | government event | -21.0 | False | True | 10 | -4414811 / 0.027 / 0.165 | -4414832 | -4414811 / 0.070 / 0.165 | -4414832 | miss |\n| | | | | | 20 | +50017029 / 0.082 / 0.223 | +50017008 | -4336046 / 0.008 / 0.223 | -4336067 | miss |\n| | | | | | 40 | +28119357 / 0.005 / 0.062 | +28119336 | +5914386 / 0.001 / 0.064 | +5914365 | miss |\n| DWU1HzW-2Z4 | government event | -21.0 | False | True | 10 | +50469367 / 0.002 / 0.165 | +50469346 | +144850 / 0.000 / 0.165 | +144829 | miss |\n| | | | | | 20 | +12420157 / 0.014 / 0.223 | +12420136 | -972170 / 0.003 / 0.223 | -972191 | miss |\n| | | | | | 40 | +49492188 / 0.005 / 0.062 | +49492167 | +896429 / 0.009 / 0.064 | +896408 | miss |\n| | | | | | 60 | +52426385 / 0.004 / 0.083 | +52426364 | +4941033 / 0.002 / 0.141 | +4941012 | miss |\n| lr91aM3nbW0 | government event | -21.0 | False | False | 10 | +21074716 / 0.039 / 0.165 | +21074695 | -3062383 / 0.028 / 0.165 | -3062404 | miss |\n| | | | | | 20 | +40747134 / 0.020 / 0.223 | +40747113 | +2806388 / 0.036 / 0.223 | +2806367 | miss |\n| | | | | | 40 | +48103041 / 0.012 / 0.062 | +48103020 | -333926 / 0.002 / 0.064 | -333947 | miss |\n| wvHxQFWlKMU | government event | -9.0 | True | False | 10 | +27919918 / 0.014 / 0.165 | +27919909 | +7257892 / 0.002 / 0.165 | +7257883 | miss |\n| | | | | | 20 | +27638723 / 0.004 / 0.223 | +27638714 | +1781196 / 0.007 / 0.223 | +1781187 | miss |\n| shJ3TGaE7WE | legislature | -2.0 | False | True | 10 | +26961821 / 0.009 / 0.165 | +26961819 | +6225920 / 0.029 / 0.165 | +6225918 | miss |\n| | | | | | 20 | +26961821 / 0.042 / 0.223 | +26961819 | +4329149 / 0.005 / 0.223 | +4329147 | miss |\n| M_ZyLwOOrfw | lecture | -9.0 | False | False | 10 | +49394108 / 0.002 / 0.165 | +49394099 | +1315949 / 0.001 / 0.165 | +1315940 | miss |\n| | | | | | 20 | +4984235 / 0.003 / 0.223 | +4984226 | +4984235 / 0.008 / 0.223 | +4984226 | miss |\n| | | | | | 40 | +16380790 / 0.010 / 0.062 | +16380781 | +2711194 / 0.010 / 0.064 | +2711185 | miss |\n| | | | | | 60 | +19054362 / 0.002 / 0.083 | +19054353 | -5146016 / 0.000 / 0.141 | -5146025 | miss |\n| PFVFHXdXAQM | lecture | 11.0 | False | False | 10 | +46112924 / 0.029 / 0.165 | +46112935 | +3287519 / 0.011 / 0.165 | +3287530 | miss |\n| | | | | | 20 | +7795373 / 0.009 / 0.223 | +7795384 | +4983633 / 0.006 / 0.223 | +4983644 | miss |\n| | | | | | 40 | +23397198 / 0.005 / 0.062 | +23397209 | -3981452 / 0.004 / 0.064 | -3981441 | miss |\n| | | | | | 60 | +13694269 / 0.008 / 0.083 | +13694280 | +5790832 / 0.000 / 0.141 | +5790843 | miss |\n| pVHKY0T_kek | religious | 11.0 | False | True | 10 | +28422471 / 0.001 / 0.165 | +28422482 | +5097852 / 0.002 / 0.165 | +5097863 | miss |\n| | | | | | 20 | +36652667 / 0.009 / 0.223 | +36652678 | +1789741 / 0.001 / 0.223 | +1789752 | miss |\n| | | | | | 40 | +46291856 / 0.000 / 0.062 | +46291867 | +5213148 / 0.002 / 0.064 | +5213159 | miss |\n| | | | | | 60 | +30028690 / 0.002 / 0.083 | +30028701 | +3117713 / 0.000 / 0.141 | +3117724 | miss |\n| SW6klEkJS3k | lecture | 44.0 | False | False | 10 | +8387391 / 0.011 / 0.165 | +8387435 | -1338492 / 0.008 / 0.165 | -1338448 | miss |\n| | | | | | 20 | +16614196 / 0.040 / 0.223 | +16614240 | -734297 / 0.015 / 0.223 | -734253 | miss |\n| | | | | | 40 | +40661807 / 0.004 / 0.062 | +40661851 | +5517371 / 0.016 / 0.064 | +5517415 | miss |\n| | | | | | 60 | +39445840 / 0.036 / 0.083 | +39445884 | +169304 / 0.006 / 0.141 | +169348 | miss |\n| rf9wKyi59dQ | legislature | 68.0 | False | False | 10 | +15241606 / 0.006 / 0.165 | +15241674 | +3080533 / 0.025 / 0.165 | +3080601 | miss |\n| | | | | | 20 | +19395242 / 0.004 / 0.223 | +19395310 | +1646358 / 0.011 / 0.223 | +1646426 | miss |\n| | | | | | 40 | -7740674 / 0.003 / 0.062 | -7740606 | -7740674 / 0.003 / 0.064 | -7740606 | miss |\n| | | | | | 60 | -15 / 0.067 / 0.083 | +53 | -15 / 0.068 / 0.141 | +53 | hit below tau full,90d |\n| kbY0_YqILoo | government event | 70.0 | False | False | 10 | +45443608 / 0.010 / 0.165 | +45443678 | +5617633 / 0.012 / 0.165 | +5617703 | miss |\n| | | | | | 20 | -665043 / 0.029 / 0.223 | -664973 | -665043 / 0.029 / 0.223 | -664973 | miss |\n| | | | | | 40 | +37455519 / 0.008 / 0.062 | +37455589 | +574760 / 0.008 / 0.064 | +574830 | miss |\n| XaDYtGPPCyQ | legislature | 70.0 | False | False | 10 | +66198885 / 0.020 / 0.165 | +66198955 | +2141254 / 0.018 / 0.165 | +2141324 | miss |\n| | | | | | 20 | +2141253 / 0.014 / 0.223 | +2141323 | +2141253 / 0.040 / 0.223 | +2141323 | miss |\n| | | | | | 40 | -415446 / 0.011 / 0.062 | -415376 | -415446 / 0.017 / 0.064 | -415376 | miss |\n| | | | | | 60 | +10440786 / 0.001 / 0.083 | +10440856 | +2245408 / 0.012 / 0.141 | +2245478 | miss |\n| AfdcLFPAHRw | lecture | 70.0 | False | False | 10 | +820987 / 0.027 / 0.165 | +821057 | +820987 / 0.032 / 0.165 | +821057 | miss |\n| | | | | | 20 | +11767341 / 0.007 / 0.223 | +11767411 | +1626874 / 0.030 / 0.223 | +1626944 | miss |\n| | | | | | 40 | +18038728 / 0.007 / 0.062 | +18038798 | +245854 / 0.005 / 0.064 | +245924 | miss |\n| | | | | | 60 | +245852 / 0.005 / 0.083 | +245922 | +245852 / 0.012 / 0.141 | +245922 | miss |\n| DwChzaDoN3I | lecture | 40.0 | False | False | 10 | +12403452 / 0.038 / 0.165 | +12403492 | +5213678 / 0.003 / 0.165 | +5213718 | miss |\n| | | | | | 20 | +14408490 / 0.011 / 0.223 | +14408530 | -6899576 / 0.009 / 0.223 | -6899536 | miss |\n| | | | | | 40 | +13863272 / 0.006 / 0.062 | +13863312 | -3322329 / 0.012 / 0.064 | -3322289 | miss |\n| wBgeVvbDD4o | government event | 40.0 | False | False | 10 | +13 / 0.013 / 0.165 | +53 | +13 / 0.022 / 0.165 | +53 | hit below tau full,90d |\n| | | | | | 20 | +13 / 0.020 / 0.223 | +53 | +13 / 0.022 / 0.223 | +53 | hit below tau full,90d |\n| | | | | | 40 | -3422051 / 0.002 / 0.062 | -3422011 | -3422051 / 0.022 / 0.064 | -3422011 | miss |\n| | | | | | 60 | +28741958 / 0.026 / 0.083 | +28741998 | -410784 / 0.002 / 0.141 | -410744 | miss |\n| hAscBpsiDnE | government event | 68.0 | False | True | 10 | +1881002 / 0.004 / 0.165 | +1881070 | +1881002 / 0.011 / 0.165 | +1881070 | miss |\n| | | | | | 20 | +27347265 / 0.015 / 0.223 | +27347333 | +109232 / 0.002 / 0.223 | +109300 | miss |\n| Pf9YCmNCgZ8 | government event | 68.0 | False | True | 10 | -1574384 / 0.001 / 0.165 | -1574316 | -1574384 / 0.028 / 0.165 | -1574316 | miss |\n| | | | | | 20 | +18991551 / 0.002 / 0.223 | +18991619 | -4404188 / 0.003 / 0.223 | -4404120 | miss |\n| | | | | | 40 | +58562261 / 0.003 / 0.062 | +58562329 | +627503 / 0.009 / 0.064 | +627571 | miss |\n| K3atjTKsNiA | legislature | 59.0 | False | True | 10 | -4 / 1.763 / 0.165 | +55 | -4 / 1.763 / 0.165 | +55 | LOCK full,90d |\n| | | | | | 20 | -4 / 2.410 / 0.223 | +55 | -4 / 2.461 / 0.223 | +55 | LOCK full,90d |\n| | | | | | 40 | -3 / 2.155 / 0.062 | +56 | -3 / 2.155 / 0.064 | +56 | LOCK full,90d |\n| | | | | | 60 | -3 / 2.100 / 0.083 | +56 | -3 / 2.116 / 0.141 | +56 | LOCK full,90d |\n| TZ0uJsf7oR8 | lecture | 59.0 | False | False | 10 | +21996411 / 0.019 / 0.165 | +21996470 | -5515720 / 0.001 / 0.165 | -5515661 | miss |\n| | | | | | 20 | +6957378 / 0.007 / 0.223 | +6957437 | +6957378 / 0.025 / 0.223 | +6957437 | miss |\n| | | | | | 40 | -724749 / 0.018 / 0.062 | -724690 | -724749 / 0.019 / 0.064 | -724690 | miss |\n| | | | | | 60 | -15816704 / 0.007 / 0.083 | -15816645 | -1480479 / 0.001 / 0.141 | -1480420 | miss |\n| nEysAHozP-w | lecture | 59.0 | False | False | 10 | +16247939 / 0.008 / 0.165 | +16247998 | -1003447 / 0.012 / 0.165 | -1003388 | miss |\n| | | | | | 20 | +15835467 / 0.030 / 0.223 | +15835526 | -6123199 / 0.019 / 0.223 | -6123140 | miss |\n| | | | | | 40 | +39201193 / 0.013 / 0.062 | +39201252 | -4649380 / 0.004 / 0.064 | -4649321 | miss |\n| 9j9k7SAQ28Y | legislature | -5.5 | False | False | 10 | +32469272 / 0.027 / 0.165 | +32469266 | -2610505 / 0.010 / 0.165 | -2610511 | miss |\n| | | | | | 20 | +7382120 / 0.030 / 0.223 | +7382114 | +7382120 / 0.039 / 0.223 | +7382114 | miss |\n| | | | | | 40 | -13256069 / 0.010 / 0.062 | -13256075 | +478925 / 0.003 / 0.064 | +478919 | miss |\n| | | | | | 60 | +9746126 / 0.013 / 0.083 | +9746120 | -450958 / 0.012 / 0.141 | -450964 | miss |\n| qIH4Be6uy4E | religious | 0.0 | False | True | 10 | +9109475 / 0.011 / 0.165 | +9109475 | -5225683 / 0.001 / 0.165 | -5225683 | miss |\n| | | | | | 20 | -1027255 / 0.001 / 0.223 | -1027255 | -1027255 / 0.020 / 0.223 | -1027255 | miss |\n| | | | | | 40 | -10951737 / 0.002 / 0.062 | -10951737 | -6458894 / 0.000 / 0.064 | -6458894 | miss |\n| | | | | | 60 | +36179554 / 0.024 / 0.083 | +36179554 | -7189701 / 0.008 / 0.141 | -7189701 | miss |\n| TrhxTdKTsU0 | lecture | 0.0 | False | False | 10 | +17195529 / 0.003 / 0.165 | +17195529 | +6514695 / 0.011 / 0.165 | +6514695 | miss |\n| | | | | | 20 | -8424244 / 0.012 / 0.223 | -8424244 | -4509237 / 0.000 / 0.223 | -4509237 | miss |\n| | | | | | 40 | +1992660 / 0.021 / 0.062 | +1992660 | +1992660 / 0.022 / 0.064 | +1992660 | miss |\n| | | | | | 60 | +16444372 / 0.038 / 0.083 | +16444372 | -2367068 / 0.000 / 0.141 | -2367068 | miss |\n| ogqvTVsO4a4 | religious | 11.0 | False | False | 10 | +45943703 / 0.014 / 0.165 | +45943714 | +386048 / 0.016 / 0.165 | +386059 | miss |\n| | | | | | 20 | -9610961 / 0.001 / 0.223 | -9610950 | +3121482 / 0.002 / 0.223 | +3121493 | miss |\n| | | | | | 40 | +50667316 / 0.004 / 0.062 | +50667327 | -6356681 / 0.052 / 0.064 | -6356670 | miss |\n| | | | | | 60 | +51878694 / 0.026 / 0.083 | +51878705 | +3129082 / 0.037 / 0.141 | +3129093 | miss |\n| KVblO36WdiY | legislature | 4.0 | False | True | 10 | -16 / 0.644 / 0.165 | -12 | -16 / 0.757 / 0.165 | -12 | LOCK full,90d |\n| | | | | | 20 | -13 / 0.983 / 0.223 | -9 | -13 / 1.130 / 0.223 | -9 | LOCK full,90d |\n| juw1pt_s2lM | legislature | -8.0 | False | True | 10 | +47569383 / 0.033 / 0.165 | +47569375 | -3096497 / 0.003 / 0.165 | -3096505 | miss |\n| | | | | | 20 | +45855271 / 0.000 / 0.223 | +45855263 | +3670328 / 0.013 / 0.223 | +3670320 | miss |\n| | | | | | 40 | -5299 / 0.245 / 0.062 | -5307 | -5299 / 0.297 / 0.064 | -5307 | miss |\n| | | | | | 60 | -5299 / 0.317 / 0.083 | -5307 | -5299 / 0.372 / 0.141 | -5307 | miss |\n| xqzppuVzui0 | legislature | -8.0 | False | True | 10 | -20284474 / 0.050 / 0.165 | -20284482 | +2577333 / 0.016 / 0.165 | +2577325 | miss |\n| | | | | | 20 | +42345741 / 0.020 / 0.223 | +42345733 | -974037 / 0.003 / 0.223 | -974045 | miss |\n| | | | | | 40 | -9118364 / 0.006 / 0.062 | -9118372 | +1888311 / 0.008 / 0.064 | +1888303 | miss |\n| | | | | | 60 | -6526599 / 0.002 / 0.083 | -6526607 | -6526599 / 0.084 / 0.141 | -6526607 | miss |\n| FmmdjDtH2C4 | religious | 1.0 | False | False | 10 | -10713986 / 0.008 / 0.165 | -10713985 | +882167 / 0.002 / 0.165 | +882168 | miss |\n| | | | | | 20 | +882168 / 0.031 / 0.223 | +882169 | +882168 / 0.069 / 0.223 | +882169 | miss |\n| | | | | | 40 | +25504673 / 0.003 / 0.062 | +25504674 | -6358431 / 0.007 / 0.064 | -6358430 | miss |\n| | | | | | 60 | -22430970 / 0.000 / 0.083 | -22430969 | +3609754 / 0.003 / 0.141 | +3609755 | miss |\n| VJYVv5Wot3o | legislature | 1.0 | False | True | 10 | +29163043 / 0.012 / 0.165 | +29163044 | +7275190 / 0.006 / 0.165 | +7275191 | miss |\n| | | | | | 20 | -997007 / 0.004 / 0.223 | -997006 | -997007 / 0.004 / 0.223 | -997006 | miss |\n| BAxsVU6HFOA | lecture | 74.0 | False | False | 10 | -10385065 / 0.038 / 0.165 | -10384991 | +7257945 / 0.015 / 0.165 | +7258019 | miss |\n| | | | | | 20 | -1938264 / 0.001 / 0.223 | -1938190 | -1938264 / 0.001 / 0.223 | -1938190 | miss |\n| | | | | | 40 | +3849348 / 0.006 / 0.062 | +3849422 | +3849348 / 0.006 / 0.064 | +3849422 | miss |\n| | | | | | 60 | +22311902 / 0.006 / 0.083 | +22311976 | +3237263 / 0.017 / 0.141 | +3237337 | miss |\n| BTEvNWyhqFo | lecture | 74.0 | False | False | 10 | -37643 / 0.010 / 0.165 | -37569 | -37643 / 0.045 / 0.165 | -37569 | miss |\n| | | | | | 20 | -19757761 / 0.026 / 0.223 | -19757687 | -269817 / 0.012 / 0.223 | -269743 | miss |\n| | | | | | 40 | -19757764 / 0.005 / 0.062 | -19757690 | -555228 / 0.005 / 0.064 | -555154 | miss |\n| | | | | | 60 | +49774502 / 0.000 / 0.083 | +49774576 | -1710857 / 0.002 / 0.141 | -1710783 | miss |\n| l1qc3tk3bxw | lecture | 62.0 | False | False | 10 | -10 / 1.007 / 0.165 | +52 | -10 / 1.014 / 0.165 | +52 | LOCK full,90d |\n| | | | | | 20 | -10 / 1.406 / 0.223 | +52 | -10 / 1.406 / 0.223 | +52 | LOCK full,90d |\n| | | | | | 40 | -10 / 1.111 / 0.062 | +52 | -10 / 1.111 / 0.064 | +52 | LOCK full,90d |\n| 8YaC-FzdRPA | lecture | 55.0 | False | False | 10 | +2704307 / 0.022 / 0.165 | +2704362 | +2704307 / 0.039 / 0.165 | +2704362 | miss |\n| | | | | | 20 | +1 / 0.046 / 0.223 | +56 | +1 / 0.080 / 0.223 | +56 | hit below tau full,90d |\n| | | | | | 40 | -1 / 0.157 / 0.062 | +54 | -1 / 0.217 / 0.064 | +54 | LOCK full,90d |\n| | | | | | 60 | +4 / 0.180 / 0.083 | +59 | +4 / 0.246 / 0.141 | +59 | LOCK full,90d |\n| BvFUpGaie2E | legislature | 55.0 | False | True | 10 | -2 / 0.214 / 0.165 | +53 | -2 / 0.336 / 0.165 | +53 | LOCK full,90d |\n| | | | | | 20 | -2 / 0.530 / 0.223 | +53 | -2 / 0.548 / 0.223 | +53 | LOCK full,90d |\n| | | | | | 40 | -2 / 0.236 / 0.062 | +53 | -2 / 0.312 / 0.064 | +53 | LOCK full,90d |\n| | | | | | 60 | -2 / 0.591 / 0.083 | +53 | -2 / 0.591 / 0.141 | +53 | LOCK full,90d |\n| nkhZfSKirSY | religious | 53.0 | False | False | 10 | +29796362 / 0.012 / 0.165 | +29796415 | +1147619 / 0.007 / 0.165 | +1147672 | miss |\n| | | | | | 20 | +16071805 / 0.003 / 0.223 | +16071858 | -5191102 / 0.056 / 0.223 | -5191049 | miss |\n| pN0hQ3aTYtI | legislature | 54.0 | True | False | 10 | -27306079 / 0.003 / 0.165 | -27306025 | -1216598 / 0.001 / 0.165 | -1216544 | miss |\n| | | | | | 20 | -11440426 / 0.015 / 0.223 | -11440372 | -359090 / 0.008 / 0.223 | -359036 | miss |\n| | | | | | 40 | -30099580 / 0.001 / 0.062 | -30099526 | -2892517 / 0.002 / 0.064 | -2892463 | miss |\n| | | | | | 60 | +14268823 / 0.002 / 0.083 | +14268877 | -1155461 / 0.001 / 0.141 | -1155407 | miss |\n| kwRCr1M3ONo | legislature | 51.0 | True | True | 10 | +3 / 0.926 / 0.165 | +54 | +3 / 0.934 / 0.165 | +54 | LOCK full,90d |\n| | | | | | 20 | +3 / 1.116 / 0.223 | +54 | +3 / 1.119 / 0.223 | +54 | LOCK full,90d |\n| | | | | | 40 | +3 / 1.437 / 0.062 | +54 | +3 / 1.475 / 0.064 | +54 | LOCK full,90d |\n| | | | | | 60 | +3 / 1.612 / 0.083 | +54 | +3 / 1.612 / 0.141 | +54 | LOCK full,90d |\n| oQc1M0eaXa4 | lecture | 51.0 | True | True | 10 | +572 / 0.520 / 0.165 | +623 | +572 / 0.604 / 0.165 | +623 | miss |\n| | | | | | 20 | +571 / 0.732 / 0.223 | +622 | +571 / 0.875 / 0.223 | +622 | miss |\n| | | | | | 40 | +571 / 1.005 / 0.062 | +622 | +571 / 1.141 / 0.064 | +622 | miss |\n| | | | | | 60 | +571 / 0.875 / 0.083 | +622 | +571 / 1.097 / 0.141 | +622 | miss |\n| WYoKaThec_k | lecture | -7.0 | False | True | 10 | +8918262 / 0.004 / 0.165 | +8918255 | +4244067 / 0.004 / 0.165 | +4244060 | miss |\n| | | | | | 20 | -6 / 0.393 / 0.223 | -13 | -6 / 0.443 / 0.223 | -13 | LOCK full,90d |\n| | | | | | 40 | -7 / 0.539 / 0.062 | -14 | -7 / 0.602 / 0.064 | -14 | LOCK full,90d |\n| Y2nNag-70w4 | lecture | 77.0 | True | False | 10 | +5125915 / 0.012 / 0.165 | +5125992 | +5125915 / 0.036 / 0.165 | +5125992 | miss |\n| | | | | | 20 | +25020035 / 0.002 / 0.223 | +25020112 | -5392951 / 0.003 / 0.223 | -5392874 | miss |\n| | | | | | 40 | +3 / 0.103 / 0.062 | +80 | +3 / 0.132 / 0.064 | +80 | LOCK full,90d |\n| | | | | | 60 | +4 / 0.199 / 0.083 | +81 | +4 / 0.280 / 0.141 | +81 | LOCK full,90d |\n| salY0f-uZAk | government event | 87.0 | False | False | 10 | -34115903 / 0.029 / 0.165 | -34115816 | +7449770 / 0.002 / 0.165 | +7449857 | miss |\n| | | | | | 20 | -15495297 / 0.006 / 0.223 | -15495210 | -379405 / 0.008 / 0.223 | -379318 | miss |\n| | | | | | 40 | +45587771 / 0.015 / 0.062 | +45587858 | +1242932 / 0.017 / 0.064 | +1243019 | miss |\n| | | | | | 60 | +12109714 / 0.017 / 0.083 | +12109801 | -1675645 / 0.005 / 0.141 | -1675558 | miss |\n| 8gsXSa4UzaQ | legislature | 87.0 | False | True | 10 | +12538150 / 0.029 / 0.165 | +12538237 | +1580510 / 0.066 / 0.165 | +1580597 | miss |\n| | | | | | 20 | +26 / 0.441 / 0.223 | +113 | +26 / 0.533 / 0.223 | +113 | LOCK full,90d |\n| | | | | | 40 | +31 / 1.078 / 0.062 | +118 | +31 / 1.241 / 0.064 | +118 | miss |\n| | | | | | 60 | +33 / 1.552 / 0.083 | +120 | +33 / 1.552 / 0.141 | +120 | miss |\n| LHhd6zDMBTo | legislature | 87.0 | False | True | 10 | +23184292 / 0.029 / 0.165 | +23184379 | +6009306 / 0.013 / 0.165 | +6009393 | miss |\n| | | | | | 20 | -18622473 / 0.014 / 0.223 | -18622386 | +5085978 / 0.012 / 0.223 | +5086065 | miss |\n| | | | | | 40 | +31160556 / 0.003 / 0.062 | +31160643 | +7647286 / 0.010 / 0.064 | +7647373 | miss |\n| | | | | | 60 | +10869561 / 0.001 / 0.083 | +10869648 | -6972437 / 0.002 / 0.141 | -6972350 | miss |\n| J5LFyE7lPps | legislature | 87.0 | True | True | 10 | +9043152 / 0.034 / 0.165 | +9043239 | +1732875 / 0.001 / 0.165 | +1732962 | miss |\n| | | | | | 20 | +11680167 / 0.000 / 0.223 | +11680254 | -5958092 / 0.008 / 0.223 | -5958005 | miss |\n| | | | | | 40 | -5958092 / 0.024 / 0.062 | -5958005 | -5958092 / 0.032 / 0.064 | -5958005 | miss |\n| | | | | | 60 | -20 / 0.040 / 0.083 | +67 | -20 / 0.089 / 0.141 | +67 | hit below tau full,90d |\n| I9SJk-TTrBg | legislature | 81.0 | False | True | 10 | -30462772 / 0.020 / 0.165 | -30462691 | -3034875 / 0.030 / 0.165 | -3034794 | miss |\n| | | | | | 20 | -14728533 / 0.024 / 0.223 | -14728452 | +5478094 / 0.047 / 0.223 | +5478175 | miss |\n| | | | | | 40 | -5753750 / 0.005 / 0.062 | -5753669 | -5753750 / 0.026 / 0.064 | -5753669 | miss |\n| | | | | | 60 | -4 / 0.196 / 0.083 | +77 | -4 / 0.196 / 0.141 | +77 | LOCK full,90d |\n| PCsGYRmMlqQ | legislature | 81.0 | False | False | 10 | +9181223 / 0.011 / 0.165 | +9181304 | +7090009 / 0.014 / 0.165 | +7090090 | miss |\n| | | | | | 20 | -15618098 / 0.012 / 0.223 | -15618017 | +5764082 / 0.024 / 0.223 | +5764163 | miss |\n| | | | | | 40 | +5764081 / 0.010 / 0.062 | +5764162 | +5764081 / 0.012 / 0.064 | +5764162 | miss |\n| | | | | | 60 | +20058341 / 0.005 / 0.083 | +20058422 | -5328099 / 0.015 / 0.141 | -5328018 | miss |\n| JfAbDuKRUqQ | legislature | 81.0 | False | True | 10 | -5 / 0.240 / 0.165 | +76 | -5 / 0.263 / 0.165 | +76 | LOCK full,90d |\n| | | | | | 20 | -5 / 0.281 / 0.223 | +76 | -5 / 0.317 / 0.223 | +76 | LOCK full,90d |\n| 2LMJZeWPCFw | government event | 83.0 | False | False | 10 | +28590576 / 0.014 / 0.165 | +28590659 | +3503220 / 0.044 / 0.165 | +3503303 | miss |\n| | | | | | 20 | +23090182 / 0.002 / 0.223 | +23090265 | -4910628 / 0.017 / 0.223 | -4910545 | miss |\n| | | | | | 40 | -31704897 / 0.025 / 0.062 | -31704814 | -4924752 / 0.000 / 0.064 | -4924669 | miss |\n| | | | | | 60 | +22839085 / 0.011 / 0.083 | +22839168 | +6120599 / 0.000 / 0.141 | +6120682 | miss |\n| vyBSiPQEXRg | government event | 88.0 | False | False | 10 | -11 / 0.144 / 0.165 | +77 | -11 / 0.216 / 0.165 | +77 | LOCK 90d |\n| | | | | | 20 | -11 / 0.161 / 0.223 | +77 | -11 / 0.173 / 0.223 | +77 | hit below tau full,90d |\n| JSCPPnRAJZY | lecture | 88.0 | False | True | 10 | -9337141 / 0.002 / 0.165 | -9337053 | -7016354 / 0.022 / 0.165 | -7016266 | miss |\n| | | | | | 20 | -10 / 0.203 / 0.223 | +78 | -10 / 0.273 / 0.223 | +78 | LOCK 90d |\n| | | | | | 40 | -11 / 0.471 / 0.062 | +77 | -11 / 0.538 / 0.064 | +77 | LOCK full,90d |\n| | | | | | 60 | -11 / 0.657 / 0.083 | +77 | -11 / 0.791 / 0.141 | +77 | LOCK full,90d |\n| R7nJpR5-noQ | lecture | 88.0 | False | True | 10 | -25342828 / 0.006 / 0.165 | -25342740 | +7287520 / 0.016 / 0.165 | +7287608 | miss |\n| | | | | | 20 | -22161175 / 0.027 / 0.223 | -22161087 | +2723444 / 0.009 / 0.223 | +2723532 | miss |\n| | | | | | 40 | -15 / 0.010 / 0.062 | +73 | -15 / 0.010 / 0.064 | +73 | hit below tau full,90d |\n| | | | | | 60 | -15 / 0.053 / 0.083 | +73 | -15 / 0.053 / 0.141 | +73 | hit below tau full,90d |\n| xgYK-TBnCOY | legislature | 99.0 | False | False | 10 | -31506424 / 0.009 / 0.165 | -31506325 | +2378778 / 0.029 / 0.165 | +2378877 | miss |\n| | | | | | 20 | -24493618 / 0.001 / 0.223 | -24493519 | +1773508 / 0.005 / 0.223 | +1773607 | miss |\n| | | | | | 40 | -27 / 0.012 / 0.062 | +72 | -27 / 0.029 / 0.064 | +72 | hit below tau full,90d |\n| | | | | | 60 | -23 / 0.147 / 0.083 | +76 | -23 / 0.164 / 0.141 | +76 | LOCK full,90d |\n| QCsXKDT092s | government event | 99.0 | False | False | 10 | -40347321 / 0.048 / 0.165 | -40347222 | +5255511 / 0.005 / 0.165 | +5255610 | miss |\n| | | | | | 20 | -17806573 / 0.003 / 0.223 | -17806474 | -4781673 / 0.024 / 0.223 | -4781574 | miss |\n| | | | | | 40 | -1184865 / 0.004 / 0.062 | -1184766 | -1184865 / 0.007 / 0.064 | -1184766 | miss |\n| | | | | | 60 | +12045132 / 0.010 / 0.083 | +12045231 | +6020619 / 0.002 / 0.141 | +6020718 | miss |\n| ybc1WY6n1B4 | legislature | 99.0 | False | True | 10 | -18992229 / 0.005 / 0.165 | -18992130 | -6220148 / 0.013 / 0.165 | -6220049 | miss |\n| | | | | | 20 | -35033895 / 0.000 / 0.223 | -35033796 | -3228721 / 0.005 / 0.223 | -3228622 | miss |\n| | | | | | 40 | -22 / 0.059 / 0.062 | +77 | -22 / 0.059 / 0.064 | +77 | hit below tau full,90d |\n| | | | | | 60 | -18384327 / 0.007 / 0.083 | -18384228 | +6547711 / 0.034 / 0.141 | +6547810 | miss |\n| FGPtrBiqhJY | lecture | 99.0 | False | False | 10 | -28995616 / 0.010 / 0.165 | -28995517 | -978758 / 0.016 / 0.165 | -978659 | miss |\n| | | | | | 20 | -29160145 / 0.002 / 0.223 | -29160046 | +6336949 / 0.010 / 0.223 | +6337048 | miss |\n| | | | | | 40 | +37011727 / 0.016 / 0.062 | +37011826 | +2771078 / 0.004 / 0.064 | +2771177 | miss |\n| | | | | | 60 | -24 / 0.130 / 0.083 | +75 | -24 / 0.177 / 0.141 | +75 | LOCK full,90d |\n| dSz9F2QRULg | legislature | 109.0 | False | False | 10 | +34831789 / 0.028 / 0.165 | +34831898 | +2332209 / 0.023 / 0.165 | +2332318 | miss |\n| | | | | | 20 | +36626402 / 0.006 / 0.223 | +36626511 | +6372192 / 0.018 / 0.223 | +6372301 | miss |\n| | | | | | 40 | +6436888 / 0.002 / 0.062 | +6436997 | +6436888 / 0.008 / 0.064 | +6436997 | miss |\n| | | | | | 60 | -24241164 / 0.002 / 0.083 | -24241055 | +3880989 / 0.022 / 0.141 | +3881098 | miss |\n| BsDB4Y5hLeU | lecture | 109.0 | False | True | 10 | -32 / 0.041 / 0.165 | +77 | -32 / 0.055 / 0.165 | +77 | miss |\n| | | | | | 20 | -32 / 0.124 / 0.223 | +77 | -32 / 0.147 / 0.223 | +77 | miss |\n| | | | | | 40 | -32 / 0.252 / 0.062 | +77 | -32 / 0.293 / 0.064 | +77 | miss |\n| | | | | | 60 | -32 / 0.552 / 0.083 | +77 | -32 / 0.555 / 0.141 | +77 | miss |\n| Wm9xeZMGD_M | government event | 109.0 | False | True | 10 | -36096650 / 0.008 / 0.165 | -36096541 | -5318171 / 0.013 / 0.165 | -5318062 | miss |\n| | | | | | 20 | -25456581 / 0.006 / 0.223 | -25456472 | -7562000 / 0.023 / 0.223 | -7561891 | miss |\n| EbfEo0XsiOQ | lecture | 153.0 | False | False | 10 | -23125408 / 0.008 / 0.165 | -23125255 | +2968203 / 0.031 / 0.165 | +2968356 | miss |\n| | | | | | 20 | +34250076 / 0.006 / 0.223 | +34250229 | +6558646 / 0.002 / 0.223 | +6558799 | miss |\n| | | | | | 40 | +16201755 / 0.014 / 0.062 | +16201908 | -5623401 / 0.004 / 0.064 | -5623248 | miss |\n| | | | | | 60 | -28632632 / 0.001 / 0.083 | -28632479 | -2885792 / 0.013 / 0.141 | -2885639 | miss |\n| WUG769V1Sb0 | religious | 157.0 | False | False | 10 | n/a / n/a / 0.165 | n/a | n/a / n/a / 0.165 | n/a | miss |\n| | | | | | 20 | n/a / n/a / 0.223 | n/a | n/a / n/a / 0.223 | n/a | miss |\n| | | | | | 40 | n/a / n/a / 0.062 | n/a | n/a / n/a / 0.064 | n/a | miss |\n| | | | | | 60 | n/a / n/a / 0.083 | n/a | n/a / n/a / 0.141 | n/a | miss |\n| tl-TwJQPUPg | religious | 157.0 | False | False | 10 | +16284889 / 0.000 / 0.165 | +16285046 | +1691740 / 0.014 / 0.165 | +1691897 | miss |\n| | | | | | 20 | -30846823 / 0.018 / 0.223 | -30846666 | +6912100 / 0.018 / 0.223 | +6912257 | miss |\n| | | | | | 40 | -9835721 / 0.009 / 0.062 | -9835564 | +4789391 / 0.015 / 0.064 | +4789548 | miss |\n| | | | | | 60 | -3588618 / 0.002 / 0.083 | -3588461 | -3588618 / 0.004 / 0.141 | -3588461 | miss |\n| Lza3R2AyHmM | legislature | 157.0 | False | True | 10 | -13 / 0.298 / 0.165 | +144 | -13 / 0.345 / 0.165 | +144 | LOCK full,90d |\n| | | | | | 20 | -13 / 0.373 / 0.223 | +144 | -13 / 0.373 / 0.223 | +144 | LOCK full,90d |\n| | | | | | 40 | -47008980 / 0.003 / 0.062 | -47008823 | -5194760 / 0.001 / 0.064 | -5194603 | miss |\n| | | | | | 60 | -26366937 / 0.019 / 0.083 | -26366780 | +2610388 / 0.013 / 0.141 | +2610545 | miss |\n| 7uXi91jf-aY | legislature | 159.0 | False | True | 10 | +6608541 / 0.022 / 0.165 | +6608700 | +6608541 / 0.045 / 0.165 | +6608700 | miss |\n| | | | | | 20 | -22597883 / 0.015 / 0.223 | -22597724 | +5834741 / 0.005 / 0.223 | +5834900 | miss |\n| | | | | | 40 | +2341523 / 0.005 / 0.062 | +2341682 | +2341523 / 0.030 / 0.064 | +2341682 | miss |\n| pZm3yYmy6-g | legislature | 159.0 | False | False | 10 | -36880679 / 0.003 / 0.165 | -36880520 | +5556471 / 0.034 / 0.165 | +5556630 | miss |\n| | | | | | 20 | +4967488 / 0.015 / 0.223 | +4967647 | +4967488 / 0.026 / 0.223 | +4967647 | miss |\n| | | | | | 40 | -24224421 / 0.001 / 0.062 | -24224262 | +2586830 / 0.007 / 0.064 | +2586989 | miss |\n| | | | | | 60 | -373675 / 0.004 / 0.083 | -373516 | -373675 / 0.007 / 0.141 | -373516 | miss |\n| DfjXpqRP2uE | lecture | 293.0 | False | False | 10 | -5 / 0.260 / 0.165 | +288 | -5 / 0.323 / 0.165 | +288 | LOCK full,90d |\n| | | | | | 20 | -5 / 0.408 / 0.223 | +288 | -5 / 0.434 / 0.223 | +288 | LOCK full,90d |\n| | | | | | 40 | -4 / 0.204 / 0.062 | +289 | -4 / 0.279 / 0.064 | +289 | LOCK full,90d |\n| | | | | | 60 | -4 / 0.247 / 0.083 | +289 | -4 / 0.299 / 0.141 | +289 | LOCK full,90d |\n| 5LW0lKI1jx8 | legislature | 293.0 | False | True | 10 | -6 / 1.263 / 0.165 | +287 | -6 / 1.340 / 0.165 | +287 | LOCK full,90d |\n| | | | | | 20 | -6 / 1.533 / 0.223 | +287 | -6 / 1.608 / 0.223 | +287 | LOCK full,90d |\n| | | | | | 40 | -8 / 1.597 / 0.062 | +285 | -8 / 1.606 / 0.064 | +285 | LOCK full,90d |\n| | | | | | 60 | -8 / 1.649 / 0.083 | +285 | -8 / 1.782 / 0.141 | +285 | LOCK full,90d |\n| MiVw1X1m6QE | government event | 319.0 | False | False | 10 | -39880560 / 0.005 / 0.165 | -39880241 | +7614589 / 0.007 / 0.165 | +7614908 | miss |\n| | | | | | 20 | -29407308 / 0.000 / 0.223 | -29406989 | +7636905 / 0.002 / 0.223 | +7637224 | miss |\n| rA5lOl5pw1Y | legislature | 319.0 | False | True | 10 | -34049851 / 0.010 / 0.165 | -34049532 | +4876851 / 0.012 / 0.165 | +4877170 | miss |\n| | | | | | 20 | +3888719 / 0.006 / 0.223 | +3889038 | +3888719 / 0.016 / 0.223 | +3889038 | miss |\n| | | | | | 40 | -1728627 / 0.010 / 0.062 | -1728308 | -1728627 / 0.010 / 0.064 | -1728308 | miss |\n| | | | | | 60 | -1728626 / 0.036 / 0.083 | -1728307 | -1728626 / 0.036 / 0.141 | -1728307 | miss |\n| tAI0KEXe5q8 | lecture | 25.0 | False | False | 10 | +26572412 / 0.037 / 0.165 | +26572437 | +215387 / 0.012 / 0.165 | +215412 | miss |\n| | | | | | 20 | -27867134 / 0.030 / 0.223 | -27867109 | -3430678 / 0.017 / 0.223 | -3430653 | miss |\n| | | | | | 40 | +27598650 / 0.003 / 0.062 | +27598675 | +2523623 / 0.008 / 0.064 | +2523648 | miss |\n| | | | | | 60 | +25627842 / 0.008 / 0.083 | +25627867 | -7284712 / 0.004 / 0.141 | -7284687 | miss |\n| pkkh6Gy2qUU | lecture | 51.0 | False | False | 10 | -34201657 / 0.008 / 0.165 | -34201606 | +2858019 / 0.006 / 0.165 | +2858070 | miss |\n| | | | | | 20 | -36588353 / 0.014 / 0.223 | -36588302 | +5706736 / 0.015 / 0.223 | +5706787 | miss |\n| | | | | | 40 | -36764720 / 0.000 / 0.062 | -36764669 | -2112275 / 0.018 / 0.064 | -2112224 | miss |\n| | | | | | 60 | +256 / 0.033 / 0.083 | +307 | +256 / 0.053 / 0.141 | +307 | miss |\n| mqDrSP29cPE | legislature | 51.0 | False | False | 10 | -9703277 / 0.005 / 0.165 | -9703226 | +4767311 / 0.006 / 0.165 | +4767362 | miss |\n| | | | | | 20 | -33267173 / 0.037 / 0.223 | -33267122 | +1571947 / 0.015 / 0.223 | +1571998 | miss |\n| | | | | | 40 | -2 / 0.042 / 0.062 | +49 | -2 / 0.068 / 0.064 | +49 | LOCK 90d |\n| | | | | | 60 | +26572060 / 0.012 / 0.083 | +26572111 | +7134723 / 0.007 / 0.141 | +7134774 | miss |\n| jgtDaCE6HUk | legislature | 62.0 | False | True | 10 | -16 / 0.107 / 0.165 | +46 | -16 / 0.137 / 0.165 | +46 | hit below tau full,90d |\n| | | | | | 20 | -514423 / 0.073 / 0.223 | -514361 | -514423 / 0.073 / 0.223 | -514361 | miss |\n| | | | | | 40 | +13 / 0.033 / 0.062 | +75 | +13 / 0.187 / 0.064 | +75 | LOCK 90d |\n| | | | | | 60 | +14 / 0.245 / 0.083 | +76 | +14 / 0.245 / 0.141 | +76 | LOCK full,90d |\n| NbZEKd-MfHo | conference | 62.0 | False | False | 10 | -31683086 / 0.004 / 0.165 | -31683024 | +2258491 / 0.008 / 0.165 | +2258553 | miss |\n| | | | | | 20 | -8744817 / 0.013 / 0.223 | -8744755 | -2056200 / 0.001 / 0.223 | -2056138 | miss |\n| | | | | | 40 | -51389532 / 0.014 / 0.062 | -51389470 | +6168582 / 0.009 / 0.064 | +6168644 | miss |\n| | | | | | 60 | -10469498 / 0.009 / 0.083 | -10469436 | +1539848 / 0.011 / 0.141 | +1539910 | miss |\n| vXH6fVeWn5s | legislature | 67.0 | False | True | 10 | -20 / 0.770 / 0.165 | +47 | -20 / 0.812 / 0.165 | +47 | LOCK full,90d |\n| | | | | | 20 | -20 / 1.073 / 0.223 | +47 | -20 / 1.172 / 0.223 | +47 | LOCK full,90d |\n| | | | | | 40 | -19 / 1.320 / 0.062 | +48 | -19 / 1.343 / 0.064 | +48 | LOCK full,90d |\n| | | | | | 60 | -20 / 1.500 / 0.083 | +47 | -20 / 1.627 / 0.141 | +47 | LOCK full,90d |\n| 3j8-qlHHnIE | religious | 67.0 | False | True | 10 | +18 / 1.458 / 0.165 | +85 | +18 / 1.458 / 0.165 | +85 | LOCK full,90d |\n| | | | | | 20 | +18 / 1.475 / 0.223 | +85 | +18 / 1.475 / 0.223 | +85 | LOCK full,90d |\n| | | | | | 40 | +18 / 0.123 / 0.062 | +85 | +18 / 0.200 / 0.064 | +85 | LOCK full,90d |\n| | | | | | 60 | +44 / 0.624 / 0.083 | +111 | +44 / 0.624 / 0.141 | +111 | miss |\n| YoJlliek2Sg | religious | 67.0 | False | True | 10 | +18 / 1.103 / 0.165 | +85 | +18 / 1.230 / 0.165 | +85 | LOCK full,90d |\n| | | | | | 20 | +18 / 1.207 / 0.223 | +85 | +18 / 1.207 / 0.223 | +85 | LOCK full,90d |\n| | | | | | 40 | +46 / 0.122 / 0.062 | +113 | +46 / 0.311 / 0.064 | +113 | miss |\n| | | | | | 60 | +46 / 1.114 / 0.083 | +113 | +46 / 1.159 / 0.141 | +113 | miss |\n| sv6D2j7Ats0 | religious | 67.0 | False | True | 10 | +13 / 0.143 / 0.165 | +80 | +13 / 0.143 / 0.165 | +80 | hit below tau full,90d |\n| | | | | | 20 | +12 / 0.316 / 0.223 | +79 | +12 / 0.370 / 0.223 | +79 | LOCK full,90d |\n| aFwlCwTZmU8 | religious | 67.0 | False | False | 10 | +12 / 0.157 / 0.165 | +79 | +12 / 0.171 / 0.165 | +79 | LOCK 90d |\n| | | | | | 20 | -51510022 / 0.009 / 0.223 | -51509955 | +2022098 / 0.003 / 0.223 | +2022165 | miss |\n| FpHjg8d4M7Q | religious | 67.0 | False | True | 10 | +11 / 0.041 / 0.165 | +78 | +11 / 0.043 / 0.165 | +78 | hit below tau full,90d |\n| | | | | | 20 | +12 / 0.079 / 0.223 | +79 | +12 / 0.079 / 0.223 | +79 | hit below tau full,90d |\n| 21OUXsm8jw4 | government event | 81.0 | False | False | 10 | -12332886 / 0.001 / 0.165 | -12332805 | -6292047 / 0.006 / 0.165 | -6291966 | miss |\n| | | | | | 20 | +3 / 0.187 / 0.223 | +84 | +3 / 0.219 / 0.223 | +84 | hit below tau full,90d |\n| LHBG6cdgdsU | religious | 170.0 | True | True | 10 | -42991556 / 0.012 / 0.165 | -42991386 | -7502787 / 0.026 / 0.165 | -7502617 | miss |\n| | | | | | 20 | +3021990 / 0.008 / 0.223 | +3022160 | +3021990 / 0.009 / 0.223 | +3022160 | miss |\n| | | | | | 40 | -1 / 0.292 / 0.062 | +169 | -1 / 0.393 / 0.064 | +169 | LOCK full,90d |\n| | | | | | 60 | -2 / 0.607 / 0.083 | +168 | -2 / 0.684 / 0.141 | +168 | LOCK full,90d |\n| b0L7NgGgzUA | legislature | 174.0 | True | True | 10 | n/a / n/a / 0.165 | n/a | n/a / n/a / 0.165 | n/a | miss |\n| | | | | | 20 | -27170310 / 0.064 / 0.223 | -27170136 | +358013 / 0.058 / 0.223 | +358187 | miss |\n| | | | | | 40 | +13356161 / 0.063 / 0.062 | +13356335 | -6778482 / 0.009 / 0.064 | -6778308 | miss |\n| | | | | | 60 | +15930655 / 0.033 / 0.083 | +15930829 | +7304714 / 0.014 / 0.141 | +7304888 | miss |\n| mr-RQ0nNaRE | government event | 0.0 | True | False | 10 | -56990393 / 0.020 / 0.165 | -56990393 | +3026204 / 0.011 / 0.165 | +3026204 | miss |\n| | | | | | 20 | -56990391 / 0.016 / 0.223 | -56990391 | -5934083 / 0.005 / 0.223 | -5934083 | miss |\n| | | | | | 40 | -36775547 / 0.008 / 0.062 | -36775547 | -7094459 / 0.010 / 0.064 | -7094459 | miss |\n| kCMs4zOJJIc | legislature | -2.0 | True | False | 10 | -35418821 / 0.005 / 0.165 | -35418823 | -6138118 / 0.003 / 0.165 | -6138120 | miss |\n| | | | | | 20 | -36196042 / 0.018 / 0.223 | -36196044 | -4114067 / 0.007 / 0.223 | -4114069 | miss |\n| tmgoHMm1Hxw | government event | 0.0 | True | True | 10 | -53479171 / 0.002 / 0.165 | -53479171 | -6979872 / 0.010 / 0.165 | -6979872 | miss |\n| | | | | | 20 | -14987761 / 0.027 / 0.223 | -14987761 | -5741082 / 0.002 / 0.223 | -5741082 | miss |\n| | | | | | 40 | -48339337 / 0.007 / 0.062 | -48339337 | -6349004 / 0.012 / 0.064 | -6349004 | miss |\n| | | | | | 60 | -49808931 / 0.002 / 0.083 | -49808931 | +3216999 / 0.003 / 0.141 | +3216999 | miss |\n| QPpJ3z744M8 | legislature | 0.0 | True | False | 10 | -19441635 / 0.001 / 0.165 | -19441635 | -7549549 / 0.002 / 0.165 | -7549549 | miss |\n| | | | | | 20 | -29958757 / 0.000 / 0.223 | -29958757 | -147246 / 0.010 / 0.223 | -147246 | miss |\n| | | | | | 40 | -25894341 / 0.001 / 0.062 | -25894341 | -6277861 / 0.001 / 0.064 | -6277861 | miss |\n| | | | | | 60 | -31337577 / 0.008 / 0.083 | -31337577 | -6796402 / 0.003 / 0.141 | -6796402 | miss |\n| r-dKUfuPxLQ | religious | 0.0 | True | True | 10 | -13002473 / 0.002 / 0.165 | -13002473 | -6549472 / 0.003 / 0.165 | -6549472 | miss |\n| | | | | | 20 | -48009159 / 0.010 / 0.223 | -48009159 | +230247 / 0.009 / 0.223 | +230247 | miss |\n| | | | | | 40 | -13 / 0.215 / 0.062 | -13 | -13 / 0.215 / 0.064 | -13 | LOCK full,90d |\n| | | | | | 60 | -13 / 0.345 / 0.083 | -13 | -13 / 0.345 / 0.141 | -13 | LOCK full,90d |\n| KPX5NdOsnD4 | government event | 0.0 | True | False | 10 | -46460169 / 0.011 / 0.165 | -46460169 | +3135688 / 0.003 / 0.165 | +3135688 | miss |\n| | | | | | 20 | -8530256 / 0.004 / 0.223 | -8530256 | -4001128 / 0.002 / 0.223 | -4001128 | miss |\n| | | | | | 40 | -59229736 / 0.006 / 0.062 | -59229736 | -5737688 / 0.002 / 0.064 | -5737688 | miss |\n| | | | | | 60 | -61451763 / 0.000 / 0.083 | -61451763 | -77185 / 0.018 / 0.141 | -77185 | miss |\n| A58YRZy5Kk8 | legislature | -8.0 | True | False | 10 | -37726067 / 0.018 / 0.165 | -37726075 | +901039 / 0.019 / 0.165 | +901031 | miss |\n| | | | | | 20 | -57804717 / 0.008 / 0.223 | -57804725 | +5504898 / 0.003 / 0.223 | +5504890 | miss |\n| IBksvCS3wMk | government event | -8.0 | True | False | 10 | -35467407 / 0.041 / 0.165 | -35467415 | -3961040 / 0.039 / 0.165 | -3961048 | miss |\n| | | | | | 20 | -56540848 / 0.034 / 0.223 | -56540856 | +4945946 / 0.004 / 0.223 | +4945938 | miss |\n| FEXNIVvArJk | legislature | -8.0 | True | False | 10 | -64670685 / 0.034 / 0.165 | -64670693 | -994401 / 0.013 / 0.165 | -994409 | miss |\n| | | | | | 20 | -42743444 / 0.010 / 0.223 | -42743452 | -3436383 / 0.002 / 0.223 | -3436391 | miss |\n| | | | | | 40 | +12380320 / 0.030 / 0.062 | +12380312 | +3365837 / 0.002 / 0.064 | +3365829 | miss |\n| | | | | | 60 | -53048919 / 0.010 / 0.083 | -53048927 | +7691835 / 0.000 / 0.141 | +7691827 | miss |\n| Q0QZ3Je68Sc | legislature | -8.0 | True | False | 10 | -24925326 / 0.012 / 0.165 | -24925334 | +1164067 / 0.008 / 0.165 | +1164059 | miss |\n| | | | | | 20 | +12776408 / 0.001 / 0.223 | +12776400 | +7742841 / 0.011 / 0.223 | +7742833 | miss |\n| | | | | | 40 | -7 / 0.178 / 0.062 | -15 | -7 / 0.189 / 0.064 | -15 | LOCK full,90d |\n| | | | | | 60 | -6 / 0.119 / 0.083 | -14 | -6 / 0.119 / 0.141 | -14 | LOCK full |\n| HDfWJP4QYo0 | religious | -8.0 | True | True | 10 | -30 / 1.722 / 0.165 | -38 | -30 / 1.809 / 0.165 | -38 | LOCK full,90d |\n| | | | | | 20 | -31 / 1.203 / 0.223 | -39 | -31 / 1.203 / 0.223 | -39 | miss |\n| | | | | | 40 | -32 / 1.437 / 0.062 | -40 | -32 / 1.437 / 0.064 | -40 | miss |\n| | | | | | 60 | -2876519 / 0.093 / 0.083 | -2876527 | -2876519 / 0.154 / 0.141 | -2876527 | miss |\n| eEJdGpEayes | legislature | -8.0 | True | False | 10 | -57116083 / 0.020 / 0.165 | -57116091 | +3630331 / 0.029 / 0.165 | +3630323 | miss |\n| | | | | | 20 | +12998360 / 0.012 / 0.223 | +12998352 | +7739886 / 0.001 / 0.223 | +7739878 | miss |\n| | | | | | 40 | -38826238 / 0.011 / 0.062 | -38826246 | -1723411 / 0.011 / 0.064 | -1723419 | miss |\n| | | | | | 60 | -42350264 / 0.000 / 0.083 | -42350272 | -3027523 / 0.029 / 0.141 | -3027531 | miss |\n| TaoxSB6IMS4 | legislature | -8.0 | True | False | 10 | -25735316 / 0.026 / 0.165 | -25735324 | +4564660 / 0.019 / 0.165 | +4564652 | miss |\n| | | | | | 20 | -54654045 / 0.010 / 0.223 | -54654053 | -2759389 / 0.004 / 0.223 | -2759397 | miss |\n| | | | | | 40 | -56243658 / 0.013 / 0.062 | -56243666 | -440410 / 0.017 / 0.064 | -440418 | miss |\n| | | | | | 60 | -43400432 / 0.001 / 0.083 | -43400440 | -5957023 / 0.005 / 0.141 | -5957031 | miss |\n| FU27mso1GaE | religious | -8.0 | True | True | 10 | -28 / 1.315 / 0.165 | -36 | -28 / 1.315 / 0.165 | -36 | LOCK full,90d |\n| | | | | | 20 | -30 / 0.977 / 0.223 | -38 | -30 / 1.048 / 0.223 | -38 | LOCK full,90d |\n| | | | | | 40 | -31 / 0.777 / 0.062 | -39 | -31 / 0.885 / 0.064 | -39 | miss |\n| | | | | | 60 | -32 / 0.715 / 0.083 | -40 | -32 / 0.715 / 0.141 | -40 | miss |\n| iLVcqsodwD8 | legislature | -8.0 | True | False | 10 | -59120645 / 0.006 / 0.165 | -59120653 | -933264 / 0.013 / 0.165 | -933272 | miss |\n| | | | | | 20 | +2229110 / 0.006 / 0.223 | +2229102 | +2229110 / 0.012 / 0.223 | +2229102 | miss |\n| | | | | | 40 | -20510706 / 0.006 / 0.062 | -20510714 | -6083814 / 0.030 / 0.064 | -6083822 | miss |\n| | | | | | 60 | -45104522 / 0.002 / 0.083 | -45104530 | +7238544 / 0.002 / 0.141 | +7238536 | miss |\n| TbqOkXM630s | legislature | -13.0 | True | True | 10 | +0 / 0.270 / 0.165 | -13 | +0 / 0.270 / 0.165 | -13 | LOCK full,90d |\n| | | | | | 20 | +4208259 / 0.010 / 0.223 | +4208246 | +4208259 / 0.019 / 0.223 | +4208246 | miss |\n| | | | | | 40 | -53137978 / 0.005 / 0.062 | -53137991 | +6078119 / 0.003 / 0.064 | +6078106 | miss |\n| | | | | | 60 | -16856721 / 0.034 / 0.083 | -16856734 | +6476482 / 0.031 / 0.141 | +6476469 | miss |\n| n8HWbA8edWs | legislature | -13.0 | True | False | 10 | +2 / 0.410 / 0.165 | -11 | +2 / 0.559 / 0.165 | -11 | LOCK full,90d |\n| | | | | | 20 | +2 / 0.207 / 0.223 | -11 | +2 / 0.279 / 0.223 | -11 | LOCK 90d |\n| | | | | | 40 | -47286366 / 0.009 / 0.062 | -47286379 | +744941 / 0.001 / 0.064 | +744928 | miss |\n| | | | | | 60 | -26343159 / 0.003 / 0.083 | -26343172 | +5235556 / 0.016 / 0.141 | +5235543 | miss |\n| a6u8ZkZ5D58 | legislature | -13.0 | True | True | 10 | +0 / 0.626 / 0.165 | -13 | +0 / 0.626 / 0.165 | -13 | LOCK full,90d |\n| | | | | | 20 | +0 / 1.067 / 0.223 | -13 | +0 / 1.067 / 0.223 | -13 | LOCK full,90d |\n| | | | | | 40 | +0 / 1.541 / 0.062 | -13 | +0 / 1.541 / 0.064 | -13 | LOCK full,90d |\n| | | | | | 60 | +0 / 1.803 / 0.083 | -13 | +0 / 1.803 / 0.141 | -13 | LOCK full,90d |\n| bFlgoacpxZU | legislature | -13.0 | True | True | 10 | -6 / 0.070 / 0.165 | -19 | -6 / 0.115 / 0.165 | -19 | hit below tau full,90d |\n| | | | | | 20 | -7 / 0.146 / 0.223 | -20 | -7 / 0.193 / 0.223 | -20 | hit below tau full,90d |\n| | | | | | 40 | -9 / 0.342 / 0.062 | -22 | -9 / 0.392 / 0.064 | -22 | LOCK full,90d |\n| | | | | | 60 | -10 / 0.612 / 0.083 | -23 | -10 / 0.612 / 0.141 | -23 | LOCK full,90d |\n| W7ba8v6KQxU | government event | -13.0 | True | False | 10 | -19160266 / 0.004 / 0.165 | -19160279 | -2562313 / 0.009 / 0.165 | -2562326 | miss |\n| | | | | | 20 | -52915008 / 0.006 / 0.223 | -52915021 | +1122147 / 0.010 / 0.223 | +1122134 | miss |\n| | | | | | 40 | -27028475 / 0.007 / 0.062 | -27028488 | -1038566 / 0.004 / 0.064 | -1038579 | miss |\n| | | | | | 60 | -57441365 / 0.016 / 0.083 | -57441378 | -3599545 / 0.004 / 0.141 | -3599558 | miss |\n| 3dxthmsAvWE | religious | -3.0 | True | True | 10 | -7 / 0.051 / 0.165 | -10 | -7 / 0.064 / 0.165 | -10 | hit below tau full,90d |\n| | | | | | 20 | -8 / 0.181 / 0.223 | -11 | -8 / 0.256 / 0.223 | -11 | LOCK 90d |\n| | | | | | 40 | -8 / 0.731 / 0.062 | -11 | -8 / 0.760 / 0.064 | -11 | LOCK full,90d |\n| | | | | | 60 | -8 / 1.064 / 0.083 | -11 | -8 / 1.135 / 0.141 | -11 | LOCK full,90d |\n| rIb-jwhW2jA | government event | 4.0 | True | False | 10 | -8900828 / 0.049 / 0.165 | -8900824 | +7157001 / 0.029 / 0.165 | +7157005 | miss |\n| | | | | | 20 | -72446302 / 0.023 / 0.223 | -72446298 | +1219062 / 0.001 / 0.223 | +1219066 | miss |\n| SORey4LvJ5M | lecture | 4.0 | False | False | 10 | -63354594 / 0.031 / 0.165 | -63354590 | +6039713 / 0.016 / 0.165 | +6039717 | miss |\n| | | | | | 20 | -35466303 / 0.009 / 0.223 | -35466299 | -848620 / 0.025 / 0.223 | -848616 | miss |\n| | | | | | 40 | +6039713 / 0.010 / 0.062 | +6039717 | +6039713 / 0.029 / 0.064 | +6039717 | miss |\n| | | | | | 60 | -59587065 / 0.008 / 0.083 | -59587061 | +6903694 / 0.003 / 0.141 | +6903698 | miss |\n| BYdBud_14jY | lecture | 2.0 | True | False | 10 | -48768084 / 0.020 / 0.165 | -48768082 | +3818178 / 0.008 / 0.165 | +3818180 | miss |\n| | | | | | 20 | -34230788 / 0.014 / 0.223 | -34230786 | +4786705 / 0.053 / 0.223 | +4786707 | miss |\n| | | | | | 40 | -75314672 / 0.024 / 0.062 | -75314670 | +6430051 / 0.009 / 0.064 | +6430053 | miss |\n| | | | | | 60 | -24551285 / 0.004 / 0.083 | -24551283 | -434842 / 0.005 / 0.141 | -434840 | miss |\n| 6GyfTrFpEto | legislature | 4.0 | False | False | 10 | -63138511 / 0.013 / 0.165 | -63138507 | +7554861 / 0.030 / 0.165 | +7554865 | miss |\n| | | | | | 20 | +4878600 / 0.018 / 0.223 | +4878604 | +4878600 / 0.055 / 0.223 | +4878604 | miss |\n| | | | | | 40 | -67031003 / 0.004 / 0.062 | -67030999 | +5740880 / 0.005 / 0.064 | +5740884 | miss |\n| RClyo9kVm4o | lecture | 4.0 | False | False | 10 | -56537908 / 0.007 / 0.165 | -56537904 | +4809311 / 0.018 / 0.165 | +4809315 | miss |\n| | | | | | 20 | -50114433 / 0.002 / 0.223 | -50114429 | -5353345 / 0.016 / 0.223 | -5353341 | miss |\n| | | | | | 40 | -71968420 / 0.003 / 0.062 | -71968416 | -1748200 / 0.007 / 0.064 | -1748196 | miss |\n| | | | | | 60 | +6196426 / 0.005 / 0.083 | +6196430 | +6196426 / 0.015 / 0.141 | +6196430 | miss |\n| zsoaUz2qtXg | government event | 4.0 | True | False | 10 | -17365512 / 0.002 / 0.165 | -17365508 | -5896025 / 0.004 / 0.165 | -5896021 | miss |\n| | | | | | 20 | -4 / 0.165 / 0.223 | +0 | -4 / 0.165 / 0.223 | +0 | hit below tau full,90d |\n| l8-ZICFYjRA | legislature | 40.0 | False | False | 10 | -63888696 / 0.007 / 0.165 | -63888656 | -2179245 / 0.025 / 0.165 | -2179205 | miss |\n| | | | | | 20 | -40662447 / 0.003 / 0.223 | -40662407 | +940142 / 0.001 / 0.223 | +940182 | miss |\n| | | | | | 40 | +7 / 0.043 / 0.062 | +47 | +7 / 0.095 / 0.064 | +47 | LOCK 90d |\n| | | | | | 60 | +9 / 0.169 / 0.083 | +49 | +9 / 0.238 / 0.141 | +49 | LOCK full,90d |\n| k2SjEydgt4I | government event | 57.0 | False | False | 10 | -38230790 / 0.016 / 0.165 | -38230733 | +124097 / 0.043 / 0.165 | +124154 | miss |\n| | | | | | 20 | -30208399 / 0.029 / 0.223 | -30208342 | +2634758 / 0.017 / 0.223 | +2634815 | miss |\n| Xn977AYzkQ0 | legislature | 57.0 | False | False | 10 | -23833024 / 0.031 / 0.165 | -23832967 | -7193371 / 0.000 / 0.165 | -7193314 | miss |\n| | | | | | 20 | -63821425 / 0.023 / 0.223 | -63821368 | +2026922 / 0.013 / 0.223 | +2026979 | miss |\n| | | | | | 40 | -80071862 / 0.001 / 0.062 | -80071805 | +2788058 / 0.007 / 0.064 | +2788115 | miss |\n| -NHuRZ4hV5A | legislature | 57.0 | False | False | 10 | -62872693 / 0.013 / 0.165 | -62872636 | -675520 / 0.002 / 0.165 | -675463 | miss |\n| | | | | | 20 | -66054859 / 0.009 / 0.223 | -66054802 | -4131905 / 0.000 / 0.223 | -4131848 | miss |\n| | | | | | 40 | +1908769 / 0.001 / 0.062 | +1908826 | +1908769 / 0.006 / 0.064 | +1908826 | miss |\n| u4-kZVwUUAg | legislature | 110.0 | False | False | 10 | -60 / 1.074 / 0.165 | +50 | -60 / 1.228 / 0.165 | +50 | miss |\n| | | | | | 20 | -60 / 0.229 / 0.223 | +50 | -60 / 0.282 / 0.223 | +50 | miss |\n| | | | | | 40 | -69637823 / 0.001 / 0.062 | -69637713 | -827825 / 0.002 / 0.064 | -827715 | miss |\n| | | | | | 60 | -68802789 / 0.005 / 0.083 | -68802679 | +1418104 / 0.007 / 0.141 | +1418214 | miss |\n| XjEdBDDpoDc | government event | 114.0 | False | False | 10 | -65705039 / 0.002 / 0.165 | -65704925 | -5791316 / 0.014 / 0.165 | -5791202 | miss |\n| | | | | | 20 | -30067390 / 0.002 / 0.223 | -30067276 | -639096 / 0.014 / 0.223 | -638982 | miss |\n| | | | | | 40 | -30270370 / 0.025 / 0.062 | -30270256 | +66871 / 0.007 / 0.064 | +66985 | miss |\n| | | | | | 60 | -38382981 / 0.000 / 0.083 | -38382867 | -4960584 / 0.013 / 0.141 | -4960470 | miss |\n| GaPY-7DBsyo | lecture | 114.0 | False | False | 10 | -9 / 0.107 / 0.165 | +105 | -9 / 0.146 / 0.165 | +105 | hit below tau full,90d |\n| | | | | | 20 | -10 / 0.118 / 0.223 | +104 | -10 / 0.141 / 0.223 | +104 | hit below tau full,90d |\n| | | | | | 40 | -58126005 / 0.006 / 0.062 | -58125891 | -6790177 / 0.001 / 0.064 | -6790063 | miss |\n| | | | | | 60 | -31941982 / 0.008 / 0.083 | -31941868 | -125120 / 0.002 / 0.141 | -125006 | miss |\n| hwnKuf3aciU | legislature | 114.0 | False | True | 10 | -8 / 0.142 / 0.165 | +106 | -8 / 0.165 / 0.165 | +106 | LOCK 90d |\n| | | | | | 20 | -9 / 0.770 / 0.223 | +105 | -9 / 0.888 / 0.223 | +105 | LOCK full,90d |\n| | | | | | 40 | -9 / 1.436 / 0.062 | +105 | -9 / 1.436 / 0.064 | +105 | LOCK full,90d |\n| | | | | | 60 | -9 / 1.712 / 0.083 | +105 | -9 / 1.782 / 0.141 | +105 | LOCK full,90d |\n| n8rBL1FAZOA | lecture | 122.0 | False | False | 10 | -70681276 / 0.001 / 0.165 | -70681154 | -7099236 / 0.021 / 0.165 | -7099114 | miss |\n| | | | | | 20 | -38428330 / 0.024 / 0.223 | -38428208 | -4955490 / 0.023 / 0.223 | -4955368 | miss |\n| | | | | | 40 | -39207058 / 0.007 / 0.062 | -39206936 | -2314314 / 0.003 / 0.064 | -2314192 | miss |\n| | | | | | 60 | -27787961 / 0.005 / 0.083 | -27787839 | +1066227 / 0.004 / 0.141 | +1066349 | miss |\n| tqMHkxbSMLs | legislature | 200.0 | False | True | 10 | -60563752 / 0.027 / 0.165 | -60563552 | -4777345 / 0.010 / 0.165 | -4777145 | miss |\n| | | | | | 20 | -17784788 / 0.041 / 0.223 | -17784588 | -6617265 / 0.003 / 0.223 | -6617065 | miss |\n| | | | | | 40 | -104 / 0.029 / 0.062 | +96 | -104 / 0.100 / 0.064 | +96 | miss |\n| | | | | | 60 | -102 / 0.112 / 0.083 | +98 | -102 / 0.129 / 0.141 | +98 | miss |\n| fPDBSEhmgnk | legislature | 200.0 | False | True | 10 | -107 / 0.011 / 0.165 | +93 | -107 / 0.053 / 0.165 | +93 | miss |\n| | | | | | 20 | -105 / 0.044 / 0.223 | +95 | -105 / 0.081 / 0.223 | +95 | miss |\n| | | | | | 40 | -104 / 0.085 / 0.062 | +96 | -104 / 0.136 / 0.064 | +96 | miss |\n| | | | | | 60 | -104 / 0.082 / 0.083 | +96 | -104 / 0.110 / 0.141 | +96 | miss |\n| 5Z4tYmXR2j4 | legislature | 200.0 | False | False | 10 | -68387998 / 0.055 / 0.165 | -68387798 | -1140302 / 0.003 / 0.165 | -1140102 | miss |\n| | | | | | 20 | -50224023 / 0.012 / 0.223 | -50223823 | -2456492 / 0.005 / 0.223 | -2456292 | miss |\n| | | | | | 40 | -58531900 / 0.012 / 0.062 | -58531700 | -6172470 / 0.010 / 0.064 | -6172270 | miss |\n| | | | | | 60 | -35293521 / 0.004 / 0.083 | -35293321 | -5789709 / 0.007 / 0.141 | -5789509 | miss |\n| S8xr4terOXE | lecture | 212.0 | False | False | 10 | -13 / 0.865 / 0.165 | +199 | -13 / 0.960 / 0.165 | +199 | LOCK full,90d |\n| | | | | | 20 | -13 / 1.130 / 0.223 | +199 | -13 / 1.237 / 0.223 | +199 | LOCK full,90d |\n| | | | | | 40 | -13 / 0.635 / 0.062 | +199 | -13 / 0.712 / 0.064 | +199 | LOCK full,90d |\n| | | | | | 60 | -13 / 0.624 / 0.083 | +199 | -13 / 0.644 / 0.141 | +199 | LOCK full,90d |\n\nAttempted but no audio (not in N): failed: ffmpeg skipped or lost media: [in#0/hls @ 0000017dba727580] Failed to open segment 395 of playlist 0 [in#0/hls @ 0000017dba727580] Failed to open segment 395 of playlist 0 [in#0/hls @ 0000017dba727580] Failed to open segment 700 of playlist 0 [https @ 0000017dbc86de00] Error reading HTTP response: Error number -10054 occurred [in#0/hls @ 0000017dba727580] keepalive request failed for '<url> @ 0000: dlIWopHCct0; failed: ffmpeg skipped or lost media: [in#0/hls @ 0000025619fdf140] Failed to open segment 72 of playlist 0 [in#0/hls @ 0000025619fdf140] Failed to open segment 72 of playlist 0 [in#0/hls @ 0000025619fdf140] Failed to open segment 72 of playlist 0 [in#0/hls @ 0000025619fdf140] Segment 72 of playlist 0 failed too many times, skipping [tls @ 000002561bbe6000] Error in the pull function. [tls @ 000002561bbe6: FvSsbK7Vw8o; blocked: ERROR: [youtube] vMIFXzQiZMA: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See <url> for how to manually pass cookies. Also see <url> for tips on effectively exporting YouTube cookies: vMIFXzQiZMA; failed: ERROR: [youtube] UicqB7meHDM: This video is not available: UicqB7meHDM; failed: ERROR: [youtube] RRpofEIsshY: This video is not available: RRpofEIsshY; failed: ffmpeg skipped or lost media: [in#0/hls @ 000001bf08e05d00] Failed to open segment 7 of playlist 0 [in#0/hls @ 000001bf08e05d00] Failed to open segment 319 of playlist 0 [in#0/hls @ 000001bf08e05d00] keepalive request failed for '<url> @ 000001bf0b31ca40] aac bitstream error [in#0/hls @ 000001bf08e05d00] keepalive request failed for '<url> @ 000001bf08e05d00] keepalive request failed for '<url> @ : oi-hEUpGu94; failed: ERROR: [youtube] zXAweRhHJYg: This video is not available: zXAweRhHJYg; failed: ERROR: [youtube] t4ZXeFF0Bcg: This video is not available: t4ZXeFF0Bcg; failed: ffmpeg skipped or lost media: [in#0/hls @ 000001957a048180] Failed to open segment 12 of playlist 0 [in#0/hls @ 000001957a048180] Failed to open segment 461 of playlist 0 [in#0/hls @ 000001957a048180] Failed to open segment 461 of playlist 0 [in#0/hls @ 000001957a048180] Failed to open segment 461 of playlist 0 [tcp @ 000001957c7b9c00] Connection to tcp://rr1---sn-gwpa-qxal7.googlevideo.com:443 fa: ceA6Wntd2TI; failed: ERROR: [youtube] UASrmxzio2Y: This video is not available: UASrmxzio2Y; failed: ERROR: ffmpeg exited with code 3753488571 | ffmpeg: [tls @ 000002271d08e840] Error in the pull function. [tls @ 000002271d08e840] IO error: End of file [in#0 @ 000002271d08e6c0] Error opening input: End of file Error opening input file <url> opening input files: End of file: Koxi9RMCsvo; failed: ERROR: [youtube] SveOAKoRdc0: This video is not available: SveOAKoRdc0; failed: ffmpeg skipped or lost media: [in#0/hls @ 000001c8ed56dbc0] Failed to open segment 412 of playlist 0 [in#0/hls @ 000001c8ed56dbc0] Failed to open segment 412 of playlist 0 [in#0/hls @ 000001c8ed56dbc0] Segment 412 of playlist 0 failed too many times, skipping [in#0/hls @ 000001c8ed56dbc0] Failed to open segment 413 of playlist 0 [tls @ 000001c8f047b500] IO error: Error number -10054 occurred [http: ylzbYy_bmY4; failed: ERROR: [youtube] O5mw90PhtL0: This video is not available: O5mw90PhtL0; failed: ERROR: ffmpeg exited with code 3753488571 | ffmpeg: [tls @ 000001ce12c87940] Error in the pull function. [tls @ 000001ce12c87940] IO error: End of file [https @ 000001ce12c89e40] Error reading HTTP response: End of file [in#0 @ 000001ce12c873c0] Error opening input: End of file Error opening input file <url> opening input files: End of file: Y2CXHcMHBdo; failed: ffmpeg skipped or lost media: [in#0/hls @ 0000021c51e059c0] Failed to open segment 273 of playlist 0 [in#0/hls @ 0000021c51e059c0] Failed to open segment 394 of playlist 0 [in#0/hls @ 0000021c51e059c0] Failed to open segment 498 of playlist 0 [in#0/hls @ 0000021c51e059c0] Failed to open segment 558 of playlist 0 [in#0/hls @ 0000021c51e059c0] keepalive request failed for '<url> @ 0000021c51e059c0] : FtHtRNzuyaY; failed: ERROR: [youtube] HWXDknXzP6g: This video is not available: HWXDknXzP6g; failed: ERROR: [youtube] WFbE0dcn66M: This video is not available: WFbE0dcn66M; failed: ERROR: [youtube] JOUqQMzdzdE: This video is not available: JOUqQMzdzdE.\n"
+}

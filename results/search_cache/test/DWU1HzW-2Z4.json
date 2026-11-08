@@ -1,0 +1,2049 @@
+{
+ "cache_version": 1,
+ "video_id": "DWU1HzW-2Z4",
+ "split": "test",
+ "trace_path": "traces/test/DWU1HzW-2Z4.npz",
+ "trace_sha256": "160a84fbfbd38c6868902d31014dfbd6b1c799046556e1c72a62a89750aa2999",
+ "reference": {
+  "t0_ist": "2020-12-20 17:21:01",
+  "length": 84046325
+ },
+ "matcher_sha256": {
+  "gunj/match.py": "8810a350065256c2785720a1211fadca4c3bbe37b67a8cf44c465b9ed16f7343",
+  "gunj/match_v2.py": "de41f0fc50d80e7c6b810d4e92e8c8884b2076e91b60bea1e7a131e168ccd306"
+ },
+ "release_timestamp": 1613385329,
+ "scope_centre_ist": "2021-02-15 16:05:29",
+ "SYNTHETIC": false,
+ "lengths_listed": [
+  10,
+  20,
+  40,
+  60
+ ],
+ "lengths_missing": [],
+ "hum": {
+  "v2__full": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.77,
+    "100 Hz": 1.973,
+    "150 Hz": 2.252,
+    "200 Hz": 2.492,
+    "250 Hz": 2.066,
+    "300 Hz": 2.114
+   },
+   "max_median_peak_to_floor": 32.77
+  },
+  "v2__x10": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 35.655,
+    "100 Hz": 2.012,
+    "150 Hz": 2.33,
+    "200 Hz": 2.533,
+    "250 Hz": 1.819,
+    "300 Hz": 1.839
+   },
+   "max_median_peak_to_floor": 35.655
+  },
+  "v2__x20": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 35.397,
+    "100 Hz": 2.003,
+    "150 Hz": 2.243,
+    "200 Hz": 2.526,
+    "250 Hz": 1.926,
+    "300 Hz": 1.982
+   },
+   "max_median_peak_to_floor": 35.397
+  },
+  "v2__x40": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 34.423,
+    "100 Hz": 1.991,
+    "150 Hz": 2.25,
+    "200 Hz": 2.503,
+    "250 Hz": 2.048,
+    "300 Hz": 2.078
+   },
+   "max_median_peak_to_floor": 34.423
+  },
+  "v2__x60": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.91,
+    "100 Hz": 1.954,
+    "150 Hz": 2.234,
+    "200 Hz": 2.503,
+    "250 Hz": 2.065,
+    "300 Hz": 2.112
+   },
+   "max_median_peak_to_floor": 32.91
+  },
+  "v1__full": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.77,
+    "100 Hz": 1.973,
+    "150 Hz": 2.252,
+    "200 Hz": 2.492,
+    "250 Hz": 2.066,
+    "300 Hz": 2.114
+   },
+   "max_median_peak_to_floor": 32.77
+  },
+  "v1__x10": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 35.655,
+    "100 Hz": 2.012,
+    "150 Hz": 2.33,
+    "200 Hz": 2.533,
+    "250 Hz": 1.819,
+    "300 Hz": 1.839
+   },
+   "max_median_peak_to_floor": 35.655
+  },
+  "v1__x20": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 35.397,
+    "100 Hz": 2.003,
+    "150 Hz": 2.243,
+    "200 Hz": 2.526,
+    "250 Hz": 1.926,
+    "300 Hz": 1.982
+   },
+   "max_median_peak_to_floor": 35.397
+  },
+  "v1__x40": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 34.423,
+    "100 Hz": 1.991,
+    "150 Hz": 2.25,
+    "200 Hz": 2.503,
+    "250 Hz": 2.048,
+    "300 Hz": 2.078
+   },
+   "max_median_peak_to_floor": 34.423
+  },
+  "v1__x60": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.91,
+    "100 Hz": 1.954,
+    "150 Hz": 2.234,
+    "200 Hz": 2.503,
+    "250 Hz": 2.065,
+    "300 Hz": 2.112
+   },
+   "max_median_peak_to_floor": 32.91
+  },
+  "naive__full": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.998
+   },
+   "max_median_peak_to_floor": 32.998
+  },
+  "naive__x10": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 35.899
+   },
+   "max_median_peak_to_floor": 35.899
+  },
+  "naive__x20": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 35.634
+   },
+   "max_median_peak_to_floor": 35.634
+  },
+  "naive__x40": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 34.648
+   },
+   "max_median_peak_to_floor": 34.648
+  },
+  "naive__x60": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 33.106
+   },
+   "max_median_peak_to_floor": 33.106
+  },
+  "v2__cut1": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.938,
+    "100 Hz": 1.959,
+    "150 Hz": 2.224,
+    "200 Hz": 2.508,
+    "250 Hz": 2.065,
+    "300 Hz": 2.111
+   },
+   "max_median_peak_to_floor": 32.938
+  },
+  "v2__cut2": {
+   "present": true,
+   "median_peak_to_floor": {
+    "50 Hz": 32.923,
+    "100 Hz": 1.952,
+    "150 Hz": 2.237,
+    "200 Hz": 2.504,
+    "250 Hz": 2.069,
+    "300 Hz": 2.114
+   },
+   "max_median_peak_to_floor": 32.923
+  }
+ },
+ "searches": [
+  {
+   "ext": "v2",
+   "length_min": 10,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 585,
+   "weighted": true,
+   "positions": [
+    128,
+    84045741
+   ],
+   "n_positions": 83256209,
+   "candidates": [
+    {
+     "index": 55389744,
+     "start_index": 55389616,
+     "start_ist": "2022-09-22 19:21:17",
+     "r": 0.1494253552190611
+    },
+    {
+     "index": 49875213,
+     "start_index": 49875085,
+     "start_ist": "2022-07-20 23:32:26",
+     "r": 0.1471527773572162
+    },
+    {
+     "index": 18349537,
+     "start_index": 18349409,
+     "start_ist": "2021-07-21 02:24:30",
+     "r": 0.1421398350863407
+    },
+    {
+     "index": 5065227,
+     "start_index": 5065099,
+     "start_ist": "2021-02-17 08:19:20",
+     "r": 0.13012100950459274
+    },
+    {
+     "index": 7524114,
+     "start_index": 7523986,
+     "start_ist": "2021-03-17 19:20:47",
+     "r": 0.13005626463473063
+    }
+   ],
+   "runner_up": {
+    "index": 49875213,
+    "start_index": 49875085,
+    "start_ist": "2022-07-20 23:32:26",
+    "r": 0.1471527773572162
+   },
+   "margin": 0.002272577861844899,
+   "confidence": 0.002323675762030686,
+   "seconds": 18.045
+  },
+  {
+   "ext": "v2",
+   "length_min": 10,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 585,
+   "weighted": true,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12688176,
+   "candidates": [
+    {
+     "index": 5065227,
+     "start_index": 5065099,
+     "start_ist": "2021-02-17 08:19:20",
+     "r": 0.13012100950459274
+    },
+    {
+     "index": 7524114,
+     "start_index": 7523986,
+     "start_ist": "2021-03-17 19:20:47",
+     "r": 0.13005626463473063
+    },
+    {
+     "index": 8292376,
+     "start_index": 8292248,
+     "start_ist": "2021-03-26 16:45:09",
+     "r": 0.1264459119828369
+    },
+    {
+     "index": 12232826,
+     "start_index": 12232698,
+     "start_ist": "2021-05-11 07:19:19",
+     "r": 0.1133432537626399
+    },
+    {
+     "index": 5134323,
+     "start_index": 5134195,
+     "start_ist": "2021-02-18 03:30:56",
+     "r": 0.11287496069291719
+    }
+   ],
+   "runner_up": {
+    "index": 7524114,
+    "start_index": 7523986,
+    "start_ist": "2021-03-17 19:20:47",
+    "r": 0.13005626463473063
+   },
+   "margin": 6.474486986210448e-05,
+   "confidence": 6.585941224321323e-05,
+   "seconds": 2.672
+  },
+  {
+   "ext": "v2",
+   "length_min": 10,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 585,
+   "weighted": true,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4934421,
+     "start_index": 4934293,
+     "start_ist": "2021-02-15 19:59:14",
+     "r": 0.09157446698594636
+    },
+    {
+     "index": 4951622,
+     "start_index": 4951494,
+     "start_ist": "2021-02-16 00:45:55",
+     "r": 0.0904473975214171
+    },
+    {
+     "index": 4865026,
+     "start_index": 4864898,
+     "start_ist": "2021-02-15 00:42:39",
+     "r": 0.08433003635327105
+    },
+    {
+     "index": 4856040,
+     "start_index": 4855912,
+     "start_ist": "2021-02-14 22:12:53",
+     "r": 0.08417498139722177
+    },
+    {
+     "index": 4870035,
+     "start_index": 4869907,
+     "start_ist": "2021-02-15 02:06:08",
+     "r": 0.0811645644799765
+    }
+   ],
+   "runner_up": {
+    "index": 4951622,
+    "start_index": 4951494,
+    "start_ist": "2021-02-16 00:45:55",
+    "r": 0.0904473975214171
+   },
+   "margin": 0.0011270694645292567,
+   "confidence": 0.0011364830664892106,
+   "seconds": 0.022
+  },
+  {
+   "ext": "v2",
+   "length_min": 20,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": true,
+   "positions": [
+    128,
+    84045141
+   ],
+   "n_positions": 83242876,
+   "candidates": [
+    {
+     "index": 17340534,
+     "start_index": 17340406,
+     "start_ist": "2021-07-09 10:07:47",
+     "r": 0.09077046407428539
+    },
+    {
+     "index": 56260825,
+     "start_index": 56260697,
+     "start_ist": "2022-10-02 21:19:18",
+     "r": 0.07715929769543263
+    },
+    {
+     "index": 13826865,
+     "start_index": 13826737,
+     "start_ist": "2021-05-29 18:06:38",
+     "r": 0.06371524825239112
+    },
+    {
+     "index": 18434830,
+     "start_index": 18434702,
+     "start_ist": "2021-07-22 02:06:03",
+     "r": 0.06296922399864781
+    },
+    {
+     "index": 60486189,
+     "start_index": 60486061,
+     "start_ist": "2022-11-20 19:02:02",
+     "r": 0.06091300086116542
+    }
+   ],
+   "runner_up": {
+    "index": 56260825,
+    "start_index": 56260697,
+    "start_ist": "2022-10-02 21:19:18",
+    "r": 0.07715929769543263
+   },
+   "margin": 0.013611166378852763,
+   "confidence": 0.013708027003748888,
+   "seconds": 18.159
+  },
+  {
+   "ext": "v2",
+   "length_min": 20,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": true,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12686403,
+   "candidates": [
+    {
+     "index": 3948207,
+     "start_index": 3948079,
+     "start_ist": "2021-02-04 10:02:20",
+     "r": 0.05496123812012674
+    },
+    {
+     "index": 8089774,
+     "start_index": 8089646,
+     "start_ist": "2021-03-24 08:28:27",
+     "r": 0.05221774645152655
+    },
+    {
+     "index": 7363326,
+     "start_index": 7363198,
+     "start_ist": "2021-03-15 22:40:59",
+     "r": 0.050241858973754216
+    },
+    {
+     "index": 4547354,
+     "start_index": 4547226,
+     "start_ist": "2021-02-11 08:28:07",
+     "r": 0.04999041865890729
+    },
+    {
+     "index": 9168509,
+     "start_index": 9168381,
+     "start_ist": "2021-04-05 20:07:22",
+     "r": 0.049537400934552896
+    }
+   ],
+   "runner_up": {
+    "index": 8089774,
+    "start_index": 8089646,
+    "start_ist": "2021-03-24 08:28:27",
+    "r": 0.05221774645152655
+   },
+   "margin": 0.0027434916686001898,
+   "confidence": 0.002751394962968029,
+   "seconds": 2.688
+  },
+  {
+   "ext": "v2",
+   "length_min": 20,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": true,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4897257,
+     "start_index": 4897129,
+     "start_ist": "2021-02-15 09:39:50",
+     "r": 0.0379776123876059
+    },
+    {
+     "index": 4931485,
+     "start_index": 4931357,
+     "start_ist": "2021-02-15 19:10:18",
+     "r": 0.037254604565265255
+    },
+    {
+     "index": 4923895,
+     "start_index": 4923767,
+     "start_ist": "2021-02-15 17:03:48",
+     "r": 0.03652270754628146
+    },
+    {
+     "index": 4915524,
+     "start_index": 4915396,
+     "start_ist": "2021-02-15 14:44:17",
+     "r": 0.036213750355529
+    },
+    {
+     "index": 4860744,
+     "start_index": 4860616,
+     "start_ist": "2021-02-14 23:31:17",
+     "r": 0.03473128506364669
+    }
+   ],
+   "runner_up": {
+    "index": 4931485,
+    "start_index": 4931357,
+    "start_ist": "2021-02-15 19:10:18",
+    "r": 0.037254604565265255
+   },
+   "margin": 0.0007230078223406447,
+   "confidence": 0.0007240323392692788,
+   "seconds": 0.016
+  },
+  {
+   "ext": "v2",
+   "length_min": 40,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": true,
+   "positions": [
+    128,
+    84043941
+   ],
+   "n_positions": 83223266,
+   "candidates": [
+    {
+     "index": 54412565,
+     "start_index": 54412437,
+     "start_ist": "2022-09-11 11:54:58",
+     "r": 0.13752075662468738
+    },
+    {
+     "index": 57346700,
+     "start_index": 57346572,
+     "start_ist": "2022-10-15 10:57:13",
+     "r": 0.13293076324762595
+    },
+    {
+     "index": 67542262,
+     "start_index": 67542134,
+     "start_ist": "2023-02-10 11:03:15",
+     "r": 0.1282364403020722
+    },
+    {
+     "index": 75665099,
+     "start_index": 75664971,
+     "start_ist": "2023-05-15 11:23:52",
+     "r": 0.1264044178716564
+    },
+    {
+     "index": 39898853,
+     "start_index": 39898725,
+     "start_ist": "2022-03-27 12:19:46",
+     "r": 0.12043889483795216
+    }
+   ],
+   "runner_up": {
+    "index": 57346700,
+    "start_index": 57346572,
+    "start_ist": "2022-10-15 10:57:13",
+    "r": 0.13293076324762595
+   },
+   "margin": 0.004589993377061424,
+   "confidence": 0.004675498389613175,
+   "seconds": 18.692
+  },
+  {
+   "ext": "v2",
+   "length_min": 40,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": true,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12682686,
+   "candidates": [
+    {
+     "index": 5816806,
+     "start_index": 5816678,
+     "start_ist": "2021-02-26 01:05:39",
+     "r": 0.11370263894441696
+    },
+    {
+     "index": 2256222,
+     "start_index": 2256094,
+     "start_ist": "2021-01-15 20:02:35",
+     "r": 0.10495103365915609
+    },
+    {
+     "index": 8624995,
+     "start_index": 8624867,
+     "start_ist": "2021-03-30 13:08:48",
+     "r": 0.10344860313711184
+    },
+    {
+     "index": 9861406,
+     "start_index": 9861278,
+     "start_ist": "2021-04-13 20:35:39",
+     "r": 0.1031959734518022
+    },
+    {
+     "index": 11959545,
+     "start_index": 11959417,
+     "start_ist": "2021-05-08 03:24:38",
+     "r": 0.10283587700311343
+    }
+   ],
+   "runner_up": {
+    "index": 2256222,
+    "start_index": 2256094,
+    "start_ist": "2021-01-15 20:02:35",
+    "r": 0.10495103365915609
+   },
+   "margin": 0.008751605285260866,
+   "confidence": 0.008857532951978178,
+   "seconds": 2.668
+  },
+  {
+   "ext": "v2",
+   "length_min": 40,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": true,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4996257,
+     "start_index": 4996129,
+     "start_ist": "2021-02-16 13:09:50",
+     "r": 0.09290895360486066
+    },
+    {
+     "index": 4842954,
+     "start_index": 4842826,
+     "start_ist": "2021-02-14 18:34:47",
+     "r": 0.08851896942629389
+    },
+    {
+     "index": 4986181,
+     "start_index": 4986053,
+     "start_ist": "2021-02-16 10:21:54",
+     "r": 0.08787959550466169
+    },
+    {
+     "index": 4855466,
+     "start_index": 4855338,
+     "start_ist": "2021-02-14 22:03:19",
+     "r": 0.07959152235959978
+    },
+    {
+     "index": 4862827,
+     "start_index": 4862699,
+     "start_ist": "2021-02-15 00:06:00",
+     "r": 0.07839188931578134
+    }
+   ],
+   "runner_up": {
+    "index": 4842954,
+    "start_index": 4842826,
+    "start_ist": "2021-02-14 18:34:47",
+    "r": 0.08851896942629389
+   },
+   "margin": 0.004389984178566772,
+   "confidence": 0.004426416606562789,
+   "seconds": 0.023
+  },
+  {
+   "ext": "v2",
+   "length_min": 60,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": true,
+   "positions": [
+    128,
+    84042741
+   ],
+   "n_positions": 83207007,
+   "candidates": [
+    {
+     "index": 57346762,
+     "start_index": 57346634,
+     "start_ist": "2022-10-15 10:58:15",
+     "r": 0.11611166677667245
+    },
+    {
+     "index": 54412565,
+     "start_index": 54412437,
+     "start_ist": "2022-09-11 11:54:58",
+     "r": 0.11213249554406994
+    },
+    {
+     "index": 67542262,
+     "start_index": 67542134,
+     "start_ist": "2023-02-10 11:03:15",
+     "r": 0.10015423167347794
+    },
+    {
+     "index": 39898853,
+     "start_index": 39898725,
+     "start_ist": "2022-03-27 12:19:46",
+     "r": 0.0928215973858608
+    },
+    {
+     "index": 55218139,
+     "start_index": 55218011,
+     "start_ist": "2022-09-20 19:41:12",
+     "r": 0.09258732849095339
+    }
+   ],
+   "runner_up": {
+    "index": 54412565,
+    "start_index": 54412437,
+    "start_ist": "2022-09-11 11:54:58",
+    "r": 0.11213249554406994
+   },
+   "margin": 0.00397917123260251,
+   "confidence": 0.004031684890012349,
+   "seconds": 18.676
+  },
+  {
+   "ext": "v2",
+   "length_min": 60,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": true,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12684248,
+   "candidates": [
+    {
+     "index": 9861410,
+     "start_index": 9861282,
+     "start_ist": "2021-04-13 20:35:43",
+     "r": 0.09190933622976928
+    },
+    {
+     "index": 6141520,
+     "start_index": 6141392,
+     "start_ist": "2021-03-01 19:17:33",
+     "r": 0.08989542828336072
+    },
+    {
+     "index": 10398458,
+     "start_index": 10398330,
+     "start_ist": "2021-04-20 01:46:31",
+     "r": 0.08632266937833284
+    },
+    {
+     "index": 1925233,
+     "start_index": 1925105,
+     "start_ist": "2021-01-12 00:06:06",
+     "r": 0.08632263128412408
+    },
+    {
+     "index": 10839843,
+     "start_index": 10839715,
+     "start_ist": "2021-04-25 04:22:56",
+     "r": 0.085667360311056
+    }
+   ],
+   "runner_up": {
+    "index": 6141520,
+    "start_index": 6141392,
+    "start_ist": "2021-03-01 19:17:33",
+    "r": 0.08989542828336072
+   },
+   "margin": 0.002013907946408558,
+   "confidence": 0.002030688730265129,
+   "seconds": 2.816
+  },
+  {
+   "ext": "v2",
+   "length_min": 60,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": true,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4996259,
+     "start_index": 4996131,
+     "start_ist": "2021-02-16 13:09:52",
+     "r": 0.06747707643612606
+    },
+    {
+     "index": 4862829,
+     "start_index": 4862701,
+     "start_ist": "2021-02-15 00:06:02",
+     "r": 0.06705682025354215
+    },
+    {
+     "index": 4943008,
+     "start_index": 4942880,
+     "start_ist": "2021-02-15 22:22:21",
+     "r": 0.06690811540258547
+    },
+    {
+     "index": 4836154,
+     "start_index": 4836026,
+     "start_ist": "2021-02-14 16:41:27",
+     "r": 0.06506611845196528
+    },
+    {
+     "index": 4855467,
+     "start_index": 4855339,
+     "start_ist": "2021-02-14 22:03:20",
+     "r": 0.06430150880003214
+    }
+   ],
+   "runner_up": {
+    "index": 4862829,
+    "start_index": 4862701,
+    "start_ist": "2021-02-15 00:06:02",
+    "r": 0.06705682025354215
+   },
+   "margin": 0.00042025618258391406,
+   "confidence": 0.00042216642542645955,
+   "seconds": 0.024
+  },
+  {
+   "ext": "v1",
+   "length_min": 10,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 585,
+   "weighted": false,
+   "positions": [
+    128,
+    84045741
+   ],
+   "n_positions": 83256209,
+   "candidates": [
+    {
+     "index": 14573212,
+     "start_index": 14573084,
+     "start_ist": "2021-06-07 09:25:45",
+     "r": 0.3159724590163049
+    },
+    {
+     "index": 50773142,
+     "start_index": 50773014,
+     "start_ist": "2022-07-31 08:57:55",
+     "r": 0.3142448429185455
+    },
+    {
+     "index": 47088933,
+     "start_index": 47088805,
+     "start_ist": "2022-06-18 17:34:26",
+     "r": 0.3050801942098028
+    },
+    {
+     "index": 50509060,
+     "start_index": 50508932,
+     "start_ist": "2022-07-28 07:36:33",
+     "r": 0.29354392437620025
+    },
+    {
+     "index": 39620321,
+     "start_index": 39620193,
+     "start_ist": "2022-03-24 06:57:34",
+     "r": 0.2892297347645612
+    }
+   ],
+   "runner_up": {
+    "index": 50773142,
+    "start_index": 50773014,
+    "start_ist": "2022-07-31 08:57:55",
+    "r": 0.3142448429185455
+   },
+   "margin": 0.001727616097759399,
+   "confidence": 0.0019180684408733883,
+   "seconds": 11.625
+  },
+  {
+   "ext": "v1",
+   "length_min": 10,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 585,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12688176,
+   "candidates": [
+    {
+     "index": 9255555,
+     "start_index": 9255427,
+     "start_ist": "2021-04-06 20:18:08",
+     "r": 0.27649303389784086
+    },
+    {
+     "index": 5346341,
+     "start_index": 5346213,
+     "start_ist": "2021-02-20 14:24:34",
+     "r": 0.27328655892920706
+    },
+    {
+     "index": 2434363,
+     "start_index": 2434235,
+     "start_ist": "2021-01-17 21:31:36",
+     "r": 0.26740568896903355
+    },
+    {
+     "index": 9686318,
+     "start_index": 9686190,
+     "start_ist": "2021-04-11 19:57:31",
+     "r": 0.267175511874648
+    },
+    {
+     "index": 8162578,
+     "start_index": 8162450,
+     "start_ist": "2021-03-25 04:41:51",
+     "r": 0.2632725498160992
+    }
+   ],
+   "runner_up": {
+    "index": 5346341,
+    "start_index": 5346213,
+    "start_ist": "2021-02-20 14:24:34",
+    "r": 0.27328655892920706
+   },
+   "margin": 0.003206474968633799,
+   "confidence": 0.003468580085805806,
+   "seconds": 1.673
+  },
+  {
+   "ext": "v1",
+   "length_min": 10,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 585,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 5001276,
+     "start_index": 5001148,
+     "start_ist": "2021-02-16 14:33:29",
+     "r": 0.20714377008823245
+    },
+    {
+     "index": 4852923,
+     "start_index": 4852795,
+     "start_ist": "2021-02-14 21:20:56",
+     "r": 0.19706246956440035
+    },
+    {
+     "index": 4918500,
+     "start_index": 4918372,
+     "start_ist": "2021-02-15 15:33:53",
+     "r": 0.19140849817185995
+    },
+    {
+     "index": 4867845,
+     "start_index": 4867717,
+     "start_ist": "2021-02-15 01:29:38",
+     "r": 0.18867286113533877
+    },
+    {
+     "index": 4943346,
+     "start_index": 4943218,
+     "start_ist": "2021-02-15 22:27:59",
+     "r": 0.18603637850349347
+    }
+   ],
+   "runner_up": {
+    "index": 4852923,
+    "start_index": 4852795,
+    "start_ist": "2021-02-14 21:20:56",
+    "r": 0.19706246956440035
+   },
+   "margin": 0.010081300523832104,
+   "confidence": 0.010510722209682133,
+   "seconds": 0.013
+  },
+  {
+   "ext": "v1",
+   "length_min": 20,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": false,
+   "positions": [
+    128,
+    84045141
+   ],
+   "n_positions": 83242876,
+   "candidates": [
+    {
+     "index": 39899509,
+     "start_index": 39899381,
+     "start_ist": "2022-03-27 12:30:42",
+     "r": 0.1912548000077048
+    },
+    {
+     "index": 83207037,
+     "start_index": 83206909,
+     "start_ist": "2023-08-10 18:22:50",
+     "r": 0.1619005921649677
+    },
+    {
+     "index": 50679385,
+     "start_index": 50679257,
+     "start_ist": "2022-07-30 06:55:18",
+     "r": 0.14362612968132743
+    },
+    {
+     "index": 79188361,
+     "start_index": 79188233,
+     "start_ist": "2023-06-25 06:04:54",
+     "r": 0.13899575153250612
+    },
+    {
+     "index": 58377794,
+     "start_index": 58377666,
+     "start_ist": "2022-10-27 09:22:07",
+     "r": 0.13433611428985465
+    }
+   ],
+   "runner_up": {
+    "index": 83207037,
+    "start_index": 83206909,
+    "start_ist": "2023-08-10 18:22:50",
+    "r": 0.1619005921649677
+   },
+   "margin": 0.029354207842737123,
+   "confidence": 0.0303014536759508,
+   "seconds": 11.657
+  },
+  {
+   "ext": "v1",
+   "length_min": 20,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12686403,
+   "candidates": [
+    {
+     "index": 12157187,
+     "start_index": 12157059,
+     "start_ist": "2021-05-10 10:18:40",
+     "r": 0.12624709392912803
+    },
+    {
+     "index": 3791172,
+     "start_index": 3791044,
+     "start_ist": "2021-02-02 14:25:05",
+     "r": 0.12327135993955168
+    },
+    {
+     "index": 9811020,
+     "start_index": 9810892,
+     "start_ist": "2021-04-13 06:35:53",
+     "r": 0.12256448449665355
+    },
+    {
+     "index": 5367359,
+     "start_index": 5367231,
+     "start_ist": "2021-02-20 20:14:52",
+     "r": 0.12204715757724671
+    },
+    {
+     "index": 9270347,
+     "start_index": 9270219,
+     "start_ist": "2021-04-07 00:24:40",
+     "r": 0.12197553592288403
+    }
+   ],
+   "runner_up": {
+    "index": 3791172,
+    "start_index": 3791044,
+    "start_ist": "2021-02-02 14:25:05",
+    "r": 0.12327135993955168
+   },
+   "margin": 0.0029757339895763457,
+   "confidence": 0.0030227856102661987,
+   "seconds": 1.739
+  },
+  {
+   "ext": "v1",
+   "length_min": 20,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4950430,
+     "start_index": 4950302,
+     "start_ist": "2021-02-16 00:26:03",
+     "r": 0.1186623198281407
+    },
+    {
+     "index": 4847212,
+     "start_index": 4847084,
+     "start_ist": "2021-02-14 19:45:45",
+     "r": 0.10942312867285446
+    },
+    {
+     "index": 4951723,
+     "start_index": 4951595,
+     "start_ist": "2021-02-16 00:47:36",
+     "r": 0.10534396335301602
+    },
+    {
+     "index": 4841229,
+     "start_index": 4841101,
+     "start_ist": "2021-02-14 18:06:02",
+     "r": 0.10358406721382846
+    },
+    {
+     "index": 4860906,
+     "start_index": 4860778,
+     "start_ist": "2021-02-14 23:33:59",
+     "r": 0.10333073508845526
+    }
+   ],
+   "runner_up": {
+    "index": 4847212,
+    "start_index": 4847084,
+    "start_ist": "2021-02-14 19:45:45",
+    "r": 0.10942312867285446
+   },
+   "margin": 0.009239191155286236,
+   "confidence": 0.009361008121075723,
+   "seconds": 0.013
+  },
+  {
+   "ext": "v1",
+   "length_min": 40,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": false,
+   "positions": [
+    128,
+    84043941
+   ],
+   "n_positions": 83223266,
+   "candidates": [
+    {
+     "index": 26448800,
+     "start_index": 26448672,
+     "start_ist": "2021-10-22 20:12:13",
+     "r": 0.14637225758361563
+    },
+    {
+     "index": 39981827,
+     "start_index": 39981699,
+     "start_ist": "2022-03-28 11:22:40",
+     "r": 0.14470714183644098
+    },
+    {
+     "index": 24804613,
+     "start_index": 24804485,
+     "start_ist": "2021-10-03 19:29:06",
+     "r": 0.14314293150927676
+    },
+    {
+     "index": 10143354,
+     "start_index": 10143226,
+     "start_ist": "2021-04-17 02:54:47",
+     "r": 0.1402174964556746
+    },
+    {
+     "index": 12129508,
+     "start_index": 12129380,
+     "start_ist": "2021-05-10 02:37:21",
+     "r": 0.13976614074600488
+    }
+   ],
+   "runner_up": {
+    "index": 39981827,
+    "start_index": 39981699,
+    "start_ist": "2022-03-28 11:22:40",
+    "r": 0.14470714183644098
+   },
+   "margin": 0.0016651157471746503,
+   "confidence": 0.0017011495918040909,
+   "seconds": 11.551
+  },
+  {
+   "ext": "v1",
+   "length_min": 40,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12682686,
+   "candidates": [
+    {
+     "index": 10143354,
+     "start_index": 10143226,
+     "start_ist": "2021-04-17 02:54:47",
+     "r": 0.1402174964556746
+    },
+    {
+     "index": 12129508,
+     "start_index": 12129380,
+     "start_ist": "2021-05-10 02:37:21",
+     "r": 0.13976614074600488
+    },
+    {
+     "index": 10205698,
+     "start_index": 10205570,
+     "start_ist": "2021-04-17 20:13:51",
+     "r": 0.13571446130886278
+    },
+    {
+     "index": 1641732,
+     "start_index": 1641604,
+     "start_ist": "2021-01-08 17:21:05",
+     "r": 0.13500606674923415
+    },
+    {
+     "index": 3441760,
+     "start_index": 3441632,
+     "start_ist": "2021-01-29 13:21:33",
+     "r": 0.13367098303328426
+    }
+   ],
+   "runner_up": {
+    "index": 12129508,
+    "start_index": 12129380,
+    "start_ist": "2021-05-10 02:37:21",
+    "r": 0.13976614074600488
+   },
+   "margin": 0.00045135570966972627,
+   "confidence": 0.00046037807375653994,
+   "seconds": 1.765
+  },
+  {
+   "ext": "v1",
+   "length_min": 40,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4941859,
+     "start_index": 4941731,
+     "start_ist": "2021-02-15 22:03:12",
+     "r": 0.10895502016387396
+    },
+    {
+     "index": 4848083,
+     "start_index": 4847955,
+     "start_ist": "2021-02-14 20:00:16",
+     "r": 0.10673567336873885
+    },
+    {
+     "index": 4928343,
+     "start_index": 4928215,
+     "start_ist": "2021-02-15 18:17:56",
+     "r": 0.10614040046774571
+    },
+    {
+     "index": 4953190,
+     "start_index": 4953062,
+     "start_ist": "2021-02-16 01:12:03",
+     "r": 0.10607981022415951
+    },
+    {
+     "index": 4959594,
+     "start_index": 4959466,
+     "start_ist": "2021-02-16 02:58:47",
+     "r": 0.10488611930890486
+    }
+   ],
+   "runner_up": {
+    "index": 4848083,
+    "start_index": 4847955,
+    "start_ist": "2021-02-14 20:00:16",
+    "r": 0.10673567336873885
+   },
+   "margin": 0.0022193467951351076,
+   "confidence": 0.0022454638948206096,
+   "seconds": 0.013
+  },
+  {
+   "ext": "v1",
+   "length_min": 60,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": false,
+   "positions": [
+    128,
+    84042741
+   ],
+   "n_positions": 83207007,
+   "candidates": [
+    {
+     "index": 44562608,
+     "start_index": 44562480,
+     "start_ist": "2022-05-20 11:49:01",
+     "r": 0.18115732808604484
+    },
+    {
+     "index": 57345777,
+     "start_index": 57345649,
+     "start_ist": "2022-10-15 10:41:50",
+     "r": 0.17720860785532055
+    },
+    {
+     "index": 67541340,
+     "start_index": 67541212,
+     "start_ist": "2023-02-10 10:47:53",
+     "r": 0.17364773369407085
+    },
+    {
+     "index": 14896540,
+     "start_index": 14896412,
+     "start_ist": "2021-06-11 03:14:33",
+     "r": 0.15154254686465748
+    },
+    {
+     "index": 54411641,
+     "start_index": 54411513,
+     "start_ist": "2022-09-11 11:39:34",
+     "r": 0.14537717611540732
+    }
+   ],
+   "runner_up": {
+    "index": 57345777,
+    "start_index": 57345649,
+    "start_ist": "2022-10-15 10:41:50",
+    "r": 0.17720860785532055
+   },
+   "margin": 0.00394872023072429,
+   "confidence": 0.004079711643956846,
+   "seconds": 11.602
+  },
+  {
+   "ext": "v1",
+   "length_min": 60,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12684248,
+   "candidates": [
+    {
+     "index": 6227004,
+     "start_index": 6226876,
+     "start_ist": "2021-03-02 19:02:17",
+     "r": 0.14119787958204347
+    },
+    {
+     "index": 10233040,
+     "start_index": 10232912,
+     "start_ist": "2021-04-18 03:49:33",
+     "r": 0.12513602432115511
+    },
+    {
+     "index": 9003625,
+     "start_index": 9003497,
+     "start_ist": "2021-04-03 22:19:18",
+     "r": 0.12053110320870075
+    },
+    {
+     "index": 8820066,
+     "start_index": 8819938,
+     "start_ist": "2021-04-01 19:19:59",
+     "r": 0.12048354707606024
+    },
+    {
+     "index": 3441759,
+     "start_index": 3441631,
+     "start_ist": "2021-01-29 13:21:32",
+     "r": 0.11907592143652439
+    }
+   ],
+   "runner_up": {
+    "index": 10233040,
+    "start_index": 10232912,
+    "start_ist": "2021-04-18 03:49:33",
+    "r": 0.12513602432115511
+   },
+   "margin": 0.016061855260888352,
+   "confidence": 0.016352213148771694,
+   "seconds": 1.767
+  },
+  {
+   "ext": "v1",
+   "length_min": 60,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4955447,
+     "start_index": 4955319,
+     "start_ist": "2021-02-16 01:49:40",
+     "r": 0.0969324254482545
+    },
+    {
+     "index": 4980668,
+     "start_index": 4980540,
+     "start_ist": "2021-02-16 08:50:01",
+     "r": 0.09558979415031077
+    },
+    {
+     "index": 4897614,
+     "start_index": 4897486,
+     "start_ist": "2021-02-15 09:45:47",
+     "r": 0.09272186885733916
+    },
+    {
+     "index": 4901435,
+     "start_index": 4901307,
+     "start_ist": "2021-02-15 10:49:28",
+     "r": 0.09103222598707801
+    },
+    {
+     "index": 4847429,
+     "start_index": 4847301,
+     "start_ist": "2021-02-14 19:49:22",
+     "r": 0.09079959490069597
+    }
+   ],
+   "runner_up": {
+    "index": 4980668,
+    "start_index": 4980540,
+    "start_ist": "2021-02-16 08:50:01",
+    "r": 0.09558979415031077
+   },
+   "margin": 0.001342631297943736,
+   "confidence": 0.0013551889628130032,
+   "seconds": 0.013
+  },
+  {
+   "ext": "naive",
+   "length_min": 10,
+   "scope": "full",
+   "ok": false,
+   "error": "ValueError: trace is constant; nothing to correlate",
+   "seconds": 0.003
+  },
+  {
+   "ext": "naive",
+   "length_min": 10,
+   "scope": "90d",
+   "ok": false,
+   "error": "ValueError: trace is constant; nothing to correlate",
+   "seconds": 0.003
+  },
+  {
+   "ext": "naive",
+   "length_min": 10,
+   "scope": "1d",
+   "ok": false,
+   "error": "ValueError: trace is constant; nothing to correlate",
+   "seconds": 0.002
+  },
+  {
+   "ext": "naive",
+   "length_min": 20,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": false,
+   "positions": [
+    128,
+    84045141
+   ],
+   "n_positions": 83242876,
+   "candidates": [
+    {
+     "index": 54923922,
+     "start_index": 54923794,
+     "start_ist": "2022-09-17 09:57:35",
+     "r": 0.1568158339378013
+    },
+    {
+     "index": 75665715,
+     "start_index": 75665587,
+     "start_ist": "2023-05-15 11:34:08",
+     "r": 0.15379254241460316
+    },
+    {
+     "index": 83207036,
+     "start_index": 83206908,
+     "start_ist": "2023-08-10 18:22:49",
+     "r": 0.14875570225086898
+    },
+    {
+     "index": 83276790,
+     "start_index": 83276662,
+     "start_ist": "2023-08-11 13:45:23",
+     "r": 0.14109199362553151
+    },
+    {
+     "index": 75326427,
+     "start_index": 75326299,
+     "start_ist": "2023-05-11 13:19:20",
+     "r": 0.13739426446518682
+    }
+   ],
+   "runner_up": {
+    "index": 75665715,
+    "start_index": 75665587,
+    "start_ist": "2023-05-15 11:34:08",
+    "r": 0.15379254241460316
+   },
+   "margin": 0.003023291523198135,
+   "confidence": 0.003098016384298491,
+   "seconds": 11.597
+  },
+  {
+   "ext": "naive",
+   "length_min": 20,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12686403,
+   "candidates": [
+    {
+     "index": 5026009,
+     "start_index": 5025881,
+     "start_ist": "2021-02-16 21:25:42",
+     "r": 0.1302581358888773
+    },
+    {
+     "index": 10707432,
+     "start_index": 10707304,
+     "start_ist": "2021-04-23 15:36:05",
+     "r": 0.10371827644897846
+    },
+    {
+     "index": 745870,
+     "start_index": 745742,
+     "start_ist": "2020-12-29 08:30:03",
+     "r": 0.09829222702783517
+    },
+    {
+     "index": 11949147,
+     "start_index": 11949019,
+     "start_ist": "2021-05-08 00:31:20",
+     "r": 0.09228309089902034
+    },
+    {
+     "index": 3304806,
+     "start_index": 3304678,
+     "start_ist": "2021-01-27 23:18:59",
+     "r": 0.09202746299295424
+    }
+   ],
+   "runner_up": {
+    "index": 10707432,
+    "start_index": 10707304,
+    "start_ist": "2021-04-23 15:36:05",
+    "r": 0.10371827644897846
+   },
+   "margin": 0.02653985943989884,
+   "confidence": 0.026909821009120788,
+   "seconds": 1.723
+  },
+  {
+   "ext": "naive",
+   "length_min": 20,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 1185,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4870006,
+     "start_index": 4869878,
+     "start_ist": "2021-02-15 02:05:39",
+     "r": 0.08408012966705593
+    },
+    {
+     "index": 4936301,
+     "start_index": 4936173,
+     "start_ist": "2021-02-15 20:30:34",
+     "r": 0.0707034385088079
+    },
+    {
+     "index": 4931678,
+     "start_index": 4931550,
+     "start_ist": "2021-02-15 19:13:31",
+     "r": 0.07006911136630194
+    },
+    {
+     "index": 4865208,
+     "start_index": 4865080,
+     "start_ist": "2021-02-15 00:45:41",
+     "r": 0.06951755990137294
+    },
+    {
+     "index": 4942787,
+     "start_index": 4942659,
+     "start_ist": "2021-02-15 22:18:40",
+     "r": 0.06861382111775755
+    }
+   ],
+   "runner_up": {
+    "index": 4936301,
+    "start_index": 4936173,
+    "start_ist": "2021-02-15 20:30:34",
+    "r": 0.0707034385088079
+   },
+   "margin": 0.013376691158248022,
+   "confidence": 0.013457500205897047,
+   "seconds": 0.013
+  },
+  {
+   "ext": "naive",
+   "length_min": 40,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": false,
+   "positions": [
+    128,
+    84043941
+   ],
+   "n_positions": 83223266,
+   "candidates": [
+    {
+     "index": 5024691,
+     "start_index": 5024563,
+     "start_ist": "2021-02-16 21:03:44",
+     "r": 0.21824179135974722
+    },
+    {
+     "index": 54923922,
+     "start_index": 54923794,
+     "start_ist": "2022-09-17 09:57:35",
+     "r": 0.10333566155706542
+    },
+    {
+     "index": 44564149,
+     "start_index": 44564021,
+     "start_ist": "2022-05-20 12:14:42",
+     "r": 0.08619572728577986
+    },
+    {
+     "index": 75665715,
+     "start_index": 75665587,
+     "start_ist": "2023-05-15 11:34:08",
+     "r": 0.08378350221645094
+    },
+    {
+     "index": 67542880,
+     "start_index": 67542752,
+     "start_ist": "2023-02-10 11:13:33",
+     "r": 0.08110177345685105
+    }
+   ],
+   "runner_up": {
+    "index": 54923922,
+    "start_index": 54923794,
+    "start_ist": "2022-09-17 09:57:35",
+    "r": 0.10333566155706542
+   },
+   "margin": 0.1149061298026818,
+   "confidence": 0.1181033722694546,
+   "seconds": 11.496
+  },
+  {
+   "ext": "naive",
+   "length_min": 40,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12682686,
+   "candidates": [
+    {
+     "index": 5024691,
+     "start_index": 5024563,
+     "start_ist": "2021-02-16 21:03:44",
+     "r": 0.21824179135974722
+    },
+    {
+     "index": 10707432,
+     "start_index": 10707304,
+     "start_ist": "2021-04-23 15:36:05",
+     "r": 0.07320167229094324
+    },
+    {
+     "index": 5026009,
+     "start_index": 5025881,
+     "start_ist": "2021-02-16 21:25:42",
+     "r": 0.05945294611076152
+    },
+    {
+     "index": 7137840,
+     "start_index": 7137712,
+     "start_ist": "2021-03-13 08:02:53",
+     "r": 0.055573188481076397
+    },
+    {
+     "index": 8069432,
+     "start_index": 8069304,
+     "start_ist": "2021-03-24 02:49:25",
+     "r": 0.05482299723851941
+    }
+   ],
+   "runner_up": {
+    "index": 10707432,
+    "start_index": 10707304,
+    "start_ist": "2021-04-23 15:36:05",
+    "r": 0.07320167229094324
+   },
+   "margin": 0.14504011906880399,
+   "confidence": 0.14847637921336213,
+   "seconds": 1.808
+  },
+  {
+   "ext": "naive",
+   "length_min": 40,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 2385,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4978785,
+     "start_index": 4978657,
+     "start_ist": "2021-02-16 08:18:38",
+     "r": 0.04889126628773539
+    },
+    {
+     "index": 4984902,
+     "start_index": 4984774,
+     "start_ist": "2021-02-16 10:00:35",
+     "r": 0.0452840937712904
+    },
+    {
+     "index": 4850881,
+     "start_index": 4850753,
+     "start_ist": "2021-02-14 20:46:54",
+     "r": 0.04173351671928996
+    },
+    {
+     "index": 4957148,
+     "start_index": 4957020,
+     "start_ist": "2021-02-16 02:18:01",
+     "r": 0.04151194072829947
+    },
+    {
+     "index": 4984811,
+     "start_index": 4984683,
+     "start_ist": "2021-02-16 09:59:04",
+     "r": 0.041078501465125074
+    }
+   ],
+   "runner_up": {
+    "index": 4984902,
+    "start_index": 4984774,
+    "start_ist": "2021-02-16 10:00:35",
+    "r": 0.0452840937712904
+   },
+   "margin": 0.0036071725164449897,
+   "confidence": 0.003615192254892506,
+   "seconds": 0.013
+  },
+  {
+   "ext": "naive",
+   "length_min": 60,
+   "scope": "full",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": false,
+   "positions": [
+    128,
+    84042741
+   ],
+   "n_positions": 83207007,
+   "candidates": [
+    {
+     "index": 67541339,
+     "start_index": 67541211,
+     "start_ist": "2023-02-10 10:47:52",
+     "r": 0.1490338404692282
+    },
+    {
+     "index": 54411641,
+     "start_index": 54411513,
+     "start_ist": "2022-09-11 11:39:34",
+     "r": 0.14172215281102132
+    },
+    {
+     "index": 57345776,
+     "start_index": 57345648,
+     "start_ist": "2022-10-15 10:41:49",
+     "r": 0.1393734262154259
+    },
+    {
+     "index": 83275249,
+     "start_index": 83275121,
+     "start_ist": "2023-08-11 13:19:42",
+     "r": 0.1335570250297702
+    },
+    {
+     "index": 44562608,
+     "start_index": 44562480,
+     "start_ist": "2022-05-20 11:49:01",
+     "r": 0.13300607173468376
+    }
+   ],
+   "runner_up": {
+    "index": 54411641,
+    "start_index": 54411513,
+    "start_ist": "2022-09-11 11:39:34",
+    "r": 0.14172215281102132
+   },
+   "margin": 0.007311687658206889,
+   "confidence": 0.007469591855283619,
+   "seconds": 11.485
+  },
+  {
+   "ext": "naive",
+   "length_min": 60,
+   "scope": "90d",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": false,
+   "positions": [
+    128,
+    12696397
+   ],
+   "n_positions": 12684248,
+   "candidates": [
+    {
+     "index": 5024691,
+     "start_index": 5024563,
+     "start_ist": "2021-02-16 21:03:44",
+     "r": 0.1149815941939468
+    },
+    {
+     "index": 6227003,
+     "start_index": 6226875,
+     "start_ist": "2021-03-02 19:02:16",
+     "r": 0.08920172589003496
+    },
+    {
+     "index": 8041439,
+     "start_index": 8041311,
+     "start_ist": "2021-03-23 19:02:52",
+     "r": 0.08673063082779191
+    },
+    {
+     "index": 11261791,
+     "start_index": 11261663,
+     "start_ist": "2021-04-30 01:35:24",
+     "r": 0.08307789145761921
+    },
+    {
+     "index": 1924292,
+     "start_index": 1924164,
+     "start_ist": "2021-01-11 23:50:25",
+     "r": 0.0812968888911354
+    }
+   ],
+   "runner_up": {
+    "index": 6227003,
+    "start_index": 6226875,
+    "start_ist": "2021-03-02 19:02:16",
+    "r": 0.08920172589003496
+   },
+   "margin": 0.025779868303911838,
+   "confidence": 0.026052913960243437,
+   "seconds": 1.87
+  },
+  {
+   "ext": "naive",
+   "length_min": 60,
+   "scope": "1d",
+   "ok": true,
+   "error": null,
+   "n_frames": 3585,
+   "weighted": false,
+   "positions": [
+    4833996,
+    5006797
+   ],
+   "n_positions": 172801,
+   "candidates": [
+    {
+     "index": 4861888,
+     "start_index": 4861760,
+     "start_ist": "2021-02-14 23:50:21",
+     "r": 0.06701394978691913
+    },
+    {
+     "index": 4950363,
+     "start_index": 4950235,
+     "start_ist": "2021-02-16 00:24:56",
+     "r": 0.06548749434376669
+    },
+    {
+     "index": 4935893,
+     "start_index": 4935765,
+     "start_ist": "2021-02-15 20:23:46",
+     "r": 0.06526707247421475
+    },
+    {
+     "index": 4869988,
+     "start_index": 4869860,
+     "start_ist": "2021-02-15 02:05:21",
+     "r": 0.06513728889654906
+    },
+    {
+     "index": 4931334,
+     "start_index": 4931206,
+     "start_ist": "2021-02-15 19:07:47",
+     "r": 0.061903958196884566
+    }
+   ],
+   "runner_up": {
+    "index": 4950363,
+    "start_index": 4950235,
+    "start_ist": "2021-02-16 00:24:56",
+    "r": 0.06548749434376669
+   },
+   "margin": 0.0015264554431524413,
+   "confidence": 0.0015331851381858858,
+   "seconds": 0.014
+  }
+ ],
+ "search_seconds_sum": 177.959,
+ "written_ist": "2026-11-08T03:16:45+05:30"
+}
