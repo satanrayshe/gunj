@@ -738,7 +738,9 @@ def test_clips(ref, tdir: Path, splits: dict, log) -> tuple:
         src_split = r0.get("split") or "test"
         meta.update(split=key_split, source_split=src_split,
                     split_note=("Test split: searched blind after tau and L were committed (PROTOCOL section 14). "
-                                "Numbers are interim until the gate is frozen." if key_split == "test" else
+                                + ("Gate frozen: these are the final v1 numbers."
+                                   if (Path(__file__).resolve().parents[1] / "results" / "gate_frozen.json").exists()
+                                   else "Numbers are interim until the gate is frozen.") if key_split == "test" else
                                 "PRACTICE run of scripts/evaluate.py on Calibration traces. Not a Test result."))
         cells = [r for r in rs if r.get("extractor") and r.get("scope")]
         meta["harvest"] = {"status": r0.get("harvest_status"), "reason": r0.get("harvest_reason") or None,
