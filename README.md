@@ -25,33 +25,102 @@ Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecur
 Every number in this section is written by `scripts/fill_results.py` from the file named beside it. Re-run it after `scripts/evaluate.py` and the numbers update.
 
 <!-- status:start -->
-- Test results: [pending: gate 8 Nov 14:00]. The gate is decided on 8 Nov 2026 at 14:00 IST (moved from 7 Nov 22:00; see Deviations). Until `results/gate_frozen.json` exists, every Test value in this README reads [pending: gate 8 Nov 14:00].
+- Gate (PROTOCOL section 15, decision time 8 Nov 2026 14:00 IST): **not met**, frozen 8 Nov 2026, 17:04 IST (`results/gate_frozen.json`).
+- Test numbers are from `results/evaluation.json` and `results/test_results.csv`, written by `scripts/evaluate.py` at 8 Nov 2026, 17:04 IST: 126 of 150 selected streams had a trace then. The harvest can still add streams; `scripts/fill_results.py` re-reads the files each time it runs.
 - The reference, label-drift, latency, threshold, Dev and uniqueness results were measured before any Test search and do not change.
 <!-- status:end -->
 
 <!-- results:start -->
 ### Gate (PROTOCOL section 15)
 
-- [pending: gate 8 Nov 14:00]. `scripts/evaluate.py` writes `results/gate_frozen.json` on its first run that starts after the decision time with every Test stream harvested by then searched.
+- **Gate not met** (frozen 8 Nov 2026, 17:04 IST, `results/gate_frozen.json`).
+- Conditions 1 and 2: 38 of N = 126 Test streams harvested by the decision time locked blind (5 needed): extractor v2, top candidate in the full span or ±90 days within 30 s of T* for at least one excerpt length, with confidence at or above tau of that cell. Met.
+- The same count without the label-drift correction (S1, D = 0): 9.
+- Condition 3, harvest health: not met. tau and L committed by the decision time: yes.
+- Locks with the baselines on the same streams (description only): v1 19; naive 13.
+- `results/gate.md` lists every processed stream, hits and misses.
 
 ### Test split, pre-registered and blind
 
 | result | value | source |
 |---|---|---|
-| M1 hum present (extractor v1, all downloaded audio; Test streams with audio) | [pending: gate 8 Nov 14:00] | `results/test_results.csv` |
-| M2 primary endpoint: top-1 start within 30 s of T*, v2, 60-min excerpts, full span | [pending: gate 8 Nov 14:00] | `results/evaluation.json` |
-| Same cell: confident hit (hum flag set and confidence at or above tau, within 30 s) | [pending: gate 8 Nov 14:00] | `results/evaluation.json` |
-| Same cell: confident wrong (verdict match, more than 30 s off) | [pending: gate 8 Nov 14:00] | `results/evaluation.json` |
-| Same cell: no verdict | [pending: gate 8 Nov 14:00] | `results/evaluation.json` |
-| Same cell, M1 hum-present streams only: top-1 within 30 s | [pending: gate 8 Nov 14:00] | `results/evaluation.json` |
-| v2, 60 min, ±90 days: top-1 within 30 s | [pending: gate 8 Nov 14:00] | `results/evaluation.json` |
-| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real foreign 50 Hz streams | [pending: gate 8 Nov 14:00] | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
-| M3 false matches at tau, report-half negatives, v2, 60 min, full span: SYNTHETIC noise and hum | [pending: gate 8 Nov 14:00] | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
-| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real and SYNTHETIC together | [pending: gate 8 Nov 14:00] | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
+| M1 hum present (extractor v1, all downloaded audio; Test streams with audio) | 50/126 (39.7%, 95% CI 31.6 to 48.4%) | `results/test_results.csv` |
+| M2 primary endpoint: top-1 start within 30 s of T*, v2, 60-min excerpts, full span | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | `results/evaluation.json` |
+| Same cell: confident hit (hum flag set and confidence at or above tau, within 30 s) | 14/90 (15.6%, 95% CI 9.5 to 24.4%) | `results/evaluation.json` |
+| Same cell: confident wrong (verdict match, more than 30 s off) | 9/90 (10.0%, 95% CI 5.4 to 17.9%) | `results/evaluation.json` |
+| Same cell: no verdict | 67/90 (74.4%, 95% CI 64.6 to 82.3%) | `results/evaluation.json` |
+| Same cell, M1 hum-present streams only: top-1 within 30 s | 16/37 (43.2%, 95% CI 28.7 to 59.1%) | `results/evaluation.json` |
+| v2, 60 min, ±90 days: top-1 within 30 s | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | `results/evaluation.json` |
+| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real foreign 50 Hz streams | n/a (N = 0) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
+| M3 false matches at tau, report-half negatives, v2, 60 min, full span: SYNTHETIC noise and hum | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
+| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real and SYNTHETIC together | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
 | M5 edit detection on SYNTHETIC cuts | [pending: M5 not computed yet; the SYNTHETIC cut traces exist] | PROTOCOL section 11 |
 | M6 live station (optional) | not run | PROTOCOL section 11 |
 
-The M2 grid by excerpt length and scope, the baselines on the same streams, the sensitivity analyses S1 to S4, M1 by venue type and the flow table appear here once the gate is frozen. [pending: gate 8 Nov 14:00]
+M3 used 0 of 25 real and 20 of 20 SYNTHETIC report-half negatives (`results/evaluation.json`, `m3_counts`). Every cell, with and without the hum-flag condition, is in `results/false_matches.md`.
+
+### M2 top-1 within 30 s, extractor v2 (Wilson 95%; `results/evaluation.json`)
+
+| excerpt | full span | ±90 days | ±1 day |
+|---|---|---|---|
+| 10 min | 28/126 (22.2%, 95% CI 15.8 to 30.2%) | 28/126 (22.2%, 95% CI 15.8 to 30.2%) | 35/126 (27.8%, 95% CI 20.7 to 36.2%) |
+| 20 min | 31/126 (24.6%, 95% CI 17.9 to 32.8%) | 31/126 (24.6%, 95% CI 17.9 to 32.8%) | 40/126 (31.7%, 95% CI 24.3 to 40.3%) |
+| 40 min | 26/104 (25.0%, 95% CI 17.7 to 34.1%) | 26/104 (25.0%, 95% CI 17.7 to 34.1%) | 30/104 (28.8%, 95% CI 21.0 to 38.2%) |
+| 60 min | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | 28/90 (31.1%, 95% CI 22.5 to 41.3%) |
+
+Confident wrong (verdict match, more than 30 s off), same cells:
+
+| excerpt | full span | ±90 days | ±1 day |
+|---|---|---|---|
+| 10 min | 2/126 (1.6%, 95% CI 0.4 to 5.6%) | 2/126 (1.6%, 95% CI 0.4 to 5.6%) | 2/126 (1.6%, 95% CI 0.4 to 5.6%) |
+| 20 min | 2/126 (1.6%, 95% CI 0.4 to 5.6%) | 2/126 (1.6%, 95% CI 0.4 to 5.6%) | 2/126 (1.6%, 95% CI 0.4 to 5.6%) |
+| 40 min | 8/104 (7.7%, 95% CI 3.9 to 14.4%) | 9/104 (8.7%, 95% CI 4.6 to 15.6%) | 7/104 (6.7%, 95% CI 3.3 to 13.2%) |
+| 60 min | 9/90 (10.0%, 95% CI 5.4 to 17.9%) | 8/90 (8.9%, 95% CI 4.6 to 16.6%) | 7/90 (7.8%, 95% CI 3.8 to 15.2%) |
+
+### Baselines on the same streams, 60 min, full span
+
+| method | top-1 within 30 s | confident hit | confident wrong | paired with v2 on the same streams (both hit / v2 only / baseline only / neither) |
+|---|---|---|---|---|
+| v2 (primary) | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | 14/90 (15.6%, 95% CI 9.5 to 24.4%) | 9/90 (10.0%, 95% CI 5.4 to 17.9%) |  |
+| v1 (frozen extractor) | 15/90 (16.7%, 95% CI 10.4 to 25.7%) | 11/90 (12.2%, 95% CI 7.0 to 20.6%) | 4/90 (4.4%, 95% CI 1.7 to 10.9%) | 15 / 10 / 0 / 65 (n = 90) |
+| naive single-bin 50 Hz | 12/90 (13.3%, 95% CI 7.8 to 21.9%) | 8/90 (8.9%, 95% CI 4.6 to 16.6%) | 2/90 (2.2%, 95% CI 0.6 to 7.7%) | 12 / 13 / 0 / 65 (n = 90) |
+| libhum | [pending: libhum baseline not run yet; PROTOCOL section 12] | | | |
+| random guess (analytic) | p = 7.258 × 10^-7 per stream; expected chance hits over these 90 streams: 6.5 × 10^-5 | | | |
+
+Sources: `results/evaluation.json` (rates), `results/test_results.csv` (pairs), `results/splits_summary.json` (random guess).
+
+### Sensitivity analyses (PROTOCOL section 13), v2, 60 min, full span
+
+| analysis | top-1 within 30 s | source |
+|---|---|---|
+| as pre-registered (T* = release time + L + D) | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | `results/evaluation.json` |
+| S1: no label-drift correction (D = 0) | 5/90 (5.6%, 95% CI 2.4 to 12.4%) | `results/evaluation.json` |
+| S2: label-stable streams only | 9/25 (36.0%, 95% CI 20.2 to 55.5%) | `results/test_results.csv`, `label_stable` |
+| S3: verified channels only | 22/75 (29.3%, 95% CI 20.2 to 40.4%) | `results/test_results.csv`, `channel_status` |
+| S4: v1 against v2 | see the paired column above | `results/test_results.csv` |
+
+### M1 hum presence by venue type (`results/test_results.csv`)
+
+| venue type | hum present |
+|---|---|
+| conference | 0/1 (0.0%, 95% CI 0.0 to 79.3%) |
+| government event | 6/25 (24.0%, 95% CI 11.5 to 43.4%) |
+| lecture | 5/29 (17.2%, 95% CI 7.6 to 34.5%) |
+| legislature | 28/52 (53.8%, 95% CI 40.5 to 66.7%) |
+| religious | 11/19 (57.9%, 95% CI 36.3 to 76.9%) |
+| all | 50/126 (39.7%, 95% CI 31.6 to 48.4%) |
+
+### Flow, Test streams (`results/evaluation.json`; drop reasons in `results/flow_table.md`)
+
+| step | streams |
+|---|---|
+| selected | 150 |
+| download attempted | 145 |
+| audio obtained | 126 |
+| trace extracted (v2) and searched | 126 |
+| hum present (M1) | 50 |
+| match (v2, any length, full or +-90 d) | 30 |
+| hit (confident hit) | 25 |
 
 ### Measured before any Test search
 
