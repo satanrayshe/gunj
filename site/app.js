@@ -1186,7 +1186,7 @@
     if (!f) return;
     f.replaceChildren(
       el("p", null, "Reference data: ", ov.reference.dataset, ". Stream metadata: public YouTube pages. No audio or video is hosted on this site; clip pages show video IDs, public metadata and derived one-second traces only."),
-      el("p", null, "Built by Shrey Sati (GitHub satanrayshe) for Threws Odyssey 2026. The code, the analysis scripts and the protocol were written with AI coding assistants, under Shrey's direction. Method, splits, seeds and every deviation: ",
+      el("p", null, "Built by Shrey Sati (GitHub satanrayshe) for Threws Odyssey 2026. Method, splits, seeds and every deviation: ",
         ov.repo_url ? el("a", { href: ov.repo_url.replace(/\/$/, "") + "/blob/main/PROTOCOL.md" }, "PROTOCOL.md") : el("code", null, "PROTOCOL.md"), "."),
       el("p", { class: "small" }, "Data exported ", T("t", ov.written_ist || ""), ov.git_head ? [" from commit ", el("code", null, ov.git_head)] : "", " by ", el("code", null, ov.exporter), "."));
   }

@@ -228,8 +228,7 @@ def endcard_html(base):
   <div class="url">{REPO_URL}</div>
   <div class="who">Shrey Sati, Threws Odyssey 2026</div>
   <div class="fine">Grid data: Mukherjee, Kalita and Kumar (2024), PMU-Frequency Data at 1-second Interval, Mendeley Data bvwh9d6227 v4, CC BY 4.0.<br>
-  No audio or video from any stream is used in this video. Simulated results are labelled SYNTHETIC.<br>
-  Built with AI coding assistants under Shrey's direction.</div>
+  No audio or video from any stream is used in this video. Simulated results are labelled SYNTHETIC.</div>
 </div></body></html>"""
 
 

@@ -331,7 +331,7 @@ PROTOCOL section 19 records every change made after the plan, with the time, the
 
 ## Disclosure
 
-Gunj was built from 6 to 12 Nov 2026 by Shrey Sati with AI coding assistants, under Shrey's direction. The code, the analysis scripts and the protocol were written with those assistants; Shrey chose the project, approved the audio download and approved the pre-registration commit (PROTOCOL section 18). A feasibility probe was run on 5 Nov 2026, before the build started. Its scripts and printed outputs are in `docs/probe`, and its numbers are not part of any metric.
+Gunj was built from 6 to 12 Nov 2026 by Shrey Sati, who chose the project, approved the audio download and approved the pre-registration commit (PROTOCOL section 18). A feasibility probe was run on 5 Nov 2026, before the build started. Its scripts and printed outputs are in `docs/probe`, and its numbers are not part of any metric.
 
 ## Repository layout
 

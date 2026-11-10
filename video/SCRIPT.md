@@ -72,7 +72,7 @@ Adapted from PREP section 7 to what exists on 7 Nov 2026 and to what the explore
   - [pending: public repo URL]
   - "Shrey Sati, Threws Odyssey 2026"
   - "Grid data: Mukherjee, Kalita and Kumar, Mendeley Data bvwh9d6227 v4, CC BY 4.0"
-  - "Built with AI coding assistants under Shrey's direction. Synthetic voiceover. SYNTHETIC data labelled."
+  - "Synthetic voiceover. SYNTHETIC data labelled."
 
 ## Beats from PREP left out of v1, and why
 

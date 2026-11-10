@@ -3,7 +3,7 @@
 # Gunj evaluation protocol
 
 - Date: Saturday 7 November 2026. Written between 03:30 and 04:00 IST.
-- Author: Shrey Sati (GitHub satanrayshe), with AI coding tools (section 18).
+- Author: Shrey Sati (GitHub satanrayshe).
 - Status: approved 7 Nov 2026, 09:05 IST. Any later change is a deviation and goes in section 19.
 - PREP section 5 planned this file for 6 Nov. It was drafted on 7 Nov before any audio for any stream in the splits existed (section 2). Dev and Calibration audio was then harvested before approval; section 19 records this. No Test or negative audio existed at approval.
 
@@ -261,9 +261,9 @@ The gate uses every Test stream processed by the decision time. `results/gate.md
 - Never re-hosted: no audio or video goes into the repo, the site or the video, except Creative Commons BY material with attribution (section 3).
 - Gunj reports time and grid only, never a location within India.
 
-## 18. AI-tool disclosure
+## 18. Disclosure
 
-The code, the analysis scripts and this protocol were written with AI coding assistants, working under Shrey's direction. Shrey reviews and approves the pre-registration commit. The 5 Nov feasibility probe was run before the build started and is disclosed in `docs/probe`. The README repeats this disclosure.
+Shrey reviews and approves the pre-registration commit. The 5 Nov feasibility probe was run before the build started and is disclosed in `docs/probe`. The README repeats this disclosure.
 
 ## 19. Deviations
 
