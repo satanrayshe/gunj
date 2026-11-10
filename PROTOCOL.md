@@ -316,6 +316,11 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - Consequences: no further YouTube downloads, and no sign-in or cookies. The 24 unharvested Test streams are listed in `results/flow_table.md`. None of the 25 report-half real negatives was harvested, so M3 is measured on the 20 SYNTHETIC report-half negatives only. τ itself was set on 23 real and 20 SYNTHETIC threshold-half negatives.
   - The scoring loop had stopped after 07:31 IST, when the coordinator's session ended, so no gate run took place at 14:10. The harvest had stopped at 05:30, which means the 17:04 run counts the same set of Test streams a 14:10 run would have.
 
+- **10 Nov 2026, 19:25 IST. One retry of the 25 report-half real negatives (sections 11 M3 and 17).** The gate (frozen 8 Nov) and every Test result are unchanged; this run touches no Test stream.
+  - Why: the 8 Nov 05:30 bot check came before any report-half real negative was harvested, so M3 had only SYNTHETIC negatives. Shrey decided at about 19:20 IST on 10 Nov to retry these 25 streams once, about 62 hours after the block.
+  - How: the same harvester and rules as before (commit 3936ca8 behaviour, unchanged code). No sign-in, cookies or proxies, with the same sleeps. `--clear-block` is used only so that the run can start: the blocked Test row vMIFXzQiZMA stays recorded as blocked and is not retried. The run stops for good at the first bot check, CAPTCHA, sign-in wall or HTTP 429, and then M3 is reported with whatever real negatives it got.
+  - M3 is then recomputed by the frozen `scripts/evaluate.py` with the frozen τ. The gate in `results/gate_frozen.json` does not change.
+
 ## 20. How to check this file
 
 From the repo root:
