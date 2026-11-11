@@ -56,7 +56,7 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 
 - 8 Nov 23:00: repo pushed by Shrey to https://github.com/satanrayshe/gunj (main 9fc4d60 + tag extractor-v2); Pages live at https://satanrayshe.github.io/gunj/. Later commits are local until Shrey pushes again.
 - 10 Nov 19:19 to 19:58: the single retry of the report-half real negatives (Shrey's decision): 24 of 25 harvested, no block. No further YouTube downloads.
-- 11 Nov 18:33: frozen evaluate.py re-run for M3 with the real negatives (log logs/evaluate_m3.err). 11 Nov 18:40: final-polish workflow started (M5, figures, README, site, video, report PDF, review). After it ends: check results, run pytest, commit, hand Shrey the push command; he records the narration or runs video/tts_narration.py, uploads the video unlisted, and submits on Unstop before 12 Nov 23:59.
+- 11 Nov 18:33: frozen evaluate.py re-run for M3 with the real negatives (log logs/evaluate_m3.err). 11 Nov 18:37: final-polish workflow started (M5, figures, README, site, video, report PDF, review). After it ends: check results, run pytest, commit, hand Shrey the push command; he records the narration or runs video/tts_narration.py, uploads the video unlisted, and submits on Unstop before 12 Nov 23:59.
 - Shrey's rule (10 Nov): no AI-use disclosure anywhere in the deliverables.
 
 ## Before any push (Shrey runs the push)
