@@ -4,14 +4,15 @@
     python video/make_video.py assemble   crossfades, captions from video/NARRATION.md, ffmpeg encode
     python video/make_video.py screens    re-capture the explorer screenshots in docs/screens
     python video/make_video.py all        frames, then assemble
+    python video/make_video.py check      name any narrated cut or narration file older than video/NARRATION.md
 
 Needs a Python with playwright (and its Chromium) and Pillow, and ffmpeg on PATH. The script
 serves site/ itself on a free local port. Everything the recording changes on the page is
-injected from here, and no site file is edited: channel names are hidden, a stale "interim"
-sentence is dropped, the drift section is moved above the uniqueness section, a highlight box
-is drawn, and a callout repeats the gate counts from data/overview.json. Line start times come
-from video/NARRATION.md, so the pictures, the captions and the narration share one timeline.
-Work files go to a folder in the system temp directory.
+injected from here, and no site file is edited: channel names are hidden, the drift section is
+moved above the uniqueness section to follow the narration, and a highlight box is drawn. Every
+number on screen is the explorer's own, read from site/data. Line start times come from
+video/NARRATION.md, so the pictures, the captions and the narration share one timeline. Work
+files go to a folder in the system temp directory.
 """
 import functools
 import json
@@ -125,10 +126,9 @@ INIT_JS = r"""
   window.__manual = (on) => { manual = on; if (on) vt = performance.now(); else { const qq = q; q = []; qq.forEach((cb) => nRAF(cb)); } };
   window.__tick = (dt) => { vt += dt; const qq = q; q = []; qq.forEach((cb) => cb(vt)); return q.length; };
 
-  // hide channel names; drop a sentence the exporter still prints after the gate froze
+  // hide channel names
   const NAMES = (__NAMES__).map((s) => s.trim()).filter((s) => s.length >= 4).sort((a, b) => b.length - a.length);
-  const DROP = [" Numbers are interim until the gate is frozen."];
-  const fix = (s) => { let o = s; DROP.forEach((d) => { o = o.split(d).join(""); }); NAMES.forEach((n) => { o = o.split(n + ", ").join("").split(n).join(""); }); return o; };
+  const fix = (s) => { let o = s; NAMES.forEach((n) => { o = o.split(n + ", ").join("").split(n).join(""); }); return o; };
   const scrubNode = (n) => { const s = n.nodeValue; if (s && s.length >= 4) { const o = fix(s); if (o !== s) n.nodeValue = o; } };
   const scrub = (root) => {
     if (root.nodeType === 3) { scrubNode(root); return; }
@@ -182,22 +182,10 @@ INIT_JS = r"""
     return r;
   };
 
-  // overview for the video: drift section above the uniqueness section, plus the gate counts
-  window.__prepOverview = async () => {
+  // overview for the video: the drift section above the uniqueness section, as the narration runs
+  window.__prepOverview = () => {
     const d = document.querySelector('section[aria-labelledby="d-h"]'), u = document.querySelector('section[aria-labelledby="u-h"]');
     u.parentNode.insertBefore(d, u);
-    if (document.getElementById("__callout")) return;
-    const ov = await (await fetch("data/overview.json", { cache: "no-cache" })).json();
-    const g = ov.test.gate, v2 = g.by_extractor.v2;
-    const box = document.createElement("div");
-    box.id = "__callout";
-    box.style.cssText = "margin-top:12px;padding:12px 4px 2px;border-top:1px solid var(--line)";
-    box.innerHTML = '<div class="label">Test streams that lock blind, any excerpt length (gate count)</div>' +
-      '<div style="display:flex;gap:44px;margin-top:6px;align-items:baseline">' +
-      '<div><span class="num" style="font-size:34px">' + v2.n_streams_with_lock + '</span> <span class="small">of ' + g.N_processed + ' with the drift correction</span></div>' +
-      '<div><span class="num" style="font-size:34px">' + v2.n_streams_with_lock_D0 + '</span> <span class="small">without it (D = 0)</span></div></div>' +
-      '<p class="figure-note" style="margin:4px 0 0">Source: <code>results/gate_frozen.json</code></p>';
-    d.querySelector(".panel .panel-b").appendChild(box);
   };
 })();
 """
@@ -324,8 +312,8 @@ def step_frames():
     shutil.rmtree(frames, ignore_errors=True)
     frames.mkdir(parents=True)
     srv, url = serve_site()
-    RES = 'section[aria-labelledby="res-h"] > .panel'
-    TABLE = RES + " table"
+    TEST = "#test-panel"                       # the Test results panel of the overview
+    TABLE = TEST + " table.res-tbl"            # its primary-cell table (v2 is the first row)
     TRACE = {"css": 'svg[aria-label^="Trace of"]', "closest": ".panel"}
     try:
         with sync_playwright() as p:
@@ -364,16 +352,22 @@ def step_frames():
             R.hold_until(C[4] - 0.5)
             R.unspot()
             R.hold_until(C[4])
-            # 5. the Test panel: blind, pre-registered; 126 streams processed
+            # 5. the Test panel: blind, pre-registered; 126 of 150 streams processed
             R.scroll_to(R.top({"css": "#res-h"}), 1.5)
-            R.spot_to(R.rect([{"css": RES + " .panel-h"}, {"css": RES + " .panel-b > p.small"}]))
+            R.spot_to(R.rect([{"css": TEST + " .panel-h"}, {"css": TEST + " .lead-note"}]))
             R.hold_until(ch(5, 2))
-            R.spot_to(R.rect([{"dt": "streams processed", "within": RES}]), 0.4)
+            R.spot_to(R.rect([{"dt": "streams processed", "within": TEST}]), 0.4)
             R.hold_until(C[5])
-            # 6. primary endpoint, then confident hits and confident wrong locks
+            # 6. ninety with an hour of audio; the primary endpoint; then the confident verdicts by distance
+            R.spot_to(R.rect([{"css": TABLE + " caption"}]), 0.4)
+            R.hold_until(ch(6, 2))
             R.spot_to(R.rect([{"css": TABLE + " thead tr", "cells": [0, 1]}, {"css": TABLE + " tbody tr", "cells": [0, 1]}]), 0.4)
-            R.hold_until(ch(6, 4))
-            R.spot_to(R.rect([{"css": TABLE + " thead tr", "cells": [2, 3]}, {"css": TABLE + " tbody tr", "cells": [2, 3]}]), 0.4)
+            R.hold_until(ch(6, 3) - 1.3)
+            R.unspot()
+            R.scroll_to(R.top({"css": "#breakdown"}, 150), 0.8)
+            R.spot_to(R.rect([{"css": "#bd-confident"}]), 0.33)
+            R.hold_until(ch(6, 4) + 2.6)
+            R.spot_to(R.rect([{"css": "#bd-confident"}, {"css": "#breakdown > .figure-note"}]), 0.4)
             R.hold_until(C[6] - 0.4)
             R.unspot()
             R.hold_until(C[6])
@@ -381,13 +375,15 @@ def step_frames():
             R.scroll_to(R.top({"css": "#d-h"}), 1.5)
             R.spot_to(R.rect([{"css": 'section[aria-labelledby="d-h"] .panel svg'}], 6))
             R.hold_until(ch(7, 2))
-            R.spot_to(R.rect([{"css": "#__callout"}], 6), 0.4)
+            R.spot_to(R.rect([{"css": "#drift-callout"}], 6), 0.4)
             R.hold_until(C[7] - 0.4)
             R.unspot()
             R.hold_until(C[7])
-            # 8. uniqueness curve (SYNTHETIC noise)
-            R.scroll_to(R.top({"css": "#u-h"}, 2), 1.2)
-            R.spot_to(R.rect([{"css": 'section[aria-labelledby="u-h"] .panel svg'}, {"css": 'section[aria-labelledby="u-h"] .panel p.small'}]))
+            # 8. uniqueness curve (SYNTHETIC noise), then its reading at the measured noise level
+            R.scroll_to(R.top({"css": "#u-panel"}, 70), 1.2)
+            R.spot_to(R.rect([{"css": "#u-panel svg"}, {"css": "#u-panel .controls"}], 6))
+            R.hold_until(ch(8, 2))
+            R.spot_to(R.rect([{"css": "#u-panel .u-summary"}, {"css": "#u-panel table.res-tbl"}], 6), 0.4)
             R.hold_until(C[8])
             # 9. a blind Test lock
             R.xfade(12)
@@ -413,9 +409,9 @@ def step_frames():
                               {"css": 'svg[aria-label^="Hum, this excerpt"]'}], 8))
             R.hold_until(ch(10, 3))
             R.xfade(12)
-            R.goto("#/", "#res-h")
-            R.jump(R.top({"css": "#res-h"}))
-            r = R.rect([{"dt": "false matches, real negatives", "dtTo": "false matches, SYNTHETIC negatives", "within": RES}])
+            R.goto("#/", "#m3-panel table.fm-tbl")
+            R.jump(R.top({"css": "#m3-panel"}))
+            r = R.rect([{"css": "#m3-panel table.fm-tbl caption"}, {"css": "#fm-real"}, {"css": "#fm-syn"}, {"css": "#fm-target"}])
             R.set_spot(r, 1)
             R.spot = r
             R.snap(1)
@@ -541,6 +537,20 @@ def step_assemble():
     subprocess.run(cmd, cwd=frames, check=True)
     shutil.move(str(frames / "out.mp4"), str(SILENT))
     print("wrote", SILENT.relative_to(REPO))
+    warn_stale_narration()
+
+
+def warn_stale_narration():
+    """A narrated cut or a narration file older than the narration text (or than this silent cut) speaks old
+    lines under new captions. Name them, so that they are not uploaded by mistake; nothing is deleted."""
+    newest = max(NARRATION.stat().st_mtime, SILENT.stat().st_mtime if SILENT.exists() else 0)
+    old = [p for p in [VIDEO / "gunj-v1.mp4"] + sorted(VIDEO.glob("narration*.wav")) + sorted(VIDEO.glob("narration*.m4a"))
+           if p.exists() and p.stat().st_mtime < (NARRATION.stat().st_mtime if p.suffix != ".mp4" else newest)]
+    for p in old:
+        print("WARNING: %s is older than %s; it speaks an earlier narration. Do not upload it. Make the narration "
+              "again from video/NARRATION.md and run video/mux.ps1." % (p.relative_to(REPO).as_posix(),
+                                                                      "the narration text" if p.suffix != ".mp4" else
+                                                                      "the narration text or the silent cut"))
 
 
 # ------------------------------------------------------------------ docs screenshots
@@ -579,5 +589,7 @@ if __name__ == "__main__":
         step_assemble()
     if step == "screens":
         step_screens()
-    if step not in ("frames", "assemble", "all", "screens"):
+    if step == "check":
+        warn_stale_narration()
+    if step not in ("frames", "assemble", "all", "screens", "check"):
         raise SystemExit(__doc__)

@@ -4,7 +4,8 @@ Written by `scripts/make_figures.py` from `results/test_results.csv` (scoring ru
 
 - Rows are Test streams with a trace at that excerpt length (the M2 denominators). A verdict "match" needs the hum flag and confidence at or above tau of the cell.
 - The distance classes do not overlap: within 30 s; more than 30 s and up to 120 s; more than 120 s and up to 600 s; beyond 600 s.
-- The three shares are cumulative (within 30 s, within 120 s, within 600 s) and carry Wilson 95% intervals (PROTOCOL.md section 13).
+- For all excerpts, the three shares are cumulative (within 30 s, within 120 s, within 600 s): the top-1 hit rate and the pre-registered coarse hit rates, with Wilson 95% intervals (PROTOCOL.md sections 9 and 13). For the excerpts with verdict "match" only the counts are given: PROTOCOL.md section 11 defines no rate over confident verdicts, so a share of them would be a new, post hoc measure.
+- Every verdict "match" more than 30 s from T* is a confident wrong verdict (PROTOCOL.md section 9), whatever its class.
 - Check: for all 36 cells the within-30 s counts equal `top1_hit`, `confident_hit` and `confident_wrong` in `results/evaluation.json` (`m2`), and 0 rows have hit columns that disagree with `error_s`.
 - Figure: `results/figures/confident_verdict_breakdown_v2.png` (extractor v2).
 
@@ -15,25 +16,25 @@ Written by `scripts/make_figures.py` from `results/test_results.csv` (scoring ru
 | verdict "match" | 23 | 14 | 6 | 1 | 2 | 0 |
 | all, whatever the verdict | 90 | 25 | 7 | 2 | 55 | 1 |
 
-- Verdict "match": within 30 s 14/23 (60.9%, 95% CI 40.8 to 77.8%); within 120 s 20/23 (87.0%, 95% CI 67.9 to 95.5%); within 600 s 21/23 (91.3%, 95% CI 73.2 to 97.6%).
+- Verdict "match", as counts: 14 within 30 s, 20 within 120 s and 21 within 600 s of 23; 9 of the 23 are confident wrong.
 - All excerpts: within 30 s 25/90 (27.8%, 95% CI 19.6 to 37.8%); within 120 s 32/90 (35.6%, 95% CI 26.4 to 45.8%); within 600 s 34/90 (37.8%, 95% CI 28.5 to 48.1%).
 
-## Extractor v2 (primary): excerpts with verdict "match"
+## Extractor v2 (primary): excerpts with verdict "match" (counts)
 
-| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s | within 30 s, share | within 120 s, share | within 600 s, share |
-|---|---|---|---|---|---|---|---|---|---|
-| 10 min | full span | 19 | 17 | 1 | 1 | 0 | 17/19 (89.5%, 95% CI 68.6 to 97.1%) | 18/19 (94.7%, 95% CI 75.4 to 99.1%) | 19/19 (100.0%, 95% CI 83.2 to 100.0%) |
-| 10 min | ±90 days | 22 | 20 | 1 | 1 | 0 | 20/22 (90.9%, 95% CI 72.2 to 97.5%) | 21/22 (95.5%, 95% CI 78.2 to 99.2%) | 22/22 (100.0%, 95% CI 85.1 to 100.0%) |
-| 10 min | ±1 day | 16 | 14 | 1 | 1 | 0 | 14/16 (87.5%, 95% CI 64.0 to 96.5%) | 15/16 (93.8%, 95% CI 71.7 to 98.9%) | 16/16 (100.0%, 95% CI 80.6 to 100.0%) |
-| 20 min | full span | 21 | 19 | 1 | 1 | 0 | 19/21 (90.5%, 95% CI 71.1 to 97.3%) | 20/21 (95.2%, 95% CI 77.3 to 99.2%) | 21/21 (100.0%, 95% CI 84.5 to 100.0%) |
-| 20 min | ±90 days | 23 | 21 | 1 | 1 | 0 | 21/23 (91.3%, 95% CI 73.2 to 97.6%) | 22/23 (95.7%, 95% CI 79.0 to 99.2%) | 23/23 (100.0%, 95% CI 85.7 to 100.0%) |
-| 20 min | ±1 day | 23 | 21 | 1 | 1 | 0 | 21/23 (91.3%, 95% CI 73.2 to 97.6%) | 22/23 (95.7%, 95% CI 79.0 to 99.2%) | 23/23 (100.0%, 95% CI 85.7 to 100.0%) |
-| 40 min | full span | 24 | 16 | 6 | 1 | 1 | 16/24 (66.7%, 95% CI 46.7 to 82.0%) | 22/24 (91.7%, 95% CI 74.2 to 97.7%) | 23/24 (95.8%, 95% CI 79.8 to 99.3%) |
-| 40 min | ±90 days | 26 | 17 | 7 | 1 | 1 | 17/26 (65.4%, 95% CI 46.2 to 80.6%) | 24/26 (92.3%, 95% CI 75.9 to 97.9%) | 25/26 (96.2%, 95% CI 81.1 to 99.3%) |
-| 40 min | ±1 day | 23 | 16 | 5 | 1 | 1 | 16/23 (69.6%, 95% CI 49.1 to 84.4%) | 21/23 (91.3%, 95% CI 73.2 to 97.6%) | 22/23 (95.7%, 95% CI 79.0 to 99.2%) |
-| 60 min | full span | 23 | 14 | 6 | 1 | 2 | 14/23 (60.9%, 95% CI 40.8 to 77.8%) | 20/23 (87.0%, 95% CI 67.9 to 95.5%) | 21/23 (91.3%, 95% CI 73.2 to 97.6%) |
-| 60 min | ±90 days | 22 | 14 | 5 | 1 | 2 | 14/22 (63.6%, 95% CI 43.0 to 80.3%) | 19/22 (86.4%, 95% CI 66.7 to 95.3%) | 20/22 (90.9%, 95% CI 72.2 to 97.5%) |
-| 60 min | ±1 day | 22 | 15 | 5 | 1 | 1 | 15/22 (68.2%, 95% CI 47.3 to 83.6%) | 20/22 (90.9%, 95% CI 72.2 to 97.5%) | 21/22 (95.5%, 95% CI 78.2 to 99.2%) |
+| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s |
+|---|---|---|---|---|---|---|
+| 10 min | full span | 19 | 17 | 1 | 1 | 0 |
+| 10 min | ±90 days | 22 | 20 | 1 | 1 | 0 |
+| 10 min | ±1 day | 16 | 14 | 1 | 1 | 0 |
+| 20 min | full span | 21 | 19 | 1 | 1 | 0 |
+| 20 min | ±90 days | 23 | 21 | 1 | 1 | 0 |
+| 20 min | ±1 day | 23 | 21 | 1 | 1 | 0 |
+| 40 min | full span | 24 | 16 | 6 | 1 | 1 |
+| 40 min | ±90 days | 26 | 17 | 7 | 1 | 1 |
+| 40 min | ±1 day | 23 | 16 | 5 | 1 | 1 |
+| 60 min | full span | 23 | 14 | 6 | 1 | 2 |
+| 60 min | ±90 days | 22 | 14 | 5 | 1 | 2 |
+| 60 min | ±1 day | 22 | 15 | 5 | 1 | 1 |
 
 ## Extractor v2 (primary): top-1 candidate of every excerpt, whatever the verdict
 
@@ -52,22 +53,22 @@ Written by `scripts/make_figures.py` from `results/test_results.csv` (scoring ru
 | 60 min | ±90 days | 90 | 25 | 7 | 2 | 55 | 1 | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | 32/90 (35.6%, 95% CI 26.4 to 45.8%) | 34/90 (37.8%, 95% CI 28.5 to 48.1%) |
 | 60 min | ±1 day | 90 | 28 | 7 | 4 | 50 | 1 | 28/90 (31.1%, 95% CI 22.5 to 41.3%) | 35/90 (38.9%, 95% CI 29.5 to 49.2%) | 39/90 (43.3%, 95% CI 33.6 to 53.6%) |
 
-## Extractor v1 (baseline): excerpts with verdict "match"
+## Extractor v1 (baseline): excerpts with verdict "match" (counts)
 
-| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s | within 30 s, share | within 120 s, share | within 600 s, share |
-|---|---|---|---|---|---|---|---|---|---|
-| 10 min | full span | 6 | 6 | 0 | 0 | 0 | 6/6 (100.0%, 95% CI 61.0 to 100.0%) | 6/6 (100.0%, 95% CI 61.0 to 100.0%) | 6/6 (100.0%, 95% CI 61.0 to 100.0%) |
-| 10 min | ±90 days | 10 | 9 | 0 | 1 | 0 | 9/10 (90.0%, 95% CI 59.6 to 98.2%) | 9/10 (90.0%, 95% CI 59.6 to 98.2%) | 10/10 (100.0%, 95% CI 72.2 to 100.0%) |
-| 10 min | ±1 day | 12 | 10 | 0 | 1 | 1 | 10/12 (83.3%, 95% CI 55.2 to 95.3%) | 10/12 (83.3%, 95% CI 55.2 to 95.3%) | 11/12 (91.7%, 95% CI 64.6 to 98.5%) |
-| 20 min | full span | 15 | 11 | 2 | 0 | 2 | 11/15 (73.3%, 95% CI 48.0 to 89.1%) | 13/15 (86.7%, 95% CI 62.1 to 96.3%) | 13/15 (86.7%, 95% CI 62.1 to 96.3%) |
-| 20 min | ±90 days | 15 | 12 | 2 | 1 | 0 | 12/15 (80.0%, 95% CI 54.8 to 93.0%) | 14/15 (93.3%, 95% CI 70.2 to 98.8%) | 15/15 (100.0%, 95% CI 79.6 to 100.0%) |
-| 20 min | ±1 day | 16 | 13 | 2 | 1 | 0 | 13/16 (81.2%, 95% CI 57.0 to 93.4%) | 15/16 (93.8%, 95% CI 71.7 to 98.9%) | 16/16 (100.0%, 95% CI 80.6 to 100.0%) |
-| 40 min | full span | 18 | 11 | 4 | 1 | 2 | 11/18 (61.1%, 95% CI 38.6 to 79.7%) | 15/18 (83.3%, 95% CI 60.8 to 94.2%) | 16/18 (88.9%, 95% CI 67.2 to 96.9%) |
-| 40 min | ±90 days | 16 | 10 | 5 | 1 | 0 | 10/16 (62.5%, 95% CI 38.6 to 81.5%) | 15/16 (93.8%, 95% CI 71.7 to 98.9%) | 16/16 (100.0%, 95% CI 80.6 to 100.0%) |
-| 40 min | ±1 day | 17 | 11 | 5 | 1 | 0 | 11/17 (64.7%, 95% CI 41.3 to 82.7%) | 16/17 (94.1%, 95% CI 73.0 to 99.0%) | 17/17 (100.0%, 95% CI 81.6 to 100.0%) |
-| 60 min | full span | 15 | 11 | 2 | 1 | 1 | 11/15 (73.3%, 95% CI 48.0 to 89.1%) | 13/15 (86.7%, 95% CI 62.1 to 96.3%) | 14/15 (93.3%, 95% CI 70.2 to 98.8%) |
-| 60 min | ±90 days | 15 | 11 | 2 | 1 | 1 | 11/15 (73.3%, 95% CI 48.0 to 89.1%) | 13/15 (86.7%, 95% CI 62.1 to 96.3%) | 14/15 (93.3%, 95% CI 70.2 to 98.8%) |
-| 60 min | ±1 day | 14 | 11 | 2 | 1 | 0 | 11/14 (78.6%, 95% CI 52.4 to 92.4%) | 13/14 (92.9%, 95% CI 68.5 to 98.7%) | 14/14 (100.0%, 95% CI 78.5 to 100.0%) |
+| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s |
+|---|---|---|---|---|---|---|
+| 10 min | full span | 6 | 6 | 0 | 0 | 0 |
+| 10 min | ±90 days | 10 | 9 | 0 | 1 | 0 |
+| 10 min | ±1 day | 12 | 10 | 0 | 1 | 1 |
+| 20 min | full span | 15 | 11 | 2 | 0 | 2 |
+| 20 min | ±90 days | 15 | 12 | 2 | 1 | 0 |
+| 20 min | ±1 day | 16 | 13 | 2 | 1 | 0 |
+| 40 min | full span | 18 | 11 | 4 | 1 | 2 |
+| 40 min | ±90 days | 16 | 10 | 5 | 1 | 0 |
+| 40 min | ±1 day | 17 | 11 | 5 | 1 | 0 |
+| 60 min | full span | 15 | 11 | 2 | 1 | 1 |
+| 60 min | ±90 days | 15 | 11 | 2 | 1 | 1 |
+| 60 min | ±1 day | 14 | 11 | 2 | 1 | 0 |
 
 ## Extractor v1 (baseline): top-1 candidate of every excerpt, whatever the verdict
 
@@ -86,22 +87,22 @@ Written by `scripts/make_figures.py` from `results/test_results.csv` (scoring ru
 | 60 min | ±90 days | 90 | 17 | 3 | 1 | 68 | 1 | 17/90 (18.9%, 95% CI 12.1 to 28.2%) | 20/90 (22.2%, 95% CI 14.9 to 31.8%) | 21/90 (23.3%, 95% CI 15.8 to 33.1%) |
 | 60 min | ±1 day | 90 | 25 | 4 | 2 | 58 | 1 | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | 29/90 (32.2%, 95% CI 23.5 to 42.4%) | 31/90 (34.4%, 95% CI 25.4 to 44.7%) |
 
-## Extractor naive (baseline): excerpts with verdict "match"
+## Extractor naive (baseline): excerpts with verdict "match" (counts)
 
-| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s | within 30 s, share | within 120 s, share | within 600 s, share |
-|---|---|---|---|---|---|---|---|---|---|
-| 10 min | full span | 3 | 0 | 0 | 0 | 3 | 0/3 (0.0%, 95% CI 0.0 to 56.1%) | 0/3 (0.0%, 95% CI 0.0 to 56.1%) | 0/3 (0.0%, 95% CI 0.0 to 56.1%) |
-| 10 min | ±90 days | 1 | 0 | 0 | 0 | 1 | 0/1 (0.0%, 95% CI 0.0 to 79.3%) | 0/1 (0.0%, 95% CI 0.0 to 79.3%) | 0/1 (0.0%, 95% CI 0.0 to 79.3%) |
-| 10 min | ±1 day | 6 | 3 | 0 | 0 | 3 | 3/6 (50.0%, 95% CI 18.8 to 81.2%) | 3/6 (50.0%, 95% CI 18.8 to 81.2%) | 3/6 (50.0%, 95% CI 18.8 to 81.2%) |
-| 20 min | full span | 8 | 4 | 1 | 0 | 3 | 4/8 (50.0%, 95% CI 21.5 to 78.5%) | 5/8 (62.5%, 95% CI 30.6 to 86.3%) | 5/8 (62.5%, 95% CI 30.6 to 86.3%) |
-| 20 min | ±90 days | 6 | 5 | 1 | 0 | 0 | 5/6 (83.3%, 95% CI 43.6 to 97.0%) | 6/6 (100.0%, 95% CI 61.0 to 100.0%) | 6/6 (100.0%, 95% CI 61.0 to 100.0%) |
-| 20 min | ±1 day | 8 | 6 | 1 | 0 | 1 | 6/8 (75.0%, 95% CI 40.9 to 92.9%) | 7/8 (87.5%, 95% CI 52.9 to 97.8%) | 7/8 (87.5%, 95% CI 52.9 to 97.8%) |
-| 40 min | full span | 11 | 9 | 1 | 0 | 1 | 9/11 (81.8%, 95% CI 52.3 to 94.9%) | 10/11 (90.9%, 95% CI 62.3 to 98.4%) | 10/11 (90.9%, 95% CI 62.3 to 98.4%) |
-| 40 min | ±90 days | 14 | 10 | 1 | 0 | 3 | 10/14 (71.4%, 95% CI 45.4 to 88.3%) | 11/14 (78.6%, 95% CI 52.4 to 92.4%) | 11/14 (78.6%, 95% CI 52.4 to 92.4%) |
-| 40 min | ±1 day | 13 | 10 | 3 | 0 | 0 | 10/13 (76.9%, 95% CI 49.7 to 91.8%) | 13/13 (100.0%, 95% CI 77.2 to 100.0%) | 13/13 (100.0%, 95% CI 77.2 to 100.0%) |
-| 60 min | full span | 10 | 8 | 2 | 0 | 0 | 8/10 (80.0%, 95% CI 49.0 to 94.3%) | 10/10 (100.0%, 95% CI 72.2 to 100.0%) | 10/10 (100.0%, 95% CI 72.2 to 100.0%) |
-| 60 min | ±90 days | 12 | 8 | 2 | 0 | 2 | 8/12 (66.7%, 95% CI 39.1 to 86.2%) | 10/12 (83.3%, 95% CI 55.2 to 95.3%) | 10/12 (83.3%, 95% CI 55.2 to 95.3%) |
-| 60 min | ±1 day | 15 | 12 | 2 | 0 | 1 | 12/15 (80.0%, 95% CI 54.8 to 93.0%) | 14/15 (93.3%, 95% CI 70.2 to 98.8%) | 14/15 (93.3%, 95% CI 70.2 to 98.8%) |
+| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s |
+|---|---|---|---|---|---|---|
+| 10 min | full span | 3 | 0 | 0 | 0 | 3 |
+| 10 min | ±90 days | 1 | 0 | 0 | 0 | 1 |
+| 10 min | ±1 day | 6 | 3 | 0 | 0 | 3 |
+| 20 min | full span | 8 | 4 | 1 | 0 | 3 |
+| 20 min | ±90 days | 6 | 5 | 1 | 0 | 0 |
+| 20 min | ±1 day | 8 | 6 | 1 | 0 | 1 |
+| 40 min | full span | 11 | 9 | 1 | 0 | 1 |
+| 40 min | ±90 days | 14 | 10 | 1 | 0 | 3 |
+| 40 min | ±1 day | 13 | 10 | 3 | 0 | 0 |
+| 60 min | full span | 10 | 8 | 2 | 0 | 0 |
+| 60 min | ±90 days | 12 | 8 | 2 | 0 | 2 |
+| 60 min | ±1 day | 15 | 12 | 2 | 0 | 1 |
 
 ## Extractor naive (baseline): top-1 candidate of every excerpt, whatever the verdict
 

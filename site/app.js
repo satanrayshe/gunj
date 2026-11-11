@@ -49,20 +49,51 @@
   /* ------------------------------------------------------------ formatting */
   var MINUS = "−";
   function fmtInt(n) { return n === null || n === undefined ? "n/a" : Number(n).toLocaleString("en-US"); }
-  function fmtF(x, d) { return x === null || x === undefined ? "n/a" : fixSign(Number(x).toFixed(d)); }
+  /* x with d decimals, rounded as Python's format(x, ".df") rounds, which the README, the report and the
+     narration use: the exact binary value, ties to even. toFixed rounds an exact tie (6.25 at one decimal)
+     away from zero, so only exact ties are changed here. */
+  function pyFixed(x, d) {
+    x = Number(x);
+    var s = x.toFixed(d), a = Math.abs(x), y = a * Math.pow(2, d + 1);
+    if (isFinite(y) && Math.floor(y) === y && y % 2 === 1) {
+      var lo = Math.floor(a * Math.pow(10, d));
+      if (lo % 2 === 0) s = (x < 0 ? "-" : "") + (lo / Math.pow(10, d)).toFixed(d);
+    }
+    return s;
+  }
+  function fmtF(x, d) { return x === null || x === undefined ? "n/a" : fixSign(pyFixed(x, d)); }
   function fixSign(s) { return s.charAt(0) === "-" ? MINUS + s.slice(1) : s; }
   function sgn(n) {
     if (n === null || n === undefined) return "n/a";
     n = Math.round(n);
     return n > 0 ? "+" + fmtInt(n) : n < 0 ? MINUS + fmtInt(-n) : "0";
   }
-  function pct(x, d) { return x === null || x === undefined ? "n/a" : (100 * x).toFixed(d === undefined ? 1 : d) + "%"; }
+  function pct(x, d) { return x === null || x === undefined ? "n/a" : pyFixed(100 * x, d === undefined ? 1 : d) + "%"; }
+  /* the share of k in n as the README computes it (100 * k / n, then rounded) */
+  function pctKN(k, n) { return n ? pyFixed(100 * k / n, 1) + "%" : "n/a"; }
+  function rateShare(r) { return typeof r.k === "number" && typeof r.n === "number" && r.n ? pctKN(r.k, r.n) : pct(r.rate); }
+  function ciText(r) { return r && r.wilson95 ? "95% CI " + pyFixed(100 * r.wilson95[0], 1) + " to " + pct(r.wilson95[1]) : ""; }
+  /* "25/90 (27.8%, 95% CI 19.6 to 37.8%)", the form the README uses */
   function fmtRate(r) {
     if (!r || !r.n) return "n/a";
-    var s = r.k + "/" + r.n + " (" + pct(r.rate) + ")";
-    if (r.wilson95) s += ", 95% CI " + pct(r.wilson95[0]) + " to " + pct(r.wilson95[1]);
-    return s;
+    return r.k + "/" + r.n + " (" + rateShare(r) + (r.wilson95 ? ", " + ciText(r) : "") + ")";
   }
+  /* a rate for a table cell: count and share, then the interval on its own line */
+  function rateCell(r) {
+    if (!r || !r.n) return "n/a";
+    return [T("num", r.k + "/" + r.n), " ", T("num", "(" + rateShare(r) + ")"), r.wilson95 ? el("span", { class: "ci" }, ciText(r)) : null];
+  }
+  /* a length of time in words, the rule scripts/export_site_data.py and the README use */
+  function durText(s) {
+    s = Math.abs(s);
+    if (s < 120) return Math.round(s) + " s";
+    if (s < 7200) return Math.round(s / 60) + " minutes";
+    if (s < 172800) return (s / 3600).toFixed(1) + " hours";
+    return (s / 86400).toFixed(1) + " days";
+  }
+  /* "126 of 150" with only the numbers in the tabular face */
+  function nOf(a, b) { return [T("num", String(a)), " of ", T("num", String(b))]; }
+  function notComputed(file) { return el("span", { class: "muted" }, "not computed (", el("code", null, file), " not found)"); }
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   /* Times are IST wall-clock strings. They are parsed as UTC-naive numbers so that
      no browser time zone ever shifts them. */
@@ -83,13 +114,12 @@
   function fmtHMS(ms) { var d = new Date(ms); return p2(d.getUTCHours()) + ":" + p2(d.getUTCMinutes()) + ":" + p2(d.getUTCSeconds()); }
   function fmtHM(ms) { var d = new Date(ms); return p2(d.getUTCHours()) + ":" + p2(d.getUTCMinutes()); }
   function ist(s) { var ms = parseNaive(s); return ms === null ? "n/a" : fmtDT(ms) + " IST"; }
-  function gateText(ov) {
-    var ms = parseNaive(ov && ov.decision_time);
-    if (ms === null) return "the gate";
+  function dayTime(s) {
+    var ms = parseNaive(s);
+    if (ms === null) return "n/a";
     var d = new Date(ms);
-    return d.getUTCDate() + " " + MON[d.getUTCMonth()] + " " + p2(d.getUTCHours()) + ":" + p2(d.getUTCMinutes()) + " IST";
+    return d.getUTCDate() + " " + MON[d.getUTCMonth()] + " " + d.getUTCFullYear() + ", " + p2(d.getUTCHours()) + ":" + p2(d.getUTCMinutes()) + " IST";
   }
-  function pending(ov) { return el("span", { class: "pending" }, "[pending: gate " + gateText(ov) + "]"); }
   function splitName(s) { return { dev: "Dev", calibration: "Calibration", test: "Test", practice: "PRACTICE" }[s] || s; }
   function scopeName(s) { return { full: "full 32 months", "90d": "±90 days", "1d": "±1 day" }[s] || s; }
   function venue(v) { return v || "n/a"; }
@@ -416,10 +446,11 @@
     };
   }
 
-  /* Uniqueness curve (SYNTHETIC noise simulation). */
-  function drawUniq(host, u, scope, noise) {
+  /* Uniqueness curve (SYNTHETIC noise simulation). Tested noise levels in grey; the readings at the
+     noise measured on the Test streams that lock (M4, results/m4_measured.json) in amber. */
+  function drawUniq(host, u, scope, noise, meas) {
     var W = host.__w || host.clientWidth || 600, H = 270;
-    var m = { l: 44, r: 70, t: 12, b: 34 };
+    var m = { l: 44, r: W < 480 ? 58 : 70, t: 12, b: 34 };
     var iw = W - m.l - m.r, ih = H - m.t - m.b;
     var lengths = [5, 10, 20, 40, 60];
     var xpos = function (L) { return m.l + lengths.indexOf(L) / (lengths.length - 1) * iw; };
@@ -428,11 +459,10 @@
     var levels = [];
     rows.forEach(function (r) { if (levels.indexOf(r.sigma_mhz) < 0) levels.push(r.sigma_mhz); });
     levels.sort(function (a, b) { return a - b; });
-    var probe = u.probe_sigma_mhz ? u.probe_sigma_mhz.median : null;
     var hl = null;
-    if (probe !== null) levels.forEach(function (lv) { if (lv > 0 && (hl === null || Math.abs(lv - probe) < Math.abs(hl - probe))) hl = lv; });
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img",
-      "aria-label": "SYNTHETIC noise simulation: share of unique locks against excerpt length, scope " + scopeName(scope) });
+      "aria-label": "SYNTHETIC noise simulation: share of unique locks against excerpt length, scope " + scopeName(scope) +
+        (meas ? "; amber: the readings at the measured noise level" : "") });
     var ax = sv("g", { class: "ax" }), gr = sv("g", { class: "grid" });
     [0, 0.25, 0.5, 0.75, 1].forEach(function (v) {
       gr.appendChild(sv("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v) }));
@@ -469,6 +499,18 @@
       labY.forEach(function (v) { if (Math.abs(v - ly) < 11) ly = v + 11; });
       labY.push(ly);
       g.appendChild(sv("text", { x: m.l + iw + 8, y: ly + 4, text: lv === 0 ? "no noise" : lv + " mHz", style: isHl ? "fill: var(--trace)" : null }));
+      svg.appendChild(g);
+    });
+    // the readings at the measured noise level, interpolated by scripts/make_figures.py
+    (meas || []).forEach(function (mc) {
+      var pts = lengths.filter(function (L) { return mc.rates[String(L)] !== undefined; });
+      var g = sv("g", { class: "u-meas" });
+      g.appendChild(sv("path", { class: "u-line", stroke: "var(--trace)", "stroke-width": 2.2, "stroke-dasharray": mc.dash || null,
+        d: pathFrom(pts.map(function (L) { return [xpos(L), y(mc.rates[String(L)])]; })) }));
+      pts.forEach(function (L) {
+        g.appendChild(sv("circle", { class: "u-dot", fill: "var(--trace)", cx: xpos(L), cy: y(mc.rates[String(L)]), r: 3.2 },
+          sv("title", { text: mc.name + ", " + L + " min: " + pct(mc.rates[String(L)]) + " (interpolated)" })));
+      });
       svg.appendChild(g);
     });
     host.replaceChildren(svg);
@@ -571,22 +613,176 @@
     host.replaceChildren(svg);
   }
 
+  /* M2 signed error of the top candidate for one cell, from results/figures/figures.json. The axis is
+     the one of scripts/make_figures.py: linear inside the +-30 s hit band, one unit per decade outside. */
+  function errSeconds(f2, pos) {
+    var a = Math.abs(pos), h = f2.band_display_half, b = f2.band_half_width_s;
+    var s = a <= h ? a / h * b : b * Math.pow(10, a - h);
+    return pos < 0 ? -s : s;
+  }
+  function shortDur(s) {
+    var a = Math.abs(s), sign = s < 0 ? MINUS : "";
+    if (a < 90) return sign + Math.round(a) + " s";
+    if (a < 5400) return sign + Math.round(a / 60) + " min";
+    if (a < 129600) return sign + Math.round(a / 3600) + " h";
+    return sign + Math.round(a / 86400) + " d";
+  }
+  function drawSignedError(host, f2, key) {
+    var c = f2.cells[key];
+    var W = host.__w || host.clientWidth || 560, H = 212;
+    var narrow = W < 460;
+    var m = { l: 30, r: 8, t: 10, b: 42 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    var E = f2.bin_edges_display, nb = E.length - 1, band = f2.band_display_half;
+    var x = lin(E[0], E[nb], m.l, m.l + iw);
+    var ymax = Math.max.apply(null, c.bin_counts.concat([1]));
+    var step = ymax <= 10 ? 2 : ymax <= 30 ? 5 : 10;
+    var top = step * Math.ceil((ymax + 1) / step);
+    var y = lin(top, 0, m.t, m.t + ih);
+    var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img",
+      "aria-label": "Signed error of the top candidate, extractor " + f2.extractor + ", " + key.replace("/", " min, ") +
+        ": " + c.hits + " of " + c.n + " within 30 s of T*" });
+    var gr = sv("g", { class: "grid" }), ax = sv("g", { class: "ax" });
+    for (var v = 0; v <= top; v += step) {
+      gr.appendChild(sv("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v) }));
+      ax.appendChild(sv("text", { x: m.l - 6, y: y(v) + 4, "text-anchor": "end", text: String(v) }));
+    }
+    svg.appendChild(sv("rect", { class: "hitband", x: x(-band), y: m.t, width: x(band) - x(-band), height: ih }));
+    svg.appendChild(gr);
+    var bw = (x(E[1]) - x(E[0])) * 0.84;
+    c.bin_counts.forEach(function (n, i) {
+      if (!n) return;
+      var ctr = (E[i] + E[i + 1]) / 2, inBand = Math.abs(ctr) < band;
+      var a = errSeconds(f2, E[i]), b = errSeconds(f2, E[i + 1]);
+      svg.appendChild(sv("rect", { class: inBand ? "eb-hit" : "eb-miss", x: x(ctr) - bw / 2, y: y(n), width: bw, height: y(0) - y(n) },
+        sv("title", { text: n + (n === 1 ? " stream" : " streams") + ", e from " + shortDur(a) + " to " + shortDur(b) + (inBand ? " (hit)" : "") })));
+    });
+    f2.ticks.forEach(function (t) {
+      ax.appendChild(sv("line", { x1: x(t.pos), x2: x(t.pos), y1: m.t + ih, y2: m.t + ih + 5 }));
+      if (narrow && /min/.test(t.label)) return;
+      ax.appendChild(sv("text", { x: x(t.pos), y: m.t + ih + 17, "text-anchor": "middle", text: t.label }));
+    });
+    ax.appendChild(sv("line", { x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih }));
+    svg.appendChild(ax);
+    svg.appendChild(sv("text", { x: m.l + iw / 2, y: H - 3, "text-anchor": "middle", text: "e = top candidate start − T*" }));
+    host.replaceChildren(svg);
+  }
+
+  /* M3 reliability for the primary cell, from results/figures/figures.json: Test top-1 hit rate by the
+     pre-registered confidence bins, and every excerpt's confidence on the same axis. */
+  function confPos(cv, first) { return cv <= first ? cv / first : 1 + Math.log2(cv / first); }
+  function swarm(xs, d) {
+    var order = xs.map(function (v, i) { return i; }).sort(function (a, b) { return xs[a] - xs[b]; });
+    var placed = [], off = new Array(xs.length);
+    order.forEach(function (i) {
+      for (var k = 0; k < 40; k++) {
+        var cands = k === 0 ? [0] : [k * d * 0.9, -k * d * 0.9], ok = null;
+        for (var j = 0; j < cands.length && ok === null; j++) {
+          var yc = cands[j];
+          if (placed.every(function (p) { return (xs[i] - p[0]) * (xs[i] - p[0]) + (yc - p[1]) * (yc - p[1]) >= d * d - 1e-9; })) ok = yc;
+        }
+        if (ok !== null) { off[i] = ok; placed.push([xs[i], ok]); return; }
+      }
+      off[i] = 0;
+    });
+    return off;
+  }
+  function drawReliability(host, f3) {
+    var W = host.__w || host.clientWidth || 560;
+    var narrow = W < 460;
+    var rows = [
+      { label: narrow ? "Test hits" : "Test, within 30 s", vals: f3.test_hits, cls: "rel-hit" },
+      { label: narrow ? "Test misses" : "Test, over 30 s off", vals: f3.test_misses, cls: "rel-miss" },
+      { label: narrow ? "real neg." : "real negatives", vals: f3.real.confidence, cls: "rel-real" },
+      { label: narrow ? "SYNTH. neg." : "SYNTHETIC negatives", vals: f3.SYNTHETIC.confidence, cls: "rel-syn" }];
+    var first = f3.first_bin_edge;
+    var all = [];
+    rows.forEach(function (r) { all = all.concat(r.vals); });
+    var lastLo = f3.bins[f3.bins.length - 1].lo;
+    var xmax = Math.max(6, Math.ceil(confPos(Math.max.apply(null, all.concat([lastLo * 2])), first) - 1e-9));
+    var rowH = 20, topH = 120;
+    var m = { l: narrow ? 112 : 172, r: 10, t: 22, b: 38 };
+    var H = m.t + topH + 14 + rows.length * rowH + m.b;
+    var iw = W - m.l - m.r;
+    var x = lin(0, xmax, m.l, m.l + iw);
+    var y = lin(1, 0, m.t, m.t + topH);
+    var s0 = m.t + topH + 14;
+    var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img",
+      "aria-label": "Reliability of the confidence score: Test top-1 hit rate by confidence bin, " +
+        f3.bins.map(function (b) { return b.bin + " " + b.k + "/" + b.n; }).join(", ") +
+        "; real negatives at or above tau " + f3.real.n_at_or_above_tau + " of " + f3.real.n +
+        ", SYNTHETIC negatives " + f3.SYNTHETIC.n_at_or_above_tau + " of " + f3.SYNTHETIC.n });
+    var gr = sv("g", { class: "grid" }), ax = sv("g", { class: "ax" });
+    [0, 0.5, 1].forEach(function (v) {
+      gr.appendChild(sv("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v) }));
+      ax.appendChild(sv("text", { x: m.l - 6, y: y(v) + 4, "text-anchor": "end", text: Math.round(100 * v) + "%" }));
+    });
+    for (var t = 1; t < f3.bins.length; t++) gr.appendChild(sv("line", { x1: x(t), x2: x(t), y1: m.t, y2: s0 + rows.length * rowH }));
+    svg.appendChild(gr);
+    if (!narrow) svg.appendChild(sv("text", { x: 2, y: m.t + topH / 2 + 4, text: "hit rate" }));
+    f3.bins.forEach(function (b, i) {
+      var x0 = i, x1 = b.hi === null ? xmax : i + 1, xc = (x0 + x1) / 2;
+      if (!b.n) { svg.appendChild(sv("text", { x: x(xc), y: y(0) - 4, "text-anchor": "middle", text: "n = 0" })); return; }
+      var g = sv("g", null, sv("title", { text: "confidence " + b.bin + ": " + b.k + "/" + b.n + " within 30 s (" + pct(b.rate) + ", " + ciText(b) + ")" }));
+      g.appendChild(sv("line", { class: "rel-ci", x1: x(xc), x2: x(xc), y1: y(b.wilson95[0]), y2: y(b.wilson95[1]) }));
+      g.appendChild(sv("line", { class: "rel-rate", x1: x(x0 + 0.08), x2: x(x1 - 0.08), y1: y(b.rate), y2: y(b.rate) }));
+      g.appendChild(sv("circle", { class: "rel-dot", cx: x(xc), cy: y(b.rate), r: 3.4 }));
+      var up = b.wilson95[1] + 0.2 <= 1.0;
+      g.appendChild(sv("text", { x: x(xc), y: up ? y(b.wilson95[1]) - 5 : y(b.wilson95[0]) + 13, "text-anchor": "middle",
+        text: b.k + "/" + b.n, style: "fill: var(--text)" }));
+      svg.appendChild(g);
+    });
+    // the dot rows
+    var d = 6.2;
+    rows.forEach(function (r, k) {
+      var yc = s0 + k * rowH + rowH / 2;
+      if (k) svg.appendChild(sv("line", { class: "rel-sep", x1: m.l, x2: m.l + iw, y1: s0 + k * rowH, y2: s0 + k * rowH }));
+      svg.appendChild(sv("text", { x: m.l - 6, y: yc + 4, "text-anchor": "end", text: r.label + " (" + r.vals.length + ")" }));
+      var xs = r.vals.map(function (v) { return x(confPos(v, first)); });
+      var off = swarm(xs, d);
+      var mx = Math.max.apply(null, off.map(Math.abs).concat([0]));
+      var lim = rowH / 2 - 3;
+      var sc = mx > lim ? lim / mx : 1;
+      xs.forEach(function (px, i) {
+        svg.appendChild(sv("circle", { class: "rel-pt " + r.cls, cx: px, cy: yc + off[i] * sc, r: 2.7 },
+          sv("title", { text: r.label + ": confidence " + fmtF(r.vals[i], 4) })));
+      });
+    });
+    // tau
+    var xt = x(confPos(f3.tau, first));
+    svg.appendChild(sv("line", { class: "thr", x1: xt, x2: xt, y1: m.t - 4, y2: s0 + rows.length * rowH }));
+    svg.appendChild(sv("text", { x: xt, y: m.t - 8, "text-anchor": "middle", text: "tau " + fmtF(f3.tau, 4), style: "fill: var(--text)" }));
+    // confidence axis: linear below 0.025, one step per doubling above
+    var yb = s0 + rows.length * rowH;
+    ax.appendChild(sv("line", { x1: m.l, x2: m.l + iw, y1: yb, y2: yb }));
+    for (var j = 0; j <= xmax; j++) {
+      var val = j === 0 ? 0 : first * Math.pow(2, j - 1);
+      ax.appendChild(sv("line", { x1: x(j), x2: x(j), y1: yb, y2: yb + 5 }));
+      if (narrow && j % 2) continue;                       // every other label where space is short
+      ax.appendChild(sv("text", { x: x(j), y: yb + 17, "text-anchor": "middle", text: String(+val.toFixed(4)) }));
+    }
+    svg.appendChild(ax);
+    svg.appendChild(sv("text", { x: m.l + iw / 2, y: H - 3, "text-anchor": "middle", text: "confidence = atanh(r1) − atanh(r2)" }));
+    host.replaceChildren(svg);
+  }
+
   /* ============================================================ SHARED BLOCKS */
 
   function candTable(cands, opts) {
     opts = opts || {};
     var tb = el("tbody");
+    var rCls = opts.noErr ? "r num" : "r num hide-sm";        // on a phone the error column matters more than r
     cands.forEach(function (c, i) {
       tb.appendChild(el("tr", { class: i === 0 ? "is-top" : null },
         el("td", { class: "num" }, String(i + 1)),
         el("td", null, T("t", c.start_ist)),
-        el("td", { class: "r num" }, fmtF(c.r, 4)),
+        el("td", { class: rCls }, fmtF(c.r, 4)),
         opts.noErr ? null : el("td", { class: "r num" }, c.e_s === undefined || c.e_s === null ? "n/a" : sgn(c.e_s) + " s")));
     });
     return el("div", { class: "tbl-wrap" }, el("table", { class: "cands" },
       opts.caption ? el("caption", { class: "sr-only" }, opts.caption) : null,
       el("thead", null, el("tr", null, el("th", { scope: "col" }, "#"), el("th", { scope: "col" }, "start (IST)"),
-        el("th", { scope: "col", class: "r" }, "r"), opts.noErr ? null : el("th", { scope: "col", class: "r" }, "e vs T*"))), tb));
+        el("th", { scope: "col", class: rCls.replace(" num", "") }, "r"), opts.noErr ? null : el("th", { scope: "col", class: "r" }, "e vs T*"))), tb));
   }
 
   function srcLine(list) {
@@ -600,6 +796,8 @@
     var ov = state.overview;
     var root = el("div");
     root.appendChild(introBlock(ov));
+    var sum = summaryBlock(ov);
+    if (sum) root.appendChild(sum);
     if (ov.hero) root.appendChild(heroBlock(ov));
     root.appendChild(stripBlock(ov));
     root.appendChild(resultsBlock(ov));
@@ -618,7 +816,57 @@
         "Gunj extracts that wander from audio as a one-second trace and searches a public one-second log of India's grid frequency for the moment it fits."),
       el("p", { class: "muted small" }, "Reference: ", T("t", r.t0_ist), " to ", T("t", r.t_end_ist), " IST, ",
         T("num", fmtInt(r.seconds)), " seconds, ", T("num", fmtF(r.valid_pct, 2) + "%"), " valid. ",
-        "Evaluation plan fixed in advance in ", el("code", null, "PROTOCOL.md"), "."));
+        "Evaluation plan fixed in advance in ", repoLink("blob/main/PROTOCOL.md", el("code", null, "PROTOCOL.md")), ". ",
+        "Code and README: ", repoLink("", "the GitHub repository"), ". Method and results in paper form: ",
+        repoLink("blob/main/docs/gunj-report.pdf", "the report (PDF)"), "."));
+  }
+
+  /* a link into the public repository, or plain text if the export has no repository URL */
+  function repoLink(path, label) {
+    var base = (state.overview || {}).repo_url;
+    if (!base) return label;
+    return el("a", { href: base.replace(/\/$/, "") + (path ? "/" + path : "") }, label);
+  }
+
+  /* The blind Test result on the first screen, before the Calibration example. Every number is read from
+     data/overview.json (results/evaluation.json, results/error_breakdown.json, results/gate_frozen.json). */
+  function summaryBlock(ov) {
+    var t = ov.test, res = ov.results || {};
+    if (!t || !t.m2 || (t.mode && t.mode !== "real")) return null;
+    var c2 = ((t.m2.v2 || {})["60"] || {}).full;
+    if (!c2 || !c2.top1_hit) return null;
+    var g = t.gate || {};
+    var bd = res.breakdown;
+    var conf = bd ? bd.cells[String(bd.primary.length_min)][bd.primary.scope].confident : null;
+    var fmc = (((t.m3 || {}).v2 || {})["60"] || {}).full;
+    var real = fmc ? fmc.real.false_match : null;
+    function item(label, big, text) {
+      return el("div", { class: "sum-item" }, el("div", { class: "label" }, label), el("div", { class: "sum-v" }, big), el("p", { class: "small" }, text));
+    }
+    var items = [
+      item("Blind, pre-registered test", T("num", t.n_with_trace + " of " + t.n_selected),
+        ["selected Indian livestreams were harvested before a YouTube bot check stopped downloads. The plan was fixed before any Test audio existed."]),
+      item("Primary endpoint", T("num", c2.top1_hit.k + "/" + c2.top1_hit.n),
+        ["60-min excerpts whose top candidate starts within 30 s of the expected time (", rateShare(c2.top1_hit), ", ", ciText(c2.top1_hit), ")."])];
+    if (conf) {
+      var wrong = conf.n - conf.within_30 - conf.no_candidate;
+      items.push(item("Confident verdicts", T("num", String(conf.n)),
+        [T("num", String(conf.within_30)), " within 30 s and ", T("num", String(wrong)), " more than 30 s off, which count as confident wrong; the other ",
+          T("num", String(c2.n - conf.n)), " excerpts get no verdict."]));
+    }
+    if (real && real.n) {
+      items.push(item("False matches", T("num", real.k + "/" + real.n),
+        ["real foreign 50 Hz recordings reached the threshold (", rateShare(real), "). The pre-registered target of at most 1% is ",
+          real.k / real.n > 0.01 ? "not met." : "not contradicted, though so few negatives cannot show it."]));
+    }
+    items.push(item("Gate (PROTOCOL section 15)", T("num", g.gate_met ? "met" : "not met"),
+      g.gate_met ? ["Every condition held."] : [g.condition_1_2_met ? "The lock conditions held; " : "The lock conditions failed; ",
+        g.condition_3_met ? "harvest health held." : "harvest health failed on the bot check. Work went on by the author's decision (PROTOCOL section 19)."]));
+    return el("section", { class: "wrap summary", "aria-labelledby": "sum-h" },
+      el("h2", { id: "sum-h", class: "sum-h" }, "What the blind test found"),
+      el("div", { class: "sum-grid" }, items),
+      el("p", { class: "small muted" }, "Extractor v2, the primary extractor, searched over the whole log. ",
+        el("a", { href: "#res-h" }, "Every result, with its source file"), ", is further down; the example that follows is a Calibration stream, not a Test result."));
   }
 
   function heroBlock(ov) {
@@ -669,9 +917,9 @@
       el("div", { class: "lc-sec" }, state_,
         el("div", { class: "label", style: "margin-top:10px" }, "Implied recording start (reference labels)"), dateEl, timeEl, pub),
       el("div", { class: "lc-sec" }, el("div", { class: "label" }, "Top 5 candidates"),
-        candTable(srch.candidates, { caption: "Top 5 candidates", noErr: true })),
+        el("div", { class: "lc-hide" }, candTable(srch.candidates, { caption: "Top 5 candidates", noErr: true }))),
       el("div", { class: "lc-sec" },
-        el("dl", { class: "kv" },
+        el("dl", { class: "kv lc-hide" },
           el("dt", null, "confidence"), el("dd", null, T("num", fmtF(srch.confidence, 3)), " ",
             el("span", { class: "muted small" }, "atanh(r1) − atanh(r2)")),
           el("dt", null, "tau"), el("dd", null, T("num", fmtF(srch.tau, 4)), " ", el("span", { class: "muted small" }, (h.length_min || 60) + " min, " + scopeName(h.shown_scope))),
@@ -679,7 +927,7 @@
           el("dt", null, "hum flag"), el("dd", null, h.hum.trace_flag ? "set" : "not set", " ", el("span", { class: "muted small" },
             humSummary(h.hum.trace_ratios))),
           el("dt", null, "verdict"), el("dd", null, el("span", { class: locked ? "v-match" : "v-nv" }, srch.verdict))),
-        el("p", { class: "calc" }, "Searched ", T("num", fmtInt(srch.positions_searched)), " admissible start positions in the " + scopeName(h.shown_scope) + " scope. ",
+        el("p", { class: "calc lc-hide" }, "Searched ", T("num", fmtInt(srch.positions_searched)), " admissible start positions in the " + scopeName(h.shown_scope) + " scope. ",
           h.full_by_exporter && h.searches[h.base_scope] ? ["The pipeline's own " + scopeName(h.base_scope) + " search of this excerpt gives the same lock with confidence ",
             T("num", fmtF(h.searches[h.base_scope].confidence, 3)), " (tau ", T("num", fmtF(h.searches[h.base_scope].tau, 4)), ")."] : ""),
         h.full_by_exporter ? el("p", { class: "calc" }, "The full-scope search for this display was run by the site exporter with the frozen matcher; it is not part of any pre-registered metric.") : null),
@@ -697,6 +945,7 @@
       dateEl.textContent = fmtDay(topMs);
       timeEl.textContent = fmtHMS(topMs) + " IST";
       card.classList.toggle("locked", locked);
+      card.classList.remove("searching");          // the candidates and the confidence show only once the search ends
       state_.lastChild.textContent = locked ? "Lock: match" : "No verdict";
       pub.classList.add("on");
     }
@@ -707,6 +956,7 @@
       timeEl.textContent = "--:--:--";
       dateEl.textContent = " ";
       card.classList.remove("locked");
+      card.classList.add("searching");
       state_.lastChild.textContent = "Searching";
       pub.classList.remove("on");
     }
@@ -791,31 +1041,37 @@
 
   function resultsBlock(ov) {
     var t = ov.test, cal = ov.calibration, lat = ov.latency, tau = ov.tau, dev = ov.dev;
+    var res = ov.results || {};
     var sec = el("section", { class: "wrap section", "aria-labelledby": "res-h" });
-    sec.appendChild(el("div", { class: "section-head" }, el("h2", { id: "res-h" }, "Results")));
+    sec.appendChild(el("div", { class: "section-head" }, el("h2", { id: "res-h" }, "Results"),
+      t && t.gate_frozen ? el("span", { class: "label" }, "Test split, gate frozen " + dayTime(t.gate_frozen_ist)) : null));
 
     // Test
-    var testPanel = el("div", { class: "panel" });
+    var testPanel = el("div", { class: "panel", id: "test-panel" });
     var nTest = (ov.splits.test || {}).n;
-    testPanel.appendChild(el("div", { class: "panel-h" }, el("h3", null, "Test split"), el("span", { class: "badge" }, fmtInt(nTest) + " streams"),
-      t && t.m2 ? testStatusBadge(ov, t) : pending(ov)));
+    testPanel.appendChild(el("div", { class: "panel-h" }, el("h3", null, "Test split, scored blind"),
+      el("span", { class: "badge" }, t && t.n_with_trace !== undefined ? t.n_with_trace + " of " + fmtInt(nTest) + " streams with audio" : fmtInt(nTest) + " streams"),
+      t && t.m2 ? testStatusBadge(t) : null));
     var tb = el("div", { class: "panel-b" });
-    tb.appendChild(el("p", { class: "small" }, "Indian livestreams drawn from metadata before any audio was downloaded, searched blind after tau and L were committed. ",
-      "Primary endpoint: top-1 hit rate (|e| ≤ 30 s against T*) of extractor v2 for 60-minute excerpts in the full scope."));
-    if (t && t.m2) tb.appendChild(testTable(ov, t));
-    else {
-      tb.appendChild(el("dl", { class: "kv" },
-        el("dt", null, "primary endpoint"), el("dd", null, pending(ov)),
-        el("dt", null, "confident hits and wrong locks"), el("dd", null, pending(ov)),
-        el("dt", null, "false matches (held-out negatives)"), el("dd", null, pending(ov)),
-        el("dt", null, "gate"), el("dd", null, pending(ov))));
-      tb.appendChild(el("p", { class: "figure-note" }, "The gate (PROTOCOL section 15): at least 5 independent Test streams lock blind within 30 s of T* with confidence at or above tau, and the harvest met no block. Test numbers appear here when ",
-        el("code", null, "results/evaluation.json"), " exists."));
+    if (t && t.m2) {
+      tb.appendChild(el("p", { class: "small lead-note" }, "Indian livestreams drawn from metadata before any audio was downloaded, and searched blind after tau and L were committed (PROTOCOL section 14). ",
+        (t.blocked_rows || []).length ? ["YouTube's bot check (stream ", el("code", null, t.blocked_rows[0]), ") stopped the harvest, and every stream harvested by then is counted. "] : "",
+        "A hit is a top candidate within 30 s of the expected start T*. A verdict “match” needs the hum flag and a confidence at or above tau."));
+      tb.appendChild(testTable(ov, t, res));
+      tb.appendChild(breakdownBlock(res.breakdown));
+      tb.appendChild(baselineNote(ov, t, res));
+    } else {
+      tb.appendChild(el("p", { class: "small" }, "Test results: ", notComputed("results/evaluation.json")));
     }
     testPanel.appendChild(tb);
     sec.appendChild(testPanel);
 
-    // Known now
+    sec.appendChild(el("div", { class: "cols" },
+      el("div", { class: "col" }, m2Panel(res.figures), m5Panel(res.m5)),
+      el("div", { class: "col" }, m3Panel(ov, t, res))));
+    sec.appendChild(el("h3", { class: "subhead" }, "Measured before any Test search"));
+
+    // Calibration, latency and tau, all fixed before any Test search
     var calRows = ["v2", "v1", "naive"].map(function (e) {
       var b = cal.by_extractor[e];
       return el("tr", null, el("td", null, e === "v2" ? "v2 (primary)" : e === "naive" ? "naive 50 Hz" : e),
@@ -826,7 +1082,7 @@
         el("td", { class: "r num hide-sm" }, fmtF(b.tau, 4)));
     });
     var calPanel = el("div", { class: "panel" },
-      el("div", { class: "panel-h" }, el("h3", null, "Calibration split, known now"), el("span", { class: "badge" }, "in-sample for L")),
+      el("div", { class: "panel-h" }, el("h3", null, "Calibration split"), el("span", { class: "badge" }, "in-sample for L")),
       el("div", { class: "panel-b" },
         el("p", { class: "small" }, T("num", String(cal.n_harvested)), " of ", T("num", String(cal.n_selected)), " streams harvested; ",
           T("num", String(cal.m1_hum)), " have a hum flag on all their audio (v1). Each 60-minute excerpt searched ±1 day around its public start. Same streams, three extractors:"),
@@ -865,63 +1121,271 @@
           T("num", String(nn.synthetic_done)), " SYNTHETIC negatives. Rule: " + tau.rule),
         srcLine(tau.sources)));
 
-    var rg = ov.random_guess || {};
-    var rgP = el("div", { class: "panel" },
-      el("div", { class: "panel-h" }, el("h3", null, "Baselines")),
+    var devPanel = el("div", { class: "panel" },
+      el("div", { class: "panel-h" }, el("h3", null, "Extractor v2, tuned on Dev"), el("span", { class: "badge" }, "in-sample")),
       el("div", { class: "panel-b" },
-        el("p", { class: "small" }, "Random guess within 30 s of the truth, 60-minute excerpt: full scope 1 in ", T("num", fmtInt(Math.round((rg.full_60min || {}).one_in))),
-          ", ±90 days 1 in ", T("num", fmtInt(Math.round((rg["90d_60min"] || {}).one_in))), ", ±1 day 1 in ", T("num", fmtInt(Math.round((rg["1d_60min"] || {}).one_in))),
-          " (", el("code", null, "results/splits_summary.json"), ")."),
-        el("p", { class: "small" }, "Extractor v2 against v1 and a naive single-bin 50 Hz extractor on the 5 Dev streams (tuning data, in-sample): objective J = ",
+        el("p", { class: "small" }, "Extractor v2 against v1 and a naive single-bin 50 Hz extractor on the 5 Dev streams (tuning data, never pooled with Test): objective J = ",
           T("num", fmtF(dev.J_v2, 3)), " against ", T("num", fmtF(dev.J_v1, 3)), " and ", T("num", fmtF(dev.J_naive, 3)), "; the top candidate fell within ",
           T("num", dev.true_region_s + " s"), " of the expected start in ", T("num", dev.cells_top_in_true_v2 + ", " + dev.cells_top_in_true_v1 + " and " + dev.cells_top_in_true_naive),
           " of ", T("num", String(dev.n_cells)), " stream × length cells."),
-        el("p", { class: "small" }, "libhum on the same inputs (PROTOCOL section 12): ", el("span", { class: "pending" }, "[pending: not run yet]")),
         srcLine(dev.sources)));
 
-    sec.appendChild(el("div", { class: "two", style: "margin-top:16px" }, calPanel, latPanel));
-    sec.appendChild(el("div", { class: "two", style: "margin-top:16px" }, tauPanel, rgP));
+    sec.appendChild(el("div", { class: "two" }, calPanel, latPanel));
+    sec.appendChild(el("div", { class: "two", style: "margin-top:16px" }, tauPanel, devPanel));
     return sec;
   }
 
-  function testStatusBadge(ov, t) {
+  function testStatusBadge(t) {
     if (t.mode && t.mode !== "real") return el("span", { class: "badge badge-syn" }, "PRACTICE run, not Test");
-    if (t.gate_frozen) return el("span", { class: "badge" }, "gate frozen " + (t.gate_frozen_ist || "") + ": " + (t.gate_md_verdict || ""));
-    return el("span", { class: "pending" }, "INTERIM, written " + (t.written_ist || "") + "; gate " + gateText(ov));
+    if (!t.gate_frozen) return null;
+    var met = t.gate_frozen_met;
+    return el("span", { class: "badge" }, "gate " + (met === true ? "met" : met === false ? "not met" : (t.gate_md_verdict || "").toLowerCase()));
   }
 
-  function testTable(ov, t) {
+  function extName(e) { return e === "v2" ? "v2 (primary)" : e === "naive" ? "naive 50 Hz" : e; }
+
+  function testTable(ov, t, res) {
     var rows = [];
     ["v2", "v1", "naive"].forEach(function (e) {
       var c = ((t.m2[e] || {})["60"] || {}).full;
       if (!c) return;
-      rows.push(el("tr", null, el("td", null, e === "v2" ? "v2 (primary)" : e),
-        el("td", { class: "num" }, fmtRate(c.top1_hit)), el("td", { class: "num" }, fmtRate(c.confident_hit)),
-        el("td", { class: "num" }, fmtRate(c.confident_wrong))));
+      rows.push(el("tr", { class: e === "v2" ? "is-top" : null }, el("th", { scope: "row" }, extName(e)),
+        el("td", { class: "rate" }, rateCell(c.top1_hit)), el("td", { class: "rate" }, rateCell(c.confident_hit)),
+        el("td", { class: "rate" }, rateCell(c.confident_wrong))));
     });
     var g = t.gate || {}, gv = (g.by_extractor || {}).v2 || {};
-    var m3 = (((t.m3 || {}).v2 || {})["60"] || {}).full;
-    return el("div", null,
+    var c2 = ((t.m2.v2 || {})["60"] || {}).full || {};
+    var cnt = res.counts || {};
+    var gateDd = [T("num", (g.gate_met ? "met" : "not met")), t.gate_frozen ? [" (frozen ", T("t", dayTime(t.gate_frozen_ist)), "). "] : ". ",
+      "Conditions 1 and 2 ", g.condition_1_2_met ? "met" : "not met", "; condition 3, harvest health, ", g.condition_3_met ? "met" : "not met",
+      ". PROTOCOL section 19 gives the decision to stay with Gunj."];
+    return el("div", { class: "res-grid" },
+      el("div", null,
+        el("div", { class: "tbl-wrap" }, el("table", { class: "res-tbl" },
+          el("caption", null, "Primary cell: 60-min excerpts, search over the full span. ", T("num", "n = " + (c2.n || "n/a")), " streams."),
+          el("thead", null, el("tr", null, el("th", { scope: "col" }, "extractor"), el("th", { scope: "col" }, "top-1 within 30 s"),
+            el("th", { scope: "col" }, "confident hit"), el("th", { scope: "col" }, "confident wrong"))),
+          el("tbody", null, rows))),
+        el("p", { class: "figure-note" }, "Top-1 within 30 s ignores tau; it is the primary endpoint for v2 (PROTOCOL section 13). Confident wrong: a verdict “match” more than 30 s from T*. ",
+          (t.latency_line || "").replace(/`/g, ""))),
+      el("dl", { class: "kv" },
+        el("dt", null, "streams processed"), el("dd", null, nOf(fmtInt(g.N_processed), fmtInt(t.n_selected)), " selected Test streams have audio"),
+        el("dt", null, "hum present (M1)"), el("dd", null, cnt.m1_hum_present ? fmtRate(cnt.m1_hum_present) : "n/a"),
+        el("dt", null, "primary endpoint, hum present"), el("dd", null, fmtRate(c2.top1_hit_hum_present)),
+        el("dt", null, "primary endpoint, D = 0 (S1)"), el("dd", null, fmtRate(c2.top1_hit_D0)),
+        el("dt", null, "label-stable streams (S2)"), el("dd", null, cnt.s2_label_stable ? fmtRate(cnt.s2_label_stable) : "n/a"),
+        el("dt", null, "verified channels (S3)"), el("dd", null, cnt.s3_verified_channels ? fmtRate(cnt.s3_verified_channels) : "n/a"),
+        el("dt", null, "streams that lock (gate)"), el("dd", null, nOf(fmtInt(gv.n_streams_with_lock), fmtInt(g.N_processed)), ", ",
+          T("num", fmtInt(gv.n_streams_with_lock_D0)), " with D = 0"),
+        el("dt", null, "gate (section 15)"), el("dd", null, gateDd)),
+      el("div", { class: "src-row" }, srcLine((t.sources || []).concat(cnt.source ? [cnt.source] : []))));
+  }
+
+  /* Confident verdicts and all top candidates by distance from T* (results/error_breakdown.json). */
+  var CLASSES = [["within_30", "within 30 s", "sg-hit"], ["from_30_to_120", "30 s to 2 min", "sg-a1"],
+    ["from_120_to_600", "2 to 10 min", "sg-a2"], ["beyond_600", "over 10 min", "sg-a3"], ["no_candidate", "no candidate", "sg-none"]];
+  function stackBar(split, label, cls) {
+    var bar = el("div", { class: "stack " + (cls || ""), role: "img",
+      "aria-label": label + ": " + CLASSES.filter(function (c) { return split[c[0]]; }).map(function (c) { return split[c[0]] + " " + c[1]; }).join(", ") });
+    CLASSES.forEach(function (c) {
+      var n = split[c[0]];
+      if (!n) return;
+      bar.appendChild(el("span", { class: "sg " + c[2], style: "flex-grow:" + n, title: n + " " + c[1] }, el("span", { class: "sg-n" }, String(n))));
+    });
+    return bar;
+  }
+  function stackKey(split, words) {
+    return el("ul", { class: "stack-key" }, CLASSES.filter(function (c) { return split[c[0]]; }).map(function (c) {
+      return el("li", { class: "k-" + c[0] }, el("i", { class: "sw " + c[2], "aria-hidden": "true" }), T("num", String(split[c[0]])), " " + (words[c[0]] || c[1]));
+    }));
+  }
+  function breakdownBlock(bd) {
+    if (!bd) return el("p", { class: "small" }, "Confident verdicts by distance from T*: ", notComputed("results/error_breakdown.json"));
+    var p = bd.primary, cell = bd.cells[String(p.length_min)][p.scope];
+    var c = cell.confident, a = cell.top1;
+    var far = p.beyond_600 || [];
+    var wrong = c.n - c.within_30 - c.no_candidate;
+    var words = { from_30_to_120: "at 30 s to 2 min", from_120_to_600: "at 2 to 10 min", beyond_600: "over 10 min off" };
+    return el("div", { class: "breakdown", id: "breakdown" },
+      el("div", { class: "bd-row", id: "bd-confident" },
+        el("div", { class: "bd-h" }, el("span", { class: "label" }, "Confident verdicts"),
+          el("span", { class: "small" }, nOf(c.n, a.n), " excerpts have a verdict “match”; ", T("num", String(a.n - c.n)), " have none")),
+        stackBar(c, "Confident verdicts by distance from T*"),
+        stackKey(c, words)),
+      el("p", { class: "figure-note" }, "Only “within 30 s” is a hit, so ", T("num", String(wrong)), " of the ", T("num", String(c.n)), " confident verdicts count as confident wrong. ",
+        far.length ? ["The ", T("num", String(far.length)), " over 10 min are off by ", far.map(function (f, i) { return [i ? " and " : "", T("num", f.words)]; }),
+          " (", far.map(function (f, i) { return [i ? ", " : "", el("a", { href: "#/clip/test/" + encodeURIComponent(f.video_id) }, el("code", null, f.video_id))]; }), "). "] : "",
+        "The 30 s, 2 min and 10 min classes are the pre-registered 30 s, 120 s and 600 s hit columns (PROTOCOL section 9)."),
+      el("div", { class: "bd-row" },
+        el("div", { class: "bd-h" }, el("span", { class: "label" }, "All top candidates"),
+          el("span", { class: "small" }, "the same ", T("num", String(a.n)), " excerpts, whatever the verdict")),
+        stackBar(a, "All top candidates by distance from T*", "stack-thin"),
+        stackKey(a, words)),
+      srcLine(bd.sources));
+  }
+
+  function m2Panel(fig) {
+    var host = el("div");
+    var st = { m: "60", s: "full" };
+    var note = el("p", { class: "small", "aria-live": "polite" });
+    var body = el("div", { class: "panel-b" });
+    var panel = el("div", { class: "panel", id: "m2-panel" },
+      el("div", { class: "panel-h" }, el("h3", null, "Signed error of the top candidate (M2)"), el("span", { class: "label", style: "margin-left:auto" }, "v2")), body);
+    if (!fig) { body.appendChild(el("p", { class: "small" }, notComputed("results/figures/figures.json"))); return panel; }
+    var f2 = fig.m2;
+    function redraw() {
+      var key = st.m + "/" + st.s, c = f2.cells[key];
+      drawSignedError(host, f2, key);
+      fill(note, st.m + "-min excerpts, scope " + scopeName(st.s) + ": ", nOf(c.hits, c.n), " top candidates within 30 s of T* (green)",
+        c.no_candidate ? ["; ", T("num", String(c.no_candidate)), " excerpt", c.no_candidate > 1 ? "s have" : " has", " no candidate because the search could not run"] : "", ".");
+    }
+    function seg(name, key, opts) {
+      var g = el("div", { class: "seg", role: "group", "aria-label": name });
+      opts.forEach(function (o) {
+        var b = el("button", { type: "button", "aria-pressed": String(st[key] === o[0]) }, o[1]);
+        b.addEventListener("click", function () {
+          st[key] = o[0];
+          Array.prototype.forEach.call(g.children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+          redraw();
+        });
+        g.appendChild(b);
+      });
+      return g;
+    }
+    body.appendChild(el("div", { class: "controls" }, el("span", { class: "label" }, "excerpt"),
+      seg("Excerpt length", "m", [["10", "10"], ["20", "20"], ["40", "40"], ["60", "60 min"]]),
+      el("span", { class: "label" }, "scope"), seg("Search scope", "s", [["full", "full"], ["90d", "±90 d"], ["1d", "±1 d"]])));
+    body.appendChild(host);
+    body.appendChild(note);
+    body.appendChild(el("p", { class: "figure-note" }, "Every Test excerpt's top candidate, by its error e. The axis is linear inside ±30 s (shaded) and logarithmic outside, as in ",
+      el("code", null, fig.png.m2), "."));
+    body.appendChild(srcLine(fig.sources));
+    chart(host, function () { redraw(); });
+    return panel;
+  }
+
+  function m3Panel(ov, t, res) {
+    var body = el("div", { class: "panel-b" });
+    var panel = el("div", { class: "panel", id: "m3-panel" },
+      el("div", { class: "panel-h" }, el("h3", null, "False matches (M3)"), el("span", { class: "badge" }, "held-out negatives")), body);
+    var cell = t && t.m3 && ((t.m3.v2 || {})["60"] || {}).full;
+    if (!cell) { body.appendChild(el("p", { class: "small" }, notComputed("results/evaluation.json"))); return panel; }
+    var mc = t.m3_counts || {}, rh = res.report_half_negatives || {};
+    var tauP = ((t.m2.v2 || {})["60"] || {}).full.tau;
+    var same = ["real", "SYNTHETIC"].every(function (g) { return cell[g].false_match.k === cell[g].false_match_with_hum_flag.k; });
+    var fmRow = function (g, label, id) {
+      return el("tr", { id: id }, el("th", { scope: "row" }, label), el("td", { class: "rate" }, rateCell(cell[g].false_match)));
+    };
+    body.appendChild(el("p", { class: "small" }, "Foreign 50 Hz recordings and SYNTHETIC negatives that tau was not set on, searched like the Test streams. A false match is a negative whose confidence reaches tau of its cell. The pre-registered target is at most 1% (PROTOCOL section 11)."));
+    body.appendChild(el("div", { class: "tbl-wrap" }, el("table", { class: "res-tbl fm-tbl" },
+      el("caption", null, "v2, 60 min, full span, tau ", T("num", fmtF(tauP, 4))),
+      el("thead", null, el("tr", null, el("th", { scope: "col" }, "report-half negatives"), el("th", { scope: "col" }, "at or above tau"))),
+      el("tbody", null, fmRow("real", "real foreign 50 Hz streams", "fm-real"), fmRow("SYNTHETIC", "SYNTHETIC noise and hum", "fm-syn"),
+        fmRow("together", "real and SYNTHETIC together", "fm-all")))));
+    var tgt = cell.real.false_match;
+    body.appendChild(el("p", { class: "small", id: "fm-target" }, "Target of at most 1%: ", T("num", tgt.k === 0 ? "no false match in this cell" : "not met"),
+      tgt.k === 0 ? ". With this few negatives the interval cannot show a rate under 1%. "
+        : [". ", nOf(tgt.k, tgt.n), " real negatives" + (tgt.k === 1 ? " reaches" : " reach") + " tau. "],
+      "Searched: ", nOf(mc.real === undefined ? "n/a" : mc.real, rh.real_selected === undefined ? "n/a" : rh.real_selected), " real and ",
+      nOf(mc.SYNTHETIC === undefined ? "n/a" : mc.SYNTHETIC, rh.SYNTHETIC_selected === undefined ? "n/a" : rh.SYNTHETIC_selected),
+      " SYNTHETIC report-half negatives; a stream counts in a cell only if it is long enough. ",
+      same ? "With the hum-flag condition added the counts are the same." : ""));
+    var m1n = res.m1_negatives;
+    if (m1n && m1n.all && m1n.all.n) {
+      body.appendChild(el("p", { class: "small" }, "M1 hum flag on the real negatives (description only): ", fmtRate(m1n.all), " of the harvested streams, ",
+        T("num", m1n.threshold.k + "/" + m1n.threshold.n), " in the threshold half and ", T("num", m1n.report.k + "/" + m1n.report.n),
+        " in the report half (", el("code", null, m1n.source), ")."));
+    }
+    // every v2 cell
+    var trs = [];
+    ["10", "20", "40", "60"].forEach(function (m) {
+      ["full", "90d", "1d"].forEach(function (s) {
+        var c = ((t.m3.v2 || {})[m] || {})[s];
+        if (!c) return;
+        var mt = (((t.m2.v2 || {})[m] || {})[s] || {}).tau;
+        trs.push(el("tr", null, el("td", { class: "num" }, m + " min"), el("td", null, scopeName(s)), el("td", { class: "r num" }, fmtF(mt, 4)),
+          ["real", "SYNTHETIC", "together"].map(function (g) {
+            var r = c[g].false_match;
+            return el("td", { class: "r num", title: fmtRate(r) }, r.k + "/" + r.n);
+          })));
+      });
+    });
+    body.appendChild(el("details", null, el("summary", null, "Every cell of v2"),
       el("div", { class: "tbl-wrap" }, el("table", null,
-        el("thead", null, el("tr", null, el("th", { scope: "col" }, "60 min, full scope"), el("th", { scope: "col" }, "top-1 hit"),
-          el("th", { scope: "col" }, "confident hit"), el("th", { scope: "col" }, "confident wrong"))),
-        el("tbody", null, rows))),
-      el("dl", { class: "kv", style: "margin-top:10px" },
-        el("dt", null, "streams processed"), el("dd", null, T("num", fmtInt(g.N_processed))),
-        el("dt", null, "streams that lock (gate count)"), el("dd", null, T("num", fmtInt(gv.n_streams_with_lock)), " (with D = 0: ", T("num", fmtInt(gv.n_streams_with_lock_D0)), ")"),
-        el("dt", null, "gate"), el("dd", null, t.gate_frozen ? [t.gate_md_verdict || (g.gate_met ? "met" : "not met"), " (frozen ", T("t", t.gate_frozen_ist || ""), ")"]
-          : ["interim reading: ", t.gate_md_verdict || (g.gate_met ? "met" : "not met"), ". Decided at ", gateText(ov), " from the streams harvested by then; this is not the gate result."]),
-        el("dt", null, "false matches, real negatives"), el("dd", null, m3 ? fmtRate(m3.real.false_match) : "n/a"),
-        el("dt", null, "false matches, SYNTHETIC negatives"), el("dd", null, m3 ? fmtRate(m3.SYNTHETIC.false_match) : "n/a")),
-      el("p", { class: "figure-note" }, (t.latency_line || "").replace(/`/g, "")),
-      srcLine(t.sources));
+        el("thead", null, el("tr", null, el("th", { scope: "col" }, "excerpt"), el("th", { scope: "col" }, "scope"), el("th", { scope: "col", class: "r" }, "tau"),
+          el("th", { scope: "col", class: "r" }, "real"), el("th", { scope: "col", class: "r" }, "SYNTHETIC"), el("th", { scope: "col", class: "r" }, "together"))),
+        el("tbody", null, trs))),
+      el("p", { class: "figure-note" }, "False matches / negatives searched in the cell. Hover a count for its Wilson 95% interval.")));
+    var fig = res.figures;
+    if (fig) {
+      var host = el("div", { class: "rel-host" });
+      body.appendChild(el("div", { class: "label", style: "margin-top:14px" }, "Reliability of the confidence score"));
+      body.appendChild(host);
+      body.appendChild(el("p", { class: "figure-note" }, "Top: Test top-1 hit rate in each pre-registered confidence bin (v2, 60 min, full span), with hits / excerpts and the Wilson 95% interval. ",
+        "Below: every excerpt's confidence on the same axis: Test hits (green), Test misses (amber), real negatives (filled grey), SYNTHETIC negatives (open grey). The axis is linear below 0.025 and doubles at each step above, as in ",
+        el("code", null, fig.png.m3), ".", fig.m3.n_without_confidence ? [" ", T("num", String(fig.m3.n_without_confidence)), " of the ", T("num", String(fig.m3.n_excerpts)), " Test excerpts has no confidence because its search could not run."] : ""));
+      chart(host, function () { drawReliability(host, fig.m3); });
+    }
+    body.appendChild(srcLine(["results/evaluation.json"].concat(fig ? fig.sources.slice(0, 1) : [])));
+    return panel;
+  }
+
+  function m5Panel(m5) {
+    var body = el("div", { class: "panel-b" });
+    var panel = el("div", { class: "panel", id: "m5-panel" },
+      el("div", { class: "panel-h" }, el("h3", null, "Edit detection (M5)"), el("span", { class: "badge badge-syn" }, "SYNTHETIC cuts")), body);
+    if (!m5) { body.appendChild(el("p", { class: "small" }, notComputed("results/m5.json"))); return panel; }
+    var by = m5.by_cut_length || [];
+    var lo = by.length ? by[0].cut_s : null, hi = by.length ? by[by.length - 1].cut_s : null;
+    var per = m5.n_streams ? m5.n_cuts / m5.n_streams : null;
+    body.appendChild(el("p", { class: "small" }, "Every cut is SYNTHETIC: at harvest time a stretch of ", T("num", lo + " to " + hi + " s"),
+      " was removed from the 60-min excerpt audio of the ", T("num", String(m5.n_streams)), " Test streams whose uncut excerpt is a confident hit, ",
+      T("num", String(per)), " cuts each. Each cut trace is located in the ±1-day scope and passed to the frozen edit finder. No recording with a real edit was tested."));
+    body.appendChild(el("dl", { class: "kv" },
+      el("dt", null, "SYNTHETIC cuts found"), el("dd", null, fmtRate(m5.detected), el("span", { class: "muted small" }, " within " + m5.detection_window_s + " s of the true position")),
+      el("dt", null, "false alarms"), el("dd", null, fmtRate(m5.false_alarms), el("span", { class: "muted small" }, " uncut excerpts of the same streams with an edit reported")),
+      el("dt", null, "duration error"), el("dd", null, T("num", "median " + m5.dur_err.median_s + " s, max " + m5.dur_err.max_s + " s"),
+        el("span", { class: "muted small" }, " over the " + m5.dur_err.n + " SYNTHETIC cuts found"))));
+    body.appendChild(el("details", null, el("summary", null, "By SYNTHETIC cut length"),
+      el("div", { class: "tbl-wrap" }, el("table", null,
+        el("thead", null, el("tr", null, el("th", { scope: "col" }, "SYNTHETIC cut"), el("th", { scope: "col", class: "r" }, "cuts"),
+          el("th", { scope: "col", class: "r" }, "found"), el("th", { scope: "col", class: "r" }, "duration error, median / max"))),
+        el("tbody", null, by.map(function (b) {
+          return el("tr", null, el("td", { class: "num" }, b.cut_s + " s"), el("td", { class: "r num" }, String(b.n_cuts)),
+            el("td", { class: "r num", title: fmtRate(b.detected) }, b.detected.k + "/" + b.detected.n),
+            el("td", { class: "r num" }, b.dur_err_median_s === null ? "none found" : b.dur_err_median_s + " s / " + b.dur_err_max_s + " s"));
+        }))))));
+    body.appendChild(srcLine(m5.sources));
+    return panel;
+  }
+
+  /* Baselines on the same Test streams (PROTOCOL section 12), under the primary table. */
+  function baselineNote(ov, t, res) {
+    var rg = ov.random_guess || {};
+    var cnt = res.counts || {}, pr = cnt.paired_60_full || {};
+    var lh = res.libhum || {};
+    var pairLine = function (e) {
+      var p = pr[e];
+      if (!p) return null;
+      return el("li", null, extName(e), " on the same ", T("num", String(p.n)), " streams: both within 30 s ", T("num", String(p.both)),
+        ", v2 only ", T("num", String(p.v2_only)), ", ", e, " only ", T("num", String(p.baseline_only)), ", neither ", T("num", String(p.neither)), ".");
+    };
+    return el("div", { class: "base-note", id: "baselines" },
+      el("div", { class: "label" }, "Baselines"),
+      el("ul", { class: "small tight" }, pairLine("v1"), pairLine("naive"),
+        el("li", null, "Random guess within 30 s, 60-min excerpt: 1 in ", T("num", fmtInt(Math.round((rg.full_60min || {}).one_in))), " over the full span, 1 in ",
+          T("num", fmtInt(Math.round((rg["90d_60min"] || {}).one_in))), " for ±90 days, 1 in ", T("num", fmtInt(Math.round((rg["1d_60min"] || {}).one_in))),
+          " for ±1 day (", el("code", null, "results/splits_summary.json"), ")."),
+        el("li", null, "libhum (PROTOCOL section 12): ", T("num", lh.status || "not run"),
+          lh.reason ? [". ", lh.source, ": “", lh.reason, "”"] : ".")),
+      el("p", { class: "figure-note" }, "No significance test is run (PROTOCOL section 13)."));
   }
 
   function uniqBlock(ov) {
-    var u = ov.uniqueness;
+    var u = ov.uniqueness, mm = (ov.results || {}).m4_measured;
     var st = { scope: "full", noise: "hann16" };
     var host = el("div");
-    var summary = el("p", { class: "small", "aria-live": "polite" });
+    var summary = el("p", { class: "small u-summary", "aria-live": "polite" });
     function segBtns(name, opts, key) {
       var g = el("div", { class: "seg", role: "group", "aria-label": name });
       opts.forEach(function (o) {
@@ -936,39 +1400,98 @@
       return g;
     }
     var tableHost = el("div", { class: "tbl-wrap" });
+    var readHost = el("div", { class: "tbl-wrap" });
+    var levels = [];
+    u.rows.forEach(function (r) { if (r.sigma_mhz > 0 && levels.indexOf(r.sigma_mhz) < 0) levels.push(r.sigma_mhz); });
+    var probe = u.probe_sigma_mhz ? u.probe_sigma_mhz.median : null;
+    var probeLevel = null;
+    levels.forEach(function (lv) { if (probe !== null && (probeLevel === null || Math.abs(lv - probe) < Math.abs(probeLevel - probe))) probeLevel = lv; });
+    var PRE = (mm && mm.preregistered_reading) || "B";
+    var READ = [[PRE, PRE + ": " + (PRE === "B" ? "unweighted r, as in probe_noise.py" : "r as scored") + " (pre-registered)", null]];
+    var OTHER = PRE === "B" ? "A" : "B";
+    READ.push([OTHER, OTHER + ": " + (OTHER === "A" ? "r as scored" : "unweighted r") + " (EXPLORATORY, post hoc)", "5 4"]);
+    function reading(key, noise, scope) { return mm ? ((((mm.readings || {})[key] || {})[noise] || {})[scope] || null) : null; }
+    function shortest(r) {
+      if (!r) return "n/a";
+      if (r.status !== "read" || r.shortest_length_min === null || r.shortest_length_min === undefined) return "not read";
+      return r.shortest_length_min + " min" + (r.rate_at_shortest === null ? "" : " (" + pct(r.rate_at_shortest) + ")");
+    }
+    function previous(r) {      /* the tested length before the shortest that reaches 90%, with its share */
+      var p = r && r.previous_tested_min;
+      if (p === null || p === undefined || !r.rates_by_length_min || r.rates_by_length_min[String(p)] === undefined) return null;
+      return [T("num", p + " min"), " gives ", T("num", pct(r.rates_by_length_min[String(p)]))];
+    }
     function redraw() {
-      var hl = drawUniq(host, u, st.scope, st.noise);
-      var rows = u.rows.filter(function (r) { return r.scope === st.scope && r.noise === st.noise && r.sigma_mhz === hl; });
-      rows.sort(function (a, b) { return a.length_min - b.length_min; });
-      var need = rows.filter(function (r) { return r.hit_rate >= 0.9; })[0];
-      fill(summary, "At ", T("num", hl + " mHz"), " of ", st.noise === "hann16" ? "16-s smoothed" : "white", " SYNTHETIC noise (the tested level nearest the probe recording's ",
-        T("num", fmtF(u.probe_sigma_mhz.median, 1) + " mHz"), "), scope " + scopeName(st.scope) + ": ",
-        need ? ["the shortest tested length with at least 90% unique locks is ", T("num", need.length_min + " min"), " (", T("num", need.hits + "/" + need.N), ")."]
-          : "no tested length reaches 90%.");
+      var meas = [];
+      READ.forEach(function (k) {
+        var r = reading(k[0], st.noise, st.scope);
+        if (r) meas.push({ name: "reading " + k[0] + " at " + fmtF(r.sigma_mhz, 1) + " mHz", rates: r.rates_by_length_min, dash: k[2], r: r, key: k[0] });
+      });
+      drawUniq(host, u, st.scope, st.noise, meas);
+      var nk = st.noise === "hann16" ? "16-s smoothed" : "white";
+      if (meas.length) {
+        fill(summary, "With ", nk, " SYNTHETIC noise at the measured level, scope " + scopeName(st.scope) + ", the shortest tested length with at least 90% unique locks is ",
+          meas.map(function (mc, i) {
+            var pv = mc.key === PRE ? previous(mc.r) : null;
+            return [i ? "; the EXPLORATORY (post hoc) reading " + mc.key + " gives " : "", T("num", shortest(mc.r).replace(/ \(.*/, "")),
+              i ? "" : " under reading " + mc.key + ", the pre-registered one", " (", T("num", fmtF(mc.r.sigma_mhz, 1) + " mHz"),
+              mc.r.rate_at_shortest === null ? "" : [", ", T("num", pct(mc.r.rate_at_shortest))], pv ? ["; ", pv] : "", ")"];
+          }), ".");
+      } else {
+        var rows = u.rows.filter(function (r) { return r.scope === st.scope && r.noise === st.noise && r.sigma_mhz === probeLevel; });
+        rows.sort(function (a, b) { return a.length_min - b.length_min; });
+        var need = rows.filter(function (r) { return r.hit_rate >= 0.9; })[0];
+        fill(summary, "At ", T("num", probeLevel + " mHz"), " of ", nk, " SYNTHETIC noise (the tested level nearest the probe recording), scope " + scopeName(st.scope) + ": ",
+          need ? ["the shortest tested length with at least 90% unique locks is ", T("num", need.length_min + " min"), "."] : "no tested length reaches 90%.",
+          " The reading at the measured noise level is ", notComputed("results/m4_measured.json"), ".");
+      }
+      if (mm) {
+        readHost.replaceChildren(el("table", { class: "res-tbl" },
+          el("caption", null, "Shortest tested length with at least 90% unique locks, " + nk + " SYNTHETIC noise, at the median measured noise"),
+          el("thead", null, el("tr", null, el("th", { scope: "col" }, "reading"), el("th", { scope: "col", class: "hide-sm" }, "noise, median (Q1 to Q3)"),
+            ["full", "90d", "1d"].map(function (s) { return el("th", { scope: "col", class: "r" }, scopeName(s)); }))),
+          el("tbody", null, READ.map(function (k) {
+            var dd = (mm.distribution || {})[k[0]] || {};
+            return el("tr", null, el("th", { scope: "row" }, el("span", { class: "rd-key" + (k[2] ? " rd-dash" : ""), "aria-hidden": "true" }), k[1]),
+              el("td", { class: "num hide-sm" }, fmtF(dd.median_mhz, 1) + " mHz (" + fmtF(dd.q1_mhz, 1) + " to " + fmtF(dd.q3_mhz, 1) + ")"),
+              ["full", "90d", "1d"].map(function (s) { return el("td", { class: "r num" + (s === st.scope ? " on" : "") }, shortest(reading(k[0], st.noise, s))); }));
+          }))));
+      }
       var trs = u.rows.filter(function (r) { return r.scope === st.scope && (r.noise === st.noise || r.sigma_mhz === 0); })
         .sort(function (a, b) { return a.sigma_mhz - b.sigma_mhz || a.length_min - b.length_min; })
         .map(function (r) {
           return el("tr", null, el("td", { class: "num" }, r.sigma_mhz === 0 ? "none" : r.sigma_mhz + " mHz"), el("td", { class: "num" }, r.length_min + " min"),
-            el("td", { class: "r num" }, r.hits + "/" + r.N), el("td", { class: "r num" }, pct(r.hit_rate)), el("td", { class: "r num" }, pct(r.lo) + " to " + pct(r.hi)));
+            el("td", { class: "r num" }, r.hits + "/" + r.N), el("td", { class: "r num" }, pctKN(r.hits, r.N)), el("td", { class: "r num" }, pct(r.lo) + " to " + pct(r.hi)));
         });
       tableHost.replaceChildren(el("table", null, el("thead", null, el("tr", null, el("th", { scope: "col" }, "SYNTHETIC noise"), el("th", { scope: "col" }, "length"),
         el("th", { scope: "col", class: "r" }, "unique locks"), el("th", { scope: "col", class: "r" }, "rate"), el("th", { scope: "col", class: "r" }, "Wilson 95%"))),
         el("tbody", null, trs)));
     }
     var sec = el("section", { class: "wrap section", "aria-labelledby": "u-h" },
-      el("div", { class: "section-head" }, el("h2", { id: "u-h" }, "How much audio does a lock need?"), el("span", { class: "badge badge-syn" }, "SYNTHETIC noise simulation")),
-      el("p", { class: "prose small" }, u.label + " Real excerpts of the reference get SYNTHETIC Gaussian noise added and are searched with the same matcher. ",
-        "A lock is unique when the top candidate lies within ", T("num", u.hit_tol_s + " s"), " of the excerpt's true position. ",
-        "Smoothed noise is correlated over 16 s like real extractor error and is the harder case. The probe recording of 5 Nov had an equivalent noise of ",
-        T("num", fmtF(u.probe_sigma_mhz.median, 1) + " mHz"), " (median of ", T("num", String(u.probe_sigma_mhz.n)), " excerpts, range ",
-        T("num", fmtF(u.probe_sigma_mhz.min, 1)), " to ", T("num", fmtF(u.probe_sigma_mhz.max, 1)), " mHz)."),
-      el("div", { class: "panel" }, el("div", { class: "panel-b" },
+      el("div", { class: "section-head" }, el("h2", { id: "u-h" }, "How much audio a unique lock needs (M4)"), el("span", { class: "badge badge-syn" }, "SYNTHETIC noise simulation")),
+      el("div", { class: "prose small" },
+        el("p", null, u.label + " Real excerpts of the reference get SYNTHETIC Gaussian noise added and are searched with the same matcher. ",
+          "A lock is unique when the top candidate lies within ", T("num", u.hit_tol_s + " s"), " of the excerpt's true position. ",
+          "Smoothed noise is correlated over 16 s like real extractor error and is the harder case."),
+        mm ? el("p", null, "PROTOCOL section 11 reads the curve at the noise measured on the Test streams that lock, computed as in ",
+          el("code", null, "scripts/probe_noise.py"), ": here the ", T("num", String(mm.n_streams)),
+          " streams the gate counts as locks, one median over each stream's locking excerpts (", T("num", String(mm.n_excerpts)), " in all). ",
+          "That script uses the plain (unweighted) correlation r of a trace with the window it matched, which is reading B, the pre-registered reading (solid amber line). ",
+          "Reading A puts v2's weighted correlation, as scored, into the same formula; it was added after the Test results were known and is EXPLORATORY, post hoc (dashed). ",
+          "Both are interpolated linearly between the tested levels. ",
+          "Before any Test search the curve was read at ", T("num", probeLevel + " mHz"), ", the tested level nearest the 5 Nov probe recording's ",
+          T("num", fmtF(probe, 1) + " mHz"), ".") : null),
+      el("div", { class: "panel", id: "u-panel" }, el("div", { class: "panel-b" },
         el("div", { class: "controls" }, el("span", { class: "label" }, "scope"),
           segBtns("Search scope", [["full", "full"], ["90d", "±90 d"], ["1d", "±1 d"]], "scope"),
-          el("span", { class: "label" }, "noise"), segBtns("Noise kind", [["hann16", "16-s smoothed"], ["white", "white"]], "noise")),
-        host, summary,
-        el("details", null, el("summary", null, "Table for this view"), tableHost))),
-      srcLine(u.sources));
+          el("span", { class: "label" }, "noise"), segBtns("Noise kind", [["hann16", "16-s smoothed"], ["white", "white"]], "noise"),
+          mm ? el("span", { class: "legend u-legend" },
+            el("span", { class: "key" }, el("i", { class: "k-trace" }), "reading " + PRE + " (pre-registered)"),
+            el("span", { class: "key" }, el("i", { class: "k-trace k-dash" }), "reading " + OTHER + " (EXPLORATORY)"),
+            el("span", { class: "key" }, el("i", { class: "k-ref" }), "tested SYNTHETIC levels")) : null),
+        host, summary, readHost,
+        el("details", null, el("summary", null, "Every tested level for this view"), tableHost))),
+      srcLine(u.sources.concat(mm ? mm.sources : [])));
     chart(host, function () { redraw(); });
     return sec;
   }
@@ -991,10 +1514,34 @@
           el("p", null, "So a recording's true start and its position on the reference's labels can differ by minutes. For each stream Gunj reads the drift D at the stream's start from this curve and expects the lock at T* = public start + L + D. ",
             "For ", T("num", String(d.test_abs_D_gt_30s)), " of the ", T("num", String(d.test_n)), " Test streams |D| is over 30 s."),
           el("p", { class: "muted small" }, "The check is relative: it assumes each file's first week is on time. D is an estimate with unknown error, so results are also reported with D = 0. Hollow points: weeks whose profile correlation r is under 0.5.")),
-        el("div", { class: "panel" }, el("div", { class: "panel-b" }, host))),
+        el("div", { class: "panel" }, el("div", { class: "panel-b" }, host, gateCallout(ov)))),
       srcLine(d.sources));
     chart(host, function () { drawDrift(host, ov); });
     return sec;
+  }
+
+  /* What the drift correction is worth in the blind test: the gate count with D and with D = 0. */
+  function gateCallout(ov) {
+    var t = ov.test;
+    var g = t && t.gate, v2 = g && (g.by_extractor || {}).v2;
+    if (!v2) return null;
+    var c2 = ((t.m2.v2 || {})["60"] || {}).full || {};
+    return el("div", { class: "callout", id: "drift-callout" },
+      el("div", { class: "label" }, "Test streams that lock blind, any excerpt length (gate count)"),
+      el("div", { class: "callout-row" },
+        el("div", null, el("span", { class: "big-n" }, String(v2.n_streams_with_lock)), " ", el("span", { class: "small" }, "of " + g.N_processed + " with the drift correction")),
+        el("div", null, el("span", { class: "big-n" }, String(v2.n_streams_with_lock_D0)), " ", el("span", { class: "small" }, "without it (D = 0)"))),
+      el("p", { class: "figure-note" }, "Primary endpoint the same way: ", fmtRate(c2.top1_hit), " with D, ", fmtRate(c2.top1_hit_D0), " with D = 0. Source: ",
+        el("code", null, "results/gate_frozen.json"), ", ", el("code", null, "results/evaluation.json"), "."));
+  }
+
+  function wrongLine(ov) {
+    var t = ov.test, c2 = t && t.m2 && ((t.m2.v2 || {})["60"] || {}).full;
+    var m3 = t && t.m3 && ((t.m3.v2 || {})["60"] || {}).full;
+    if (!c2 || !m3) return null;
+    var cw = c2.confident_wrong, ch = c2.confident_hit, fm = m3.real.false_match;
+    return el("li", null, "Give certain verdicts. In the blind test ", nOf(cw.k, cw.k + ch.k), " confident verdicts (60 min, full span) were more than 30 s off, and ",
+      nOf(fm.k, fm.n), " real foreign recordings reached tau.");
   }
 
   function doesBlock(ov) {
@@ -1003,16 +1550,26 @@
       el("div", { class: "section-head" }, el("h2", { id: "does-h" }, "What it does and does not do")),
       el("div", { class: "does" },
         el("div", { class: "panel" }, el("div", { class: "panel-h" }, el("h3", null, "Does")), el("div", { class: "panel-b" }, el("ul", null,
-          el("li", null, "Estimates when a recording started, to the second on the reference's own labels, by matching its mains-hum trace against India's one-second grid log."),
+          el("li", null, "Reports when a recording started, at one-second resolution on the reference's own labels, by matching its mains-hum trace against India's one-second grid log.", accuracyLine(ov)),
           el("li", null, "Reports the top 5 candidates and a margin over the best candidate at least 60 s away, with a threshold set in advance on foreign 50 Hz streams and SYNTHETIC negatives."),
           el("li", null, "Says “no verdict” when the trace has no hum flag or the margin is below the threshold."),
-          el("li", null, "Publishes its evaluation plan before the Test results, with every later change listed in PROTOCOL.md section 19.")))),
+          el("li", null, "Publishes its evaluation plan before the Test results, with every later change to the method, data, metrics and thresholds listed in PROTOCOL.md section 19.")))),
         el("div", { class: "panel" }, el("div", { class: "panel-h" }, el("h3", null, "Does not")), el("div", { class: "panel-b" }, el("ul", null,
           el("li", null, "Give a location. The whole grid shares one frequency, so Gunj reports time and grid only."),
           el("li", null, "Date recordings outside the public reference, ", T("t", r.t0_ist.slice(0, 10)), " to ", T("t", r.t_end_ist.slice(0, 10)), ". Grid-India measures this every second; a public log of later years would extend it."),
           el("li", null, "Prove a recording is genuine. A matching hum is evidence about time, and someone holding the grid record could add a fake hum. A missing hum says nothing either way."),
           el("li", null, "Remove the reference's label drift. D corrects it per stream as an estimate."),
+          wrongLine(ov),
           el("li", null, "Count Dev or Calibration streams as evidence. Dev tuned extractor v2 and Calibration set L; only the Test split is the independent test."))))));
+  }
+
+  /* how close the confident verdicts of the blind test came (primary cell), for the Does list */
+  function accuracyLine(ov) {
+    var t = ov.test, c2 = t && t.m2 && ((t.m2.v2 || {})["60"] || {}).full;
+    if (!c2 || !c2.confident_hit || !c2.confident_wrong) return "";
+    var ch = c2.confident_hit.k, cw = c2.confident_wrong.k;
+    return [" In the blind test ", nOf(ch, ch + cw), " confident verdicts on 60-min excerpts were within 30 s of the expected start and ",
+      T("num", String(cw)), " were further off."];
   }
 
   /* ============================================================ CLIP LIST */
@@ -1027,7 +1584,7 @@
         return (f.split === "all" || c.split === f.split) && (f.verdict === "all" || (f.verdict === "match" ? c.verdict === "match" : c.verdict !== "match"));
       });
       tbody.replaceChildren.apply(tbody, rows.map(clipRow));
-      if (!rows.length) tbody.appendChild(el("tr", null, el("td", { colspan: "8" }, f.split === "test" ? ["Test clips: ", pending(ov)] : "No clips match these filters.")));
+      if (!rows.length) tbody.appendChild(el("tr", null, el("td", { colspan: "9" }, "No clips match these filters.")));
       countEl.textContent = rows.length + " of " + list.length + " clips shown.";
     }
     function seg(name, key, opts) {
@@ -1045,12 +1602,18 @@
     }
     var cc = ov.clip_counts || {};
     var hasTest = (cc.test || 0) > 0;
+    var nNever = list.filter(function (c) { return c.split === "test" && c.harvest === "not attempted"; }).length;
+    var selTest = (ov.splits.test || {}).n;
     var root = el("section", { class: "wrap intro" },
       el("h1", { tabindex: "-1" }, "Clips"),
       el("p", { class: "prose" }, "Each clip is one public livestream. Its page shows the 60-minute v2 trace over the reference window of its top candidate, the top 5 candidates, and the verdict with its reason. ",
         "Dev streams tuned extractor v2 and Calibration streams set L, so neither is an independent test. ",
-        hasTest ? ["Test streams are listed from ", el("code", null, "results/test_results.csv"),
-          ov.test && !ov.test.gate_frozen ? ["; their numbers are interim until the gate is frozen after ", gateText(ov), "."] : "."] : ["Test streams (", T("num", fmtInt((ov.splits.test || {}).n)), ") appear here after scoring: ", pending(ov), "."]),
+        hasTest ? ["Test streams are listed from ", el("code", null, "results/test_results.csv"), ", searched blind",
+          ov.test && ov.test.gate_frozen ? ["; the gate was frozen ", dayTime(ov.test.gate_frozen_ist), " and these results are final."] : ".",
+          " The list holds ", T("num", String(cc.test)), " of the ", T("num", String(selTest)), " selected Test streams",
+          nNever ? ["; the ", T("num", String(nNever)), " that no download ever attempted come from the flow of ", el("code", null, "results/evaluation.json"),
+            " (", el("code", null, "results/flow_table.md"), ")."] : "."]
+          : ["Test streams (", T("num", fmtInt((ov.splits.test || {}).n)), "): ", notComputed("results/test_results.csv"), "."]),
       el("div", { class: "filters" }, el("span", { class: "label" }, "split"),
         seg("Split", "split", [["all", "all"], ["dev", "Dev"], ["calibration", "Calibration"], ["test", "Test"]].concat(cc.practice ? [["practice", "PRACTICE"]] : [])),
         el("span", { class: "label" }, "verdict"), seg("Verdict", "verdict", [["all", "all"], ["match", "match"], ["nv", "no verdict"]])),
@@ -1071,7 +1634,8 @@
     var href = "#/clip/" + c.split + "/" + encodeURIComponent(c.video_id);
     var wrong = c.verdict === "match" && c.hit_30s === false;
     var v = c.verdict === "match" && !wrong ? el("span", { class: "v-match", title: c.verdict_reason || null }, "match")
-      : wrong ? el("span", { class: "v-wrong", title: "match verdict, but the top candidate is more than 30 s from T*" }, "match, wrong lock")
+      : wrong ? el("span", { class: "v-wrong", title: "match verdict, but the top candidate is more than 30 s from T*" },
+        el("span", { class: "hide-sm" }, "match, wrong lock"), el("span", { class: "show-sm" }, "wrong lock"))
       : el("span", { class: "v-nv", title: c.verdict_reason || null }, c.verdict || "n/a");
     return el("tr", null,
       el("td", null, el("span", { class: "hide-sm" }, splitName(c.split)), el("span", { class: "show-sm" }, { dev: "Dev", calibration: "Cal", test: "Test", practice: "Prac" }[c.split] || c.split)),
@@ -1082,7 +1646,8 @@
       el("td", null, c.hum_m1 === null || c.hum_m1 === undefined ? "n/a" : c.hum_m1 ? "yes" : "no"),
       el("td", null, v),
       el("td", { class: "r num hide-sm" }, c.confidence === null || c.confidence === undefined ? "" : fmtF(c.confidence, 3) + " / " + fmtF(c.tau, 3)),
-      el("td", { class: "r num" }, c.e_s === null || c.e_s === undefined ? "" : sgn(c.e_s) + " s"));
+      el("td", { class: "r num" }, c.e_s === null || c.e_s === undefined ? "" :
+        [el("span", { class: "hide-sm" }, sgn(c.e_s) + " s"), el("span", { class: "show-sm", title: sgn(c.e_s) + " s" }, shortDur(c.e_s))]));
   }
 
   /* ============================================================ CLIP PAGE */
@@ -1102,7 +1667,7 @@
       root.appendChild(el("div", { class: "verdict-line" },
         el("span", { class: "big " + (isMatch ? "v-match" : wrongLock ? "v-wrong" : "v-nv") },
           isMatch ? "MATCH" : wrongLock ? "MATCH, WRONG LOCK" : (c.verdict || "no verdict").toUpperCase()),
-        el("span", null, wrongLock ? (c.verdict_reason || "") + "; the top candidate is " + sgn(c.truth.e_s) + " s from T*, outside 30 s" : (c.verdict_reason || "")),
+        el("span", null, wrongLock ? (c.verdict_reason || "") + "; the top candidate is " + sgn(c.truth.e_s) + " s from T*, " + distWords(c.truth) : (c.verdict_reason || "")),
         s ? el("span", { class: "label" }, s.length_min + "-min excerpt, " + s.extractor + ", scope " + scopeName(s.scope)) : null));
 
       if (!s) {
@@ -1116,7 +1681,7 @@
         el("dt", null, "public start"), el("dd", null, T("t", ist(c.release_time_ist))),
         el("dt", null, "top candidate"), el("dd", null, top ? T("t", top.start_ist + " IST") : "none", " ", el("span", { class: "muted small" }, "implied recording start, reference labels")),
         el("dt", null, "T*"), el("dd", null, c.truth && c.truth.T_star_ist ? [T("t", c.truth.T_star_ist + " IST"), " ", el("span", { class: "muted small" }, "public start + L (" + sgn(c.truth.L_s) + " s) + D (" + sgn(c.truth.D_s) + " s)")] : "n/a"),
-        el("dt", null, "error e"), el("dd", null, c.truth && c.truth.e_s !== null && c.truth.e_s !== undefined ? [T("num", sgn(c.truth.e_s) + " s"), c.truth.hit_30s ? " (within 30 s)" : " (outside 30 s)"] : "n/a"),
+        el("dt", null, "error e"), el("dd", null, c.truth && c.truth.e_s !== null && c.truth.e_s !== undefined ? [T("num", sgn(c.truth.e_s) + " s"), " (" + distWords(c.truth) + ")"] : "n/a"),
         el("dt", null, "confidence"), el("dd", null, T("num", fmtF(s.confidence, 3)), " against tau ", T("num", fmtF(s.tau, 4)), s.conf_ge_tau ? " (at or above)" : " (below)"),
         el("dt", null, "positions searched"), el("dd", null, T("num", fmtInt(s.positions_searched)), " in " + scopeName(s.scope)),
         el("dt", null, "label drift D"), el("dd", null, T("num", sgn(c.D_s) + " s"), c.label_stable === null ? "" : c.label_stable ? ", label-stable" : ", not label-stable"),
@@ -1159,10 +1724,20 @@
     });
   }
 
+  /* the top candidate's distance from T* in words, with the pre-registered 30 s, 120 s and 600 s columns */
+  function distWords(tr) {
+    if (!tr || tr.e_s === null || tr.e_s === undefined) return "n/a";
+    if (tr.hit_30s) return "within 30 s";
+    if (tr.hit_120s === undefined || tr.hit_120s === null) return "outside 30 s";
+    if (tr.hit_120s) return "outside 30 s, within 2 min";
+    if (tr.hit_600s) return "outside 2 min, within 10 min";
+    return "over 10 min off: " + durText(tr.e_s);
+  }
+
   function searchesPanel(c) {
     var rows = (c.searches || []).map(function (q) {
       return el("tr", null, el("td", null, q.extractor), el("td", { class: "num" }, q.length_min + " min"), el("td", null, scopeName(q.scope)),
-        el("td", { class: "r num" }, fmtF(q.confidence, 3)), el("td", { class: "r num" }, fmtF(q.tau, 4)),
+        el("td", { class: "r num hide-sm" }, fmtF(q.confidence, 3)), el("td", { class: "r num hide-sm" }, fmtF(q.tau, 4)),
         el("td", { class: "r num" }, q.e_s === null || q.e_s === undefined ? "n/a" : sgn(q.e_s) + " s"),
         el("td", null, q.verdict ? q.verdict : (q.confidence !== null && q.tau !== null && q.confidence >= q.tau ? (q.trace_hum_flag ? "match" : "no hum flag") : "below tau")));
     });
@@ -1172,10 +1747,11 @@
       el("div", { class: "panel-h" }, el("h3", null, "Every search on record")),
       el("div", { class: "panel-b" }, el("div", { class: "tbl-wrap" }, el("table", null,
         el("thead", null, el("tr", null, el("th", { scope: "col" }, "ext."), el("th", { scope: "col" }, "length"), el("th", { scope: "col" }, "scope"),
-          el("th", { scope: "col", class: "r" }, "conf"), el("th", { scope: "col", class: "r" }, "tau"), el("th", { scope: "col", class: "r" }, "e"),
+          el("th", { scope: "col", class: "r hide-sm" }, "conf"), el("th", { scope: "col", class: "r hide-sm" }, "tau"), el("th", { scope: "col", class: "r" }, "e"),
           el("th", { scope: "col" }, "result"))),
         el("tbody", null, rows.length ? rows : el("tr", null, el("td", { colspan: "7" }, "none"))))),
-        el("p", { class: "figure-note" }, "e = top candidate start minus T*. Sources: ", srcs.map(function (s, i) { return [i ? "; " : "", el("code", null, s)]; }))));
+        el("p", { class: "figure-note" }, "e = top candidate start minus T*. On a narrow screen the confidence and tau columns are left out. Sources: ",
+          srcs.map(function (s, i) { return [i ? "; " : "", el("code", null, s)]; }))));
   }
 
   /* ============================================================ FOOTER, ROUTER */
@@ -1184,10 +1760,15 @@
     var ov = state.overview;
     var f = document.getElementById("foot");
     if (!f) return;
+    var cr = ov.reference.credit;
     f.replaceChildren(
-      el("p", null, "Reference data: ", ov.reference.dataset, ". Stream metadata: public YouTube pages. No audio or video is hosted on this site; clip pages show video IDs, public metadata and derived one-second traces only."),
-      el("p", null, "Built by Shrey Sati (GitHub satanrayshe) for Threws Odyssey 2026. Method, splits, seeds and every deviation: ",
-        ov.repo_url ? el("a", { href: ov.repo_url.replace(/\/$/, "") + "/blob/main/PROTOCOL.md" }, "PROTOCOL.md") : el("code", null, "PROTOCOL.md"), "."),
+      cr ? el("p", null, "Reference data: ", cr.text, " ", el("a", { href: cr.doi_url }, cr.doi_url.replace(/^https:\/\//, "")), ". Licence: ",
+        el("a", { href: cr.licence_url }, cr.licence), ". ", cr.changes)
+        : el("p", null, "Reference data: ", ov.reference.dataset, "."),
+      el("p", null, "Stream metadata: public YouTube pages. No audio or video is hosted on this site; clip pages show video IDs, public metadata and derived one-second traces only."),
+      el("p", null, "Built by Shrey Sati (GitHub satanrayshe) for Threws Odyssey 2026. Code and README: ", repoLink("", "GitHub repository"),
+        ". Report: ", repoLink("blob/main/docs/gunj-report.pdf", "docs/gunj-report.pdf"), ". Method, splits, seeds and every later change to them: ",
+        repoLink("blob/main/PROTOCOL.md", el("code", null, "PROTOCOL.md")), "."),
       el("p", { class: "small" }, "Data exported ", T("t", ov.written_ist || ""), ov.git_head ? [" from commit ", el("code", null, ov.git_head)] : "", " by ", el("code", null, ov.exporter), "."));
   }
 

@@ -5908,5 +5908,23 @@
    "sigma_A_weighted_std_hz": 0.016881
   }
  ],
- "figure": "results/figures/m4_measured_noise.png"
+ "figure": "results/figures/m4_measured_noise.png",
+ "preregistered_reading": "B",
+ "reading_labels": {
+  "B": "pre-registered: the computation of scripts/probe_noise.py (plain Pearson r of the trace with the window it matched, plain std s of that window)",
+  "A": "EXPLORATORY (post hoc): r1 as scored by the frozen evaluation (v2's weighted correlation) in the same formula, with the plain s"
+ },
+ "exploratory": {
+  "label": "EXPLORATORY (post hoc)",
+  "parts": [
+   "readings.A",
+   "distribution_hz.A",
+   "distribution_hz.A_weighted_std",
+   "per_stream_sigma_hz.A",
+   "per_stream_sigma_hz.A_weighted_std",
+   "by_length_hz",
+   "alternatives_hz"
+  ],
+  "why": "PROTOCOL.md section 11 computes the noise as in scripts/probe_noise.py, which uses the plain Pearson r and the plain std s of the matched window (reading B). The other readings were computed after the Test results were known."
+ }
 }

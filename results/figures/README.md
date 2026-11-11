@@ -24,7 +24,7 @@ Source: `results/test_results.csv` (columns `verdict`, `hit_30s`, `hit_120s`, `h
 
 ## `m4_measured_noise.png`
 
-M4 at the measured noise level. Top: equivalent trace noise of the 38 Test streams that lock, one dot per stream, under reading A (r as scored, median 9.4 mHz) and reading B (unweighted r, median 37.4 mHz), against the pre-set levels of the M4 simulation. Bottom: the uniqueness table (real reference excerpts with SYNTHETIC hann16 noise) read at each median by linear interpolation.
+M4 at the measured noise level. Top: equivalent trace noise of the 38 Test streams that lock, one dot per stream, under reading B (unweighted r, the computation of scripts/probe_noise.py and the pre-registered reading; median 37.4 mHz) and reading A (EXPLORATORY (post hoc): r as scored, median 9.4 mHz), against the pre-set levels of the M4 simulation. Bottom: the uniqueness table (real reference excerpts with SYNTHETIC hann16 noise) read at each median by linear interpolation.
 
 Source: `results/m4_measured.json`, from `results/test_results.csv`, `results/gate_frozen.json`, `results/search_cache/test`, `traces/test`, the built reference and `results/uniqueness_table.csv`.
 

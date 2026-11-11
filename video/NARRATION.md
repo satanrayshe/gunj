@@ -5,20 +5,20 @@ Read this aloud while the silent video (`video/gunj-v1-silent.mp4`) plays. Each 
 "Gunj" is said "goonj".
 
 1. **0:01** This is Gunj. It dates Indian recordings from mains hum.
-2. **0:06** Many recordings carry a faint hum from the mains. Its pitch wanders with the load, the same way across India's one grid.
-3. **0:16** Gunj reads that pitch once a second and slides it along thirty-two months of public grid records, about eighty-four million seconds.
+2. **0:06** Many recordings carry a faint mains hum. Its pitch wanders with the load, the same way across India's one grid.
+3. **0:16** Gunj reads that pitch each second and slides it along thirty-two months of public grid records, about eighty-four million seconds.
 4. **0:26** It fits one moment, well clear of the next best. This example is a calibration stream, not a blind result.
-5. **0:36** The real test was planned in advance and scored blind. YouTube's bot check stopped downloads after a hundred and twenty-six of a hundred and fifty streams.
-6. **0:48** Ninety had an hour of audio. For twenty-five, Gunj's best guess was within thirty seconds. Twenty-three verdicts were confident. Fourteen within thirty seconds, six more within two minutes, one within ten, two plainly wrong.
-7. **1:03** The grid dataset's own clock drifts, by up to about five minutes. Correcting it is what makes this work: thirty-eight test streams lock with it, nine without.
-8. **1:16** In a simulation with SYNTHETIC noise at the measured level, unique locks needed ten to forty minutes of audio.
+5. **0:36** The test was pre-registered and blind. A YouTube bot check stopped downloads after a hundred and twenty-six of a hundred and fifty streams.
+6. **0:48** Ninety had an hour of audio. For twenty-five, Gunj's best guess was within thirty seconds. Twenty-three verdicts were confident. Fourteen were within thirty seconds and nine were wrong.
+7. **1:03** The grid dataset's own clock drifts, by up to about five minutes. Correcting it matters: thirty-eight test streams lock with it, nine without.
+8. **1:16** In a simulation with SYNTHETIC noise, read at the measured level, unique locks needed twenty to forty minutes.
 9. **1:25** This test stream locked blind, eight seconds from its expected start, after almost five minutes of drift correction.
-10. **1:34** This one has no hum, so Gunj gives no verdict. It reports a time, never a place. On sixteen hour-long recordings from other grids, it gave one false match.
+10. **1:34** This stream has no hum, so no verdict. Gunj never reports a place. On sixteen hour-long recordings from other grids, it gave one false match.
 11. **1:47** The code, the plan and every result are on GitHub.
 
 The video ends at **1:54**.
 
-Word count: <!-- narration-words:start -->236<!-- narration-words:end -->.
+Word count: <!-- narration-words:start -->215<!-- narration-words:end -->.
 
 ## Where each number comes from
 
@@ -34,10 +34,10 @@ Word count: <!-- narration-words:start -->236<!-- narration-words:end -->.
 | 6 | ninety had an hour of audio | n = 90 Test streams with a 60-min excerpt | `results/evaluation.json` |
 | 6 | for twenty-five, the best guess was within thirty seconds | 25/90 (27.8%, 95% CI 19.6 to 37.8%): top-1 start within 30 s of T*, v2, 60 min, full span | `results/evaluation.json` |
 | 6 | twenty-three verdicts were confident | 23 of the 90 excerpts have the verdict "match" (hum flag set, confidence at or above tau) | `results/error_breakdown.json` |
-| 6 | fourteen within thirty seconds, six more within two minutes, one within ten, two plainly wrong | 14 within 30 s, 6 from 30 to 120 s, 1 from 120 to 600 s, 2 beyond 600 s: off by 5,299 s (88 minutes) and 2,876,519 s (33.3 days) | `results/error_breakdown.json`; `results/test_results.csv`, `error_s` |
+| 6 | fourteen were within thirty seconds and nine were wrong | 14 confident hits (within 30 s) and 9 confident wrong verdicts (more than 30 s off; PROTOCOL section 9): 6 from 30 to 120 s, 1 from 120 to 600 s, 2 beyond 600 s, off by 5,299 s (88 minutes) and 2,876,519 s (33.3 days) | `results/evaluation.json` (`m2`); `results/error_breakdown.json`; `results/test_results.csv`, `error_s` |
 | 7 | up to about five minutes | largest label drift by the end of a file: 319 s | `results/time_axis_check.json` |
 | 7 | thirty-eight with the correction, nine without | gate count: 38 of 126 streams lock at some excerpt length (full span or ±90 days), 9 with D = 0 | `results/gate_frozen.json` |
-| 8 | ten to forty minutes | shortest tested length with at least 90% unique locks over the full span, SYNTHETIC hann16 noise at the median noise of the 38 Test streams that lock: 10 min at 9.4 mHz (r as scored), 40 min at 37.4 mHz (unweighted r) | `results/m4_measured.json` |
+| 8 | twenty to forty minutes | reading B, as pre-registered (unweighted r, the computation of scripts/probe_noise.py): median noise 37.4 mHz over the 38 Test streams that lock; with SYNTHETIC hann16 noise over the full span, 40 min is the shortest tested length with at least 90% unique locks (94.6%) and 20 min gives 35.7%; the EXPLORATORY (post hoc) reading A (r as scored) is not spoken: 10 min at 9.4 mHz | `results/m4_measured.json` |
 | 9 | eight seconds | Test stream 5LW0lKI1jx8: e = -8 s (v2, 60 min, full span) | `results/test_results.csv` |
 | 9 | almost five minutes | the same stream: D = +293 s | `results/test_results.csv`, `label_drift_s` |
 | 10 | no hum, no verdict | Test stream eEJdGpEayes: M1 hum flag off, and no verdict in any of its 12 v2 searches | `results/test_results.csv` |

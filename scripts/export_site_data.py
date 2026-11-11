@@ -13,24 +13,32 @@ the one-second reference (memory-mapped, never loaded whole). Writes:
   site/data/clips/<split>/<video_id>.json one page per clip
 
 Test results in overview.json, each copied from the file named beside it:
-  test          M2, M3 and the gate from results/evaluation.json and
-                results/gate_frozen.json; M1 counted from results/test_results.csv
-  breakdown     confident verdicts by distance from T* (results/error_breakdown.json),
-                recounted here from results/test_results.csv before it is copied
-  m5            edit detection on SYNTHETIC cuts (results/m5.json)
-  m4_measured   the uniqueness table read at the measured noise level
-                (results/m4_measured.json)
-  figures       the numbers of the M2 signed-error plot and the M3 reliability
-                plot (results/figures/figures.json), which the site draws itself
-  libhum        "not run", with the sentence of PROTOCOL.md section 19 that says why
+  test                 M2, M3 and the gate from results/evaluation.json and
+                       results/gate_frozen.json
+  results.counts       M1, the subsets S2 and S3 and the paired baseline counts,
+                       counted from results/test_results.csv
+  results.breakdown    confident verdicts by distance from T*
+                       (results/error_breakdown.json), recounted here from
+                       results/test_results.csv before it is copied
+  results.m5           edit detection on SYNTHETIC cuts (results/m5.json)
+  results.m4_measured  the uniqueness table read at the measured noise level
+                       (results/m4_measured.json)
+  results.figures      the numbers of the M2 signed-error plot and the M3
+                       reliability plot (results/figures/figures.json), which the
+                       site draws itself
+  results.libhum       "not run", with the sentence of PROTOCOL.md section 19
+                       that says why
 
 The four later files record the SHA-256 of the scoring outputs they were
 computed from. If one of them no longer matches results/test_results.csv,
 results/evaluation.json, results/false_matches.json or results/gate_frozen.json,
-the export stops with exit status 2 and names the script to re-run. A block
-whose file does not exist is written as null, and the site says "not computed".
+or a count recounted here differs, the export stops with exit status 2 before
+writing anything and names the script to re-run. A block whose file does not
+exist is written as null, and the site says "not computed".
 
-Every file is written to <name>.tmp and then renamed.
+Every file is written to <name>.tmp and then renamed. The exporter refuses to
+write a file that holds an absolute local path, or the words "interim" or
+"pending" (the Test results are final).
 
 Searches run here (all with the frozen matcher, gunj/match_v2.wncc_search,
 single thread, small FFT blocks):
@@ -85,6 +93,7 @@ HERO_CONTEXT_S = 1800
 CLIP_CONTEXT_S = 600
 SITE_BUDGET_BYTES = 8 * 1024 * 1024
 ABS_PATH_RE = re.compile(r"([A-Za-z]:[\\/]+(Users|Documents|Program)|Users[\\/]+Shrey|AppData)", re.I)
+STALE_WORDS_RE = re.compile(r"\b(interim|pending)\b", re.I)    # the site shows final results only
 SCOPE_LABEL = {"full": "full 32 months", "90d": "±90 days", "1d": "±1 day"}
 SPLIT_LABEL = {"dev": "Dev", "calibration": "Calibration", "test": "Test", "practice": "PRACTICE"}
 REPO_URL = "https://github.com/satanrayshe/gunj"
@@ -142,6 +151,10 @@ def write_json_atomic(p: Path, obj) -> int:
     m = ABS_PATH_RE.search(text)
     if m:
         raise ValueError(f"{p.name}: refusing to write an absolute local path ({m.group(0)!r})")
+    m = STALE_WORDS_RE.search(text)
+    if m:
+        raise ValueError(f"{p.name}: refusing to write the word {m.group(0)!r}: "
+                         f"...{text[max(0, m.start() - 60):m.end() + 60]}...")
     p.parent.mkdir(parents=True, exist_ok=True)
     tmp = p.with_name(p.name + ".tmp")
     tmp.write_text(text, encoding="utf-8")
@@ -270,6 +283,19 @@ def dur_text(s: float) -> str:
     if s < 2 * 86400:
         return f"{s / 3600:.1f} hours"
     return f"{s / 86400:.1f} days"
+
+
+def fmt_day_ist(s: str | None) -> str | None:
+    """'2026-11-08T17:04:35+05:30' -> '8 Nov 2026, 17:04 IST'; None if it cannot be read."""
+    if not s:
+        return None
+    try:
+        t = dt.datetime.fromisoformat(s)
+    except ValueError:
+        return None
+    if t.tzinfo is not None:
+        t = t.astimezone(IST)
+    return f"{t.day} {t.strftime('%b %Y')}, {t.strftime('%H:%M')} IST"
 
 
 def utc_to_ist(s: str | None) -> str | None:
@@ -418,6 +444,25 @@ def build_ribbon(ref) -> dict:
             "source": "../data/derived/grid_1s_f32.npy (memory-mapped)"}
 
 
+CC_BY_4 = "https://creativecommons.org/licenses/by/4.0/"
+
+
+def dataset_credit() -> dict:
+    """The attribution that CC BY 4.0 asks for, copied from the reference list of the report
+    (docs/report/references.json, key "mendeley"), with the changes made to the data."""
+    p = REPO / "docs" / "report" / "references.json"
+    refs = {r["key"]: r for r in read_json(p)["references"]}
+    m = refs.get("mendeley")
+    if not m or not m.get("doi") or "CC BY 4.0" not in m.get("text", ""):
+        raise SystemExit(f"export_site_data: {rel(p)} has no 'mendeley' entry with a DOI and the CC BY 4.0 licence")
+    return {"text": m["text"].rstrip(".") + ".", "doi_url": "https://doi.org/" + m["doi"], "doi": m["doi"],
+            "licence": "CC BY 4.0", "licence_url": CC_BY_4,
+            "changes": f"The CSV files were merged into one one-second series (scripts/build_reference.py), and the "
+                       f"explorer shows it downsampled: {BIN_S // 60}-minute ranges along the whole span, and steps of "
+                       f"{HERO_STEP_S} to {CLIP_STEP_S} s around each clip (scripts/export_site_data.py).",
+            "source": rel(p)}
+
+
 def build_reference_block(ref, derived: Path) -> dict:
     st = read_json(REPO / "results" / "reference_stats.json")
     gaps = read_json(REPO / "results" / "reference_gaps.json")
@@ -435,6 +480,7 @@ def build_reference_block(ref, derived: Path) -> dict:
             "end_ist": g["end_ist"]} for g in gaps.get("gaps", []) if g["length_s"] >= 600]
     return {
         "dataset": "Mendeley Data bvwh9d6227: Grid-India NERLDC PMU one-second frequency, shared by IIT Guwahati, CC BY 4.0",
+        "credit": dataset_credit(),
         "t0_ist": st["span"]["t0_ist"], "t_end_ist": st["span"]["t_end_ist"],
         "seconds": st["span"]["seconds"], "days": st["span"]["days"],
         "valid_seconds": st["valid_seconds"], "valid_pct": st["valid_pct"], "missing_seconds": st["missing_seconds"],
@@ -475,9 +521,11 @@ def build_uniqueness() -> dict:
     probe = read_json(REPO / "results" / "probe_noise.json")
     out = []
     for r in rows:
+        k, n = fint(r["hits"]), fint(r["N"])
+        lo, hi = wilson(k, n) or (None, None)        # from hits and N (PROTOCOL section 13), not the CSV's rounded bounds
         out.append({"scope": r["scope"], "length_min": fint(r["length_min"]), "noise": r["noise_kind"],
-                    "sigma_mhz": fnum(r["sigma_mhz"]), "N": fint(r["N"]), "hits": fint(r["hits"]),
-                    "hit_rate": fnum(r["hit_rate"]), "lo": fnum(r["wilson95_lo"]), "hi": fnum(r["wilson95_hi"]),
+                    "sigma_mhz": fnum(r["sigma_mhz"]), "N": n, "hits": k,
+                    "hit_rate": fnum(r["hit_rate"]), "lo": lo, "hi": hi,
                     "random_guess": fnum(r["random_guess_hit_rate"])})
     labels = sorted({r["noise_label"] for r in rows})
     s = probe.get("summary", {})
@@ -560,12 +608,14 @@ def build_test_block(tdir: Path) -> dict | None:
                         g: {k: rate((c.get(g) or {}).get(k)) for k in ("false_match", "false_match_with_hum_flag")}
                         for g in ("real", "SYNTHETIC", "together")}
         g = d.get("gate") or {}
+        health = d.get("health") or {}
         out.update({
             "written_ist": d.get("written_ist"), "mode": d.get("mode"), "split_label": d.get("split_label"),
             "after_decision_time": d.get("after_decision_time"), "decision_time": d.get("decision_time"),
             "latency_line": d.get("latency_line"), "n_selected": d.get("n_selected"),
             "n_with_trace": d.get("n_with_trace"),
             "flow": [{"step": s["step"], "n": s["n"]} for s in (d.get("flow") or {}).get("steps", [])],
+            "blocked_rows": health.get("blocked_rows") or [],
             "gate": {"N_processed": g.get("N_processed"), "gate_met": g.get("gate_met"),
                      "condition_1_2_met": g.get("condition_1_2_met"), "condition_3_met": g.get("condition_3_met"),
                      "tau_L_committed_in_time": g.get("tau_L_committed_in_time"),
@@ -587,9 +637,314 @@ def build_test_block(tdir: Path) -> dict | None:
         out["sources"].append(rel(gate_p))
         m = re.search(r"^## Verdict:\s*(.+)$", text, re.M)
         out["gate_md_verdict"] = m.group(1).strip() if m else None
-        out["gate_md_interim"] = "INTERIM" in text
         out["gate_md_practice"] = "PRACTICE" in text
     return out
+
+
+# ------------------------------------------- Test results counted from the table
+
+def cell_rows(rows: list, ext: str, m: int, scope: str) -> list:
+    """Rows of one cell of results/test_results.csv (the rule of scripts/make_figures.py)."""
+    return [r for r in rows if r.get("extractor") == ext and fint(r.get("excerpt_min")) == m and r.get("scope") == scope]
+
+
+def class_of(r: dict) -> str:
+    """Distance class of the top-1 candidate from T*, from the pre-registered columns hit_30s,
+    hit_120s and hit_600s (PROTOCOL section 9; the rule of scripts/make_figures.py)."""
+    if (r.get("error_s") or "") == "":
+        return "no_candidate"
+    if fbool(r.get("hit_30s")):
+        return "within_30"
+    if fbool(r.get("hit_120s")):
+        return "from_30_to_120"
+    if fbool(r.get("hit_600s")):
+        return "from_120_to_600"
+    return "beyond_600"
+
+
+def split_counts(rs: list) -> dict:
+    c = {k: 0 for k in CLASS_KEYS}
+    for r in rs:
+        c[class_of(r)] += 1
+    return {"n": len(rs), **c}
+
+
+def table_counts(rows: list) -> dict:
+    """M1, the sensitivity subsets S2 and S3, and the paired baseline counts (S4), counted from
+    results/test_results.csv with the rules of scripts/fill_results.py."""
+    streams = {}
+    for r in rows:
+        streams.setdefault(r["video_id"], r)
+    done = [r for r in streams.values()
+            if r.get("harvest_status") == "done" and r.get("hum_present_v1_full") in ("True", "False")]
+    m1 = rate_kn(sum(1 for r in done if r["hum_present_v1_full"] == "True"), len(done))
+    prim = cell_rows(rows, PRIMARY, PRIMARY_LENGTH_MIN, "full")
+
+    def hits(keep):
+        rs = [r for r in prim if keep(r)]
+        return rate_kn(sum(1 for r in rs if r.get("hit_30s") == "True"), len(rs))
+
+    paired = {}
+    a = {r["video_id"]: r for r in prim}
+    for base in EXTRACTORS[1:]:
+        b = {r["video_id"]: r for r in cell_rows(rows, base, PRIMARY_LENGTH_MIN, "full")}
+        both = sorted(set(a) & set(b))
+        ha = {v: a[v].get("hit_30s") == "True" for v in both}
+        hb = {v: b[v].get("hit_30s") == "True" for v in both}
+        paired[base] = {"n": len(both), "both": sum(1 for v in both if ha[v] and hb[v]),
+                        "v2_only": sum(1 for v in both if ha[v] and not hb[v]),
+                        "baseline_only": sum(1 for v in both if hb[v] and not ha[v]),
+                        "neither": sum(1 for v in both if not ha[v] and not hb[v])}
+    return {"m1_hum_present": m1,
+            "s2_label_stable": hits(lambda r: r.get("label_stable") == "True"),
+            "s3_verified_channels": hits(lambda r: r.get("channel_status") == "verified by metadata step"),
+            "paired_60_full": paired,
+            "rule": "M1: Test streams with audio whose v1 hum flag on all downloaded audio is set. S2: label-stable "
+                    "streams. S3: channels whose official status was verified at the metadata step. Paired: the "
+                    "same streams, top-1 within 30 s (v2, 60 min, full span).",
+            "source": "results/test_results.csv"}
+
+
+def build_breakdown(tdir: Path, rows: list) -> dict | None:
+    """Confident verdicts and all top-1 candidates by distance from T*, extractor v2, copied from
+    results/error_breakdown.json after every v2 cell is recounted from results/test_results.csv."""
+    p = tdir / "error_breakdown.json"
+    if not p.exists():
+        return None
+    d = read_json(p)
+    ins = d.get("inputs") or {}
+    need_same(rel(p), (ins.get("test_results") or {}).get("sha256"), tdir / "test_results.csv", "scripts/make_figures.py")
+    need_same(rel(p), (ins.get("evaluation") or {}).get("sha256"), tdir / "evaluation.json", "scripts/make_figures.py")
+    cells = {}
+    for m in LENGTHS:
+        for sc in SCOPES:
+            cr = cell_rows(rows, PRIMARY, m, sc)
+            mine = {"confident": split_counts([r for r in cr if r.get("verdict") == "match"]), "top1": split_counts(cr)}
+            theirs = d["cells"][PRIMARY][str(m)][sc]
+            for grp in ("confident", "top1"):
+                for k in ("n",) + CLASS_KEYS:
+                    if mine[grp][k] != theirs[grp][k]:
+                        raise StaleInput(f"{rel(p)}: {PRIMARY} {m} min {sc}, {grp} {k} is {theirs[grp][k]} there and "
+                                         f"{mine[grp][k]} in {rel(tdir / 'test_results.csv')}; re-run scripts/make_figures.py")
+            cells.setdefault(str(m), {})[sc] = {
+                "tau": theirs.get("tau"),
+                **{grp: {**{k: theirs[grp][k] for k in ("n",) + CLASS_KEYS},
+                         **{s: rate(theirs[grp].get(s)) for s in ("within_30_share", "within_120_share", "within_600_share")}}
+                   for grp in ("confident", "top1")}}
+    prim = cell_rows(rows, PRIMARY, PRIMARY_LENGTH_MIN, "full")
+    far = sorted(({"video_id": r["video_id"], "e_s": fint(r["error_s"]), "words": dur_text(fint(r["error_s"]))}
+                  for r in prim if r.get("verdict") == "match" and class_of(r) == "beyond_600"),
+                 key=lambda x: abs(x["e_s"]))
+    return {"extractor": PRIMARY, "classes": d.get("classes"), "cells": cells,
+            "primary": {"length_min": PRIMARY_LENGTH_MIN, "scope": "full", "beyond_600": far},
+            "checked": f"every {PRIMARY} cell recounted from {rel(tdir / 'test_results.csv')} (verdict, hit_30s, "
+                       "hit_120s, hit_600s) and equal to the file",
+            "sources": [rel(p), rel(tdir / "test_results.csv")]}
+
+
+def build_m5(tdir: Path, rows: list) -> dict | None:
+    """M5 on SYNTHETIC cuts, the pre-registered part of results/m5.json."""
+    p = tdir / "m5.json"
+    if not p.exists():
+        return None
+    d = read_json(p)
+    ins = d.get("inputs") or {}
+    need_same(rel(p), (ins.get("results_table") or {}).get("sha256"), tdir / "test_results.csv", "scripts/m5_edits.py")
+    need_same(rel(p), (ins.get("gate_frozen") or {}).get("sha256"), tdir / "gate_frozen.json", "scripts/m5_edits.py")
+    if d.get("SYNTHETIC") is not True:
+        raise StaleInput(f"{rel(p)} does not mark its cuts SYNTHETIC; re-run scripts/m5_edits.py")
+    pr = d["preregistered"]
+    hits = sorted(r["video_id"] for r in cell_rows(rows, PRIMARY, PRIMARY_LENGTH_MIN, "full")
+                  if r.get("outcome") == "confident hit")
+    if sorted(pr.get("stream_ids") or []) != hits:
+        raise StaleInput(f"{rel(p)}: its streams are not the confident hits of the primary cell in "
+                         f"{rel(tdir / 'test_results.csv')}; re-run scripts/m5_edits.py")
+    tot = pr["totals"]
+    by = []
+    for L, v in sorted(tot["by_cut_length_s"].items(), key=lambda kv: int(kv[0])):
+        de = v.get("duration_error_s") or {}
+        by.append({"cut_s": int(L), "n_cuts": v["n_cuts"], "detected": rate(v["detected"]),
+                   "dur_err_median_s": de.get("median"), "dur_err_max_s": de.get("max")})
+    if sum(b["n_cuts"] for b in by) != tot["all"]["n_cuts"] or \
+            sum(b["detected"]["k"] for b in by) != tot["all"]["detected"]["k"]:
+        raise StaleInput(f"{rel(p)}: the cut lengths do not add up to the total; re-run scripts/m5_edits.py")
+    de = tot["all"].get("duration_error_s") or {}
+    fa = pr["false_alarms"]
+    meth = d.get("method") or {}
+    return {"label": "SYNTHETIC", "written_ist": d.get("written_ist"), "script": d.get("script"),
+            "note": d.get("note"), "stream_rule": pr.get("stream_rule"),
+            "n_streams": pr["n_streams"], "n_cuts": pr["n_cuts"], "detected": rate(tot["all"]["detected"]),
+            "dur_err": {"n": de.get("n"), "median_s": de.get("median"), "max_s": de.get("max")},
+            "false_alarms": rate(fa["excerpts_with_a_reported_edit"]), "edits_reported": fa.get("edits_reported"),
+            "by_cut_length": by, "detection_window_s": meth.get("detection_window_s"),
+            "locate_scope": meth.get("locate_scope"),
+            "checked": f"its {pr['n_streams']} streams are the confident hits of {PRIMARY}, "
+                       f"{PRIMARY_LENGTH_MIN} min, full span in {rel(tdir / 'test_results.csv')}",
+            "sources": [rel(p)]}
+
+
+def build_m4_measured(tdir: Path) -> dict | None:
+    """M4 read at the measured noise level (results/m4_measured.json): readings A and B at the median."""
+    p = tdir / "m4_measured.json"
+    if not p.exists():
+        return None
+    d = read_json(p)
+    sh = (d.get("inputs") or {}).get("sha256") or {}
+
+    def recorded(name):
+        return next((v for k, v in sh.items() if k == name or k.endswith("/" + name)), None)
+
+    need_same(rel(p), recorded("test_results.csv"), tdir / "test_results.csv", "scripts/make_figures.py")
+    need_same(rel(p), recorded("gate_frozen.json"), tdir / "gate_frozen.json", "scripts/make_figures.py")
+    if recorded("uniqueness_table.csv") and (tdir / "uniqueness_table.csv").exists():
+        need_same(rel(p), recorded("uniqueness_table.csv"), tdir / "uniqueness_table.csv", "scripts/make_figures.py")
+    readings = {}
+    for key in ("A", "B"):
+        for noise in ("hann16", "white"):
+            for sc in SCOPES:
+                x = (((d.get("readings") or {}).get(key) or {}).get("median") or {}).get(noise, {}).get(sc)
+                if not x:
+                    continue
+                # full precision, so that the site rounds the same values the README rounds
+                rates = {str(L): float(v["rate"]) for L, v in (x.get("rates_by_length_min") or {}).items()
+                         if v.get("rate") is not None}
+                sl = x.get("shortest_length_min")
+                readings.setdefault(key, {}).setdefault(noise, {})[sc] = {
+                    "sigma_mhz": round(float(x["sigma_mhz"]), 2), "status": x.get("status"),
+                    "shortest_length_min": sl, "rate_at_shortest": rates.get(str(sl)) if sl is not None else None,
+                    "previous_tested_min": x.get("previous_tested_min"),
+                    "rates_by_length_min": rates, "bracket_mhz": x.get("bracket_mhz")}
+    dist = {}
+    for key in ("A", "B"):
+        x = (d.get("distribution_hz") or {}).get(key) or {}
+        if x:
+            dist[key] = {"n": x.get("n"), **{k + "_mhz": round(1000 * x[k], 1) for k in ("min", "q1", "median", "q3", "max")
+                                              if x.get(k) is not None}}
+    stl = d.get("streams_that_lock") or {}
+    probe = d.get("probe") or {}
+    pre = d.get("preregistered_reading")
+    if pre not in ("A", "B"):
+        raise StaleInput(f"{rel(p)} does not say which reading is the pre-registered one; re-run scripts/make_figures.py")
+    return {"label": "SYNTHETIC noise on real reference excerpts, read at the noise measured on the Test streams that lock",
+            "preregistered_reading": pre, "reading_labels": d.get("reading_labels"),
+            "exploratory_label": (d.get("exploratory") or {}).get("label"),
+            "what": d.get("what"), "reading_A": d.get("reading_A"), "reading_B": d.get("reading_B"),
+            "per_stream_rule": d.get("per_stream_rule"), "streams_definition": stl.get("definition"),
+            "n_streams": stl.get("n"), "n_excerpts": stl.get("n_excerpts"), "distribution": dist,
+            "readings": readings, "levels_mhz": d.get("uniqueness_levels_mhz"),
+            "lengths_min": d.get("uniqueness_lengths_min"),
+            "probe_median_mhz": None if probe.get("sigma_eff_all_median_hz") is None
+            else round(1000 * probe["sigma_eff_all_median_hz"], 1),
+            "sources": [rel(p)]}
+
+
+def _mf():
+    """scripts/make_figures.py, for the display rules of its axes (imported, not run)."""
+    sd = str(REPO / "scripts")
+    if sd not in sys.path:
+        sys.path.insert(0, sd)
+    import make_figures                                   # noqa: E402
+    return make_figures
+
+
+def build_figures(tdir: Path, rows: list) -> dict | None:
+    """The numbers of the M2 signed-error plot (v2) and the M3 reliability plot (primary cell), from
+    results/figures/figures.json, with the axis rules of scripts/make_figures.py. The site draws them."""
+    p = tdir / "figures" / "figures.json"
+    if not p.exists():
+        return None
+    d = read_json(p)
+    ins = d.get("inputs") or {}
+    for key, name in (("test_results", "test_results.csv"), ("evaluation", "evaluation.json"),
+                      ("false_matches", "false_matches.json")):
+        need_same(rel(p), (ins.get(key) or {}).get("sha256"), tdir / name, "scripts/make_figures.py")
+    mf = _mf()
+    m2 = d["m2_signed_error"][PRIMARY]
+    cells = {}
+    for m in LENGTHS:
+        for sc in SCOPES:
+            k = f"{m}/{sc}"
+            c = m2["cells"][k]
+            cr = cell_rows(rows, PRIMARY, m, sc)
+            nh = sum(1 for r in cr if fbool(r.get("hit_30s")))
+            if c["n"] != len(cr) or c["hits"] != nh:
+                raise StaleInput(f"{rel(p)}: M2 {PRIMARY} {k} has n {c['n']} and {c['hits']} hits there and n {len(cr)} "
+                                 f"and {nh} hits in {rel(tdir / 'test_results.csv')}; re-run scripts/make_figures.py")
+            cells[k] = {"n": c["n"], "hits": c["hits"], "no_candidate": c["no_candidate"], "bin_counts": c["bin_counts"]}
+    edges = [float(v) for v in m2["bin_edges_display"]]
+    lin_half = float(mf.LIN_HALF)
+    ticks = [{"pos": round(float(mf.sym_pos(v)), 4), "label": lab.strip()} for v, lab in mf.ERR_TICKS]
+    m2_out = {"extractor": PRIMARY, "bin_edges_display": edges, "band_display_half": lin_half,
+              "band_half_width_s": m2.get("band_half_width_s"), "display_rule": m2.get("display_rule"),
+              "ticks": ticks, "cells": cells}
+    m3 = d["m3_primary_cell"]
+    t = m3["test"]
+    prim = cell_rows(rows, PRIMARY, PRIMARY_LENGTH_MIN, "full")
+    for b in t["bins"]:
+        lo, hi = b["lo"], (math.inf if b["hi"] is None else b["hi"])
+        inb = [r for r in prim if fnum(r.get("confidence")) is not None and lo <= fnum(r["confidence"]) < hi]
+        kk = sum(1 for r in inb if fbool(r.get("hit_30s")))
+        if b["n"] != len(inb) or b["k"] != kk:
+            raise StaleInput(f"{rel(p)}: M3 bin {b['bin']} is {b['k']}/{b['n']} there and {kk}/{len(inb)} in "
+                             f"{rel(tdir / 'test_results.csv')}; re-run scripts/make_figures.py")
+    neg = m3["negatives"]
+    r5 = lambda xs: [round(float(x), 5) for x in xs]                 # noqa: E731
+    m3_out = {"length_min": PRIMARY_LENGTH_MIN, "scope": "full", "tau": neg.get("tau"),
+              "bins": [{"bin": b["bin"].replace("inf", "∞"), "lo": b["lo"], "hi": b["hi"], **rate(b)} for b in t["bins"]],
+              "n_excerpts": t["n_excerpts"], "n_without_confidence": t["n_without_confidence"],
+              "test_hits": r5(t["confidence_hits"]), "test_misses": r5(t["confidence_misses"]),
+              "real": {"n": neg["real"]["n"], "confidence": r5(neg["real"]["confidence"]),
+                       "n_at_or_above_tau": neg["real"]["n_at_or_above_tau"]},
+              "SYNTHETIC": {"n": neg["SYNTHETIC"]["n"], "confidence": r5(neg["SYNTHETIC"]["confidence"]),
+                            "n_at_or_above_tau": neg["SYNTHETIC"]["n_at_or_above_tau"]},
+              "first_bin_edge": float(mf.CONF_BINS[1]),
+              "display_rule": "linear on [0, 0.025], then one unit per doubling (scripts/make_figures.py conf_pos)"}
+    return {"written_ist": d.get("written_ist"), "script": d.get("script"), "m2": m2_out, "m3": m3_out,
+            "png": {"m2": "results/figures/m2_signed_error_v2.png", "m3": "results/figures/m3_reliability_v2_60min_full.png"},
+            "sources": [rel(p), rel(tdir / "test_results.csv")]}
+
+
+def build_libhum() -> dict:
+    """The libhum baseline (PROTOCOL section 12): not run, with the sentence of section 19 that says why."""
+    p = REPO / "PROTOCOL.md"
+    note_source(p)
+    text = p.read_text(encoding="utf-8")
+    sec = text.split("## 19.", 1)[1].split("\n## ", 1)[0] if "## 19." in text else ""
+    entry, reason = None, None
+    for block in re.split(r"\n(?=- \*\*)", sec):
+        line = next((ln for ln in block.splitlines() if "libhum baseline" in ln and "not been run" in ln), None)
+        if line:
+            m = re.match(r"- \*\*([^.]+)\.", block.strip())
+            entry = m.group(1).strip() if m else None
+            sents = re.split(r"(?<=\.)\s+", line.strip().lstrip("- ").strip())
+            reason = next((s for s in sents if "never installed" in s or "because" in s), None)
+            break
+    return {"status": "not run", "reason": reason, "protocol_entry": entry,
+            "source": "PROTOCOL.md section 19" + (f" ({entry})" if entry else "")}
+
+
+def m1_negatives(splits: dict) -> dict | None:
+    """M1 for the real negatives, as description only (PROTOCOL section 11): the v1 hum flag of every harvested
+    real negative (data/harvest_manifest.csv, hum_present_v1), in all and by half (data/splits.csv)."""
+    p = REPO / "data" / "harvest_manifest.csv"
+    if not p.exists():
+        return None
+    done = [r for r in read_csv(p) if r.get("split") == "negative" and r.get("status") == "done"
+            and r.get("hum_present_v1") in ("True", "False")]
+    if not done or any((splits.get(r["video_id"]) or {}).get("split") != "negative" for r in done):
+        return None
+    out = {"label": "description only (PROTOCOL section 11, M1)", "source": rel(p)}
+    for h in ("all", "threshold", "report"):
+        rs = [r for r in done if h == "all" or splits[r["video_id"]].get("half") == h]
+        out[h] = rate_kn(sum(1 for r in rs if r["hum_present_v1"] == "True"), len(rs))
+    return out
+
+
+def report_half_negatives(splits: dict) -> dict:
+    """Report-half negatives selected in data/splits.csv (real and SYNTHETIC)."""
+    real = sum(1 for r in splits.values() if r.get("split") == "negative" and r.get("half") == "report")
+    syn = sum(1 for r in splits.values() if r.get("split") == "negative_synthetic" and r.get("half") == "report")
+    return {"real_selected": real, "SYNTHETIC_selected": syn, "source": "data/splits.csv"}
 
 
 # ---------------------------------------------------------------------- clips
@@ -814,15 +1169,17 @@ def test_clips(ref, tdir: Path, splits: dict, log) -> tuple:
     for r in rows:
         by_vid.setdefault(r["video_id"], []).append(r)
     clips = []
+    fz_p = tdir / "gate_frozen.json"
+    frozen = fmt_day_ist(json.loads(fz_p.read_text(encoding="utf-8")).get("frozen_ist")) if fz_p.exists() else None
     for vid, rs in by_vid.items():
         r0 = rs[0]
         meta = base_meta(splits.get(vid, {"video_id": vid}))
         src_split = r0.get("split") or "test"
         meta.update(split=key_split, source_split=src_split,
                     split_note=("Test split: searched blind after tau and L were committed (PROTOCOL section 14). "
-                                + ("Gate frozen: these are the final v1 numbers."
-                                   if (Path(__file__).resolve().parents[1] / "results" / "gate_frozen.json").exists()
-                                   else "Numbers are interim until the gate is frozen.") if key_split == "test" else
+                                + (f"The gate was frozen on {frozen} (results/gate_frozen.json) and no further Test "
+                                   "download is planned (PROTOCOL section 19), so these results are final."
+                                   if frozen else "Scored before the gate was frozen.") if key_split == "test" else
                                 "PRACTICE run of scripts/evaluate.py on Calibration traces. Not a Test result."))
         cells = [r for r in rs if r.get("extractor") and r.get("scope")]
         meta["harvest"] = {"status": r0.get("harvest_status"), "reason": r0.get("harvest_reason") or None,
@@ -883,11 +1240,46 @@ def test_clips(ref, tdir: Path, splits: dict, log) -> tuple:
             truth={"T_star_ist": prim.get("true_start_ist") or None, "T_star_index": tstar,
                    "L_s": fint(prim["L_s"]), "D_s": fnum(prim["label_drift_s"]), "e_s": e,
                    "e_D0_s": fint(prim["error_D0_s"]), "hit_30s": fbool(prim["hit_30s"]),
+                   "hit_120s": fbool(prim.get("hit_120s")), "hit_600s": fbool(prim.get("hit_600s")),
+                   "distance_class": class_of(prim),
                    "rule": "T* = release time in IST + L + D (PROTOCOL section 6); e = top candidate start - T*"},
             verdict=prim["verdict"], verdict_reason=prim["verdict_reason"],
         )
         clips.append(meta)
+    if key_split == "test":
+        clips += never_attempted_clips(tdir, splits, set(by_vid))
     return clips, mode
+
+
+def never_attempted_clips(tdir: Path, splits: dict, listed: set) -> list:
+    """Selected Test streams that no download ever attempted, so results/test_results.csv has no row for them.
+    They come from the flow drops of results/evaluation.json, so the clip list shows every selected stream."""
+    ev_p = tdir / "evaluation.json"
+    if not ev_p.exists():
+        return []
+    never = set()
+    for d in (read_json(ev_p).get("flow") or {}).get("drops") or []:
+        for reason, ids in (d.get("reasons") or {}).items():
+            if reason.lower().startswith("not attempted"):
+                never.update(ids)
+    out = []
+    why = ("the network was down at its last try, and the Test harvest stopped at the bot check before trying it "
+           "again (results/flow_table.md)")
+    for vid in sorted(never - listed):
+        s = splits.get(vid)
+        if not s or s.get("split") != "test":
+            continue
+        meta = base_meta(s)
+        meta.update(split="test", source_split="test",
+                    split_note="Test split: selected, but never downloaded. It is counted in the flow table "
+                               "(results/flow_table.md) and in no rate.",
+                    harvest={"status": "not attempted", "reason": why, "by_decision_time": False},
+                    hum={"m1_present": None, "m1_max_ratio": None, "m1_ratios": None,
+                         "rule": "hum flag: any harmonic's median peak-to-floor ratio is 3 or more"},
+                    searches=[], search=None, verdict="not attempted", verdict_reason=why,
+                    source=rel(ev_p) + " (flow drops)")
+        out.append(meta)
+    return out
 
 
 def summary_row(c: dict) -> dict:
@@ -1023,7 +1415,7 @@ def main(argv=None) -> int:
     ap.add_argument("--derived-dir", default=None, help="reference folder (default $GUNJ_DERIVED or ../data/derived)")
     ap.add_argument("--hero", default=None, help="force the hero clip, as split:video_id")
     ap.add_argument("--no-full-search", action="store_true", help="skip the hero's full-scope search")
-    ap.add_argument("--repo-url", default=None, help="public repository URL for links (optional)")
+    ap.add_argument("--repo-url", default=REPO_URL, help=f"public repository URL for links (default {REPO_URL})")
     args = ap.parse_args(argv)
     t_start = time.time()
     out = Path(args.out)
@@ -1032,12 +1424,31 @@ def main(argv=None) -> int:
     def log(msg):
         print(f"[{dt.datetime.now(IST).strftime('%H:%M:%S')}] {msg}", flush=True)
 
+    # The Test results and the later result files first: they are cheap, and a stale file stops the
+    # export before any search runs.
+    splits = splits_rows()
+    rows_p = tdir / "test_results.csv"
+    rows = read_csv(rows_p) if rows_p.exists() else []
+    try:
+        results = {"counts": table_counts(rows) if rows else None,
+                   "breakdown": build_breakdown(tdir, rows) if rows else None,
+                   "m5": build_m5(tdir, rows) if rows else None,
+                   "m4_measured": build_m4_measured(tdir),
+                   "figures": build_figures(tdir, rows) if rows else None,
+                   "libhum": build_libhum(),
+                   "report_half_negatives": report_half_negatives(splits),
+                   "m1_negatives": m1_negatives(splits)}
+    except StaleInput as e:
+        print(f"export_site_data: stopped, nothing written. {e}", file=sys.stderr)
+        return 2
+    for k in ("breakdown", "m5", "m4_measured", "figures"):
+        log(f"{k}: " + ("not computed (file not found)" if results[k] is None else "read and checked"))
+
     derived = Path(args.derived_dir) if args.derived_dir else gref.default_derived_dir()
     ref = gref.load(derived, mmap=True)                    # np.load(..., mmap_mode="r")
     note_source(derived / gref.META_NAME)
     log(f"reference: {len(ref):,} s from {ref.t0} (memory-mapped)")
 
-    splits = splits_rows()
     cal = read_json(REPO / "results" / "calibration.json")
     tun = read_json(REPO / "results" / "v2_tuning.json")
     tau = build_tau()
@@ -1074,7 +1485,7 @@ def main(argv=None) -> int:
         "calibration": cal_summary(cal, lat, tau), "dev": dev_summary(tun),
         "random_guess": ss.get("analytic_random_guess"),
         "splits": {k: {"n": v.get("n")} for k, v in ss.get("splits", {}).items()},
-        "hero": hero, "test": test_block,
+        "hero": hero, "test": test_block, "results": results,
         "clip_counts": {sp: sum(1 for c in clips if c["split"] == sp) for sp in ("dev", "calibration", "test", "practice")},
     }
 

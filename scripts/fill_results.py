@@ -68,6 +68,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 Z95 = 1.959964                                    # PROTOCOL section 13
 PENDING = "[pending: gate 8 Nov 14:00]"
+M4_EXPLORATORY = "EXPLORATORY (post hoc)"         # label of every analysis PROTOCOL.md did not pre-register
 EXTRACTORS = ("v2", "v1", "naive")                # scripts/eval_common.py
 PRIMARY = "v2"
 LENGTHS = (10, 20, 40, 60)
@@ -455,6 +456,51 @@ def report_half(src: Sources) -> tuple[int, int]:
     return sp["negative"]["by_half"]["report"], sp["negative_synthetic"]["by_half"]["report"]
 
 
+def m1_negatives(src: Sources) -> dict | None:
+    """M1 for the real negatives, as description only (PROTOCOL section 11, M1): the v1 hum flag of every
+    harvested real negative (data/harvest_manifest.csv, hum_present_v1), by half (data/splits.csv)."""
+    man, spl = src.csv("data/harvest_manifest.csv"), src.csv("data/splits.csv")
+    if man is None or spl is None:
+        return None
+    half = {r["video_id"]: r.get("half") for r in spl if r.get("split") == "negative"}
+    done = [r for r in man if r.get("split") == "negative" and r.get("status") == "done"
+            and r.get("hum_present_v1") in ("True", "False")]
+    if not done or any(r["video_id"] not in half for r in done):
+        return None
+    out = {"all": (sum(r["hum_present_v1"] == "True" for r in done), len(done))}
+    for h in ("threshold", "report"):
+        rs = [r for r in done if half[r["video_id"]] == h]
+        out[h] = (sum(r["hum_present_v1"] == "True" for r in rs), len(rs))
+    return out
+
+
+def edit_reach(src: Sources) -> dict:
+    """How close to either end of a trace find_edits can report an edit, read from the frozen gunj/match.py:
+    split points are searched at least min_seg frames (1 frame = 1 s) from each end, and the refinement of a
+    split can move it by up to step + k frames."""
+    text = src.text(src.repo / "gunj" / "match.py") or ""
+    sig = re.search(r"def find_edits\((.*?)\)\s*->", text, re.S)
+    seg = re.search(r"_refine_split\([^)]*?\bstep\s*\+\s*(\d+)\)", text)
+    if not sig or not seg:
+        raise FillError("cannot read the find_edits defaults or the split refinement from gunj/match.py")
+    d = dict(re.findall(r"\b(min_seg|step|min_jump):\s*int\s*=\s*(\d+)", sig.group(1)))
+    if set(d) != {"min_seg", "step", "min_jump"}:
+        raise FillError("gunj/match.py: find_edits has no integer default for min_seg, step or min_jump")
+    min_seg, step = int(d["min_seg"]), int(d["step"])
+    refine = step + int(seg.group(1))
+    return {"min_seg": min_seg, "step": step, "min_jump": int(d["min_jump"]), "refine": refine,
+            "closest": min_seg - refine}
+
+
+def narration_pace(src: Sources) -> list[tuple]:
+    """(line, words, slot in s, words a second) for every narration line; the slot runs to the next start."""
+    narr = narration(src)
+    lines = narr["lines"]
+    ends = [t for _, t, _ in lines[1:]] + [narr["end"]]
+    return [(n, len(text.split()), end - start, len(text.split()) / (end - start))
+            for (n, start, text), end in zip(lines, ends)]
+
+
 def other_results(src: Sources, words_: tuple) -> list[str]:
     return sorted(p.name for p in src.results.glob("*") if p.is_file() and any(w in p.name.lower() for w in words_))
 
@@ -616,6 +662,38 @@ def harvest_facts(ts: TestState) -> dict:
     return out
 
 
+def lock_facts(ts: TestState) -> dict | None:
+    """The stream-level counts of extractor v2 over the full span and +-90 days (the gate's scopes), recounted
+    from results/test_results.csv and checked against the frozen gate: gate locks (top-1 within 30 s and
+    confidence at or above tau), streams with a confident hit, streams with the verdict "match", and how these
+    sit against the M1 hum flag that the flow table follows."""
+    gate, _, _ = ts.gate()
+    if gate is None:
+        return None
+    rows = [r for (ext, _, s), cell in ts.cells.items() if ext == PRIMARY and s in ("full", "90d")
+            for r in cell.values()]
+    locks = {r["video_id"] for r in rows if r.get("hit_30s") == "True" and r.get("confidence_ge_tau") == "True"}
+    conf = {r["video_id"] for r in rows if r.get("outcome") == "confident hit"}
+    match = {r["video_id"] for r in rows if r.get("verdict") == "match"}
+    g = gate["by_extractor"][PRIMARY]
+    if len(locks) != g["n_streams_with_lock"] or sorted(locks) != sorted(g.get("locked_streams") or locks):
+        raise FillError("the gate locks recounted from test_results.csv differ from the frozen gate")
+    if g.get("n_streams_with_confident_hit") is not None and g["n_streams_with_confident_hit"] != len(conf):
+        raise FillError("the streams with a confident hit recounted from test_results.csv differ from the gate")
+    no_verdict = sorted(locks - conf)
+    lock_rows = [r for r in rows if r["video_id"] in set(no_verdict) and r.get("hit_30s") == "True"
+                 and r.get("confidence_ge_tau") == "True"]
+    if any(r.get("trace_hum_present") != "False" for r in lock_rows):
+        raise FillError("a gate lock without a confident hit has the hum flag on a locking excerpt")
+    m1 = {v: r.get("hum_present_v1_full") == "True" for v, r in ts.streams.items()}
+    return {"locks": len(locks), "confident": len(conf), "locks_without_verdict": len(no_verdict),
+            "match": len(match), "match_m1": sum(1 for v in match if m1.get(v)),
+            "confident_m1": sum(1 for v in conf if m1.get(v)),
+            "match_without_m1": sorted(v for v in match if not m1.get(v)),
+            "confident_without_m1": sorted(v for v in conf if not m1.get(v)),
+            "m1": sum(1 for v in m1.values() if v)}
+
+
 def block_facts(ts: TestState) -> dict:
     """The bot check that stopped the harvest: blocked streams and the time of the first log line."""
     h = ts.health()
@@ -706,13 +784,17 @@ def narration_rows(src: Sources, ts: TestState) -> list[tuple]:
               "`results/error_breakdown.json`"))
     far = far_verdicts(ts)
     far_txt = " and ".join(f"{num(e)} s ({dur_text(e)})" for e, _ in far)
-    R.append((6, f"{words(c['within_30']).capitalize()} within thirty seconds, {words(c['from_30_to_120'])} more "
-                 f"within two minutes, {words(c['from_120_to_600'])} within ten, {words(c['beyond_600'])} plainly wrong",
-              f"{words(c['within_30'])} within thirty seconds, {words(c['from_30_to_120'])} more within two minutes, "
-              f"{words(c['from_120_to_600'])} within ten, {words(c['beyond_600'])} plainly wrong",
-              f"{c['within_30']} within 30 s, {c['from_30_to_120']} from 30 to 120 s, {c['from_120_to_600']} from 120 "
-              f"to 600 s, {c['beyond_600']} beyond 600 s" + (f": off by {far_txt}" if far else ""),
-              "`results/error_breakdown.json`; `results/test_results.csv`, `error_s`"))
+    wrong = c["n"] - c["within_30"] - c["no_candidate"]
+    if (c["within_30"], wrong) != (m2["confident_hit"]["k"], m2["confident_wrong"]["k"]):
+        raise FillError("error_breakdown.json and evaluation.json disagree on the confident hits and confident wrong "
+                        "verdicts of the primary cell; re-run scripts/make_figures.py")
+    R.append((6, f"{words(c['within_30']).capitalize()} were within thirty seconds and {words(wrong)} were wrong",
+              f"{words(c['within_30'])} were within thirty seconds and {words(wrong)} were wrong",
+              f"{c['within_30']} confident hits (within 30 s) and {wrong} confident wrong verdicts (more than 30 s "
+              f"off; PROTOCOL section 9): {c['from_30_to_120']} from 30 to 120 s, {c['from_120_to_600']} from 120 "
+              f"to 600 s, {c['beyond_600']} beyond 600 s" + (f", off by {far_txt}" if far else ""),
+              "`results/evaluation.json` (`m2`); `results/error_breakdown.json`; `results/test_results.csv`, "
+              "`error_s`"))
     R.append((7, f"about {words(round(dr['max_last'] / 60))} minutes",
               f"up to about {words(round(dr['max_last'] / 60))} minutes",
               f"largest label drift by the end of a file: {secs_text(dr['max_last'])}",
@@ -728,14 +810,18 @@ def narration_rows(src: Sources, ts: TestState) -> list[tuple]:
         raise FillError("results/m4_measured.json is missing, so line 8 of the narration cannot be checked; "
                         "run scripts/make_figures.py")
     ra, rb = (mm["readings"][k]["median"]["hann16"]["full"] for k in ("A", "B"))
-    if ra["status"] != "read" or rb["status"] != "read":
-        raise FillError("m4_measured.json has no clip length at one of the two median noise levels")
-    lo_min, hi_min = sorted((ra["shortest_length_min"], rb["shortest_length_min"]))
-    R.append((8, f"{words(lo_min)} to {words(hi_min)} minutes", f"{words(lo_min)} to {words(hi_min)} minutes",
-              f"shortest tested length with at least 90% unique locks over the full span, SYNTHETIC hann16 noise at "
-              f"the median noise of the {mm['streams_that_lock']['n']} Test streams that lock: "
-              f"{ra['shortest_length_min']} min at {ra['sigma_mhz']:.1f} mHz (r as scored), "
-              f"{rb['shortest_length_min']} min at {rb['sigma_mhz']:.1f} mHz (unweighted r)",
+    if rb["status"] != "read" or rb.get("previous_tested_min") is None:
+        raise FillError("m4_measured.json has no clip length, or no shorter tested length, at the median noise of "
+                        "reading B, so line 8 of the narration cannot be checked")
+    lo_min, hi_min = rb["previous_tested_min"], rb["shortest_length_min"]
+    rate_at = lambda r, m: 100 * r["rates_by_length_min"][str(m)]["rate"]       # noqa: E731
+    expl = (f"; the {M4_EXPLORATORY} reading A (r as scored) is not spoken: {ra['shortest_length_min']} min at "
+            f"{ra['sigma_mhz']:.1f} mHz" if ra["status"] == "read" else "")
+    R.append((8, f"needed {words(lo_min)} to {words(hi_min)} minutes", f"{words(lo_min)} to {words(hi_min)} minutes",
+              f"reading B, as pre-registered (unweighted r, the computation of scripts/probe_noise.py): median noise "
+              f"{rb['sigma_mhz']:.1f} mHz over the {mm['streams_that_lock']['n']} Test streams that lock; with "
+              f"SYNTHETIC hann16 noise over the full span, {hi_min} min is the shortest tested length with at least 90% "
+              f"unique locks ({rate_at(rb, hi_min):.1f}%) and {lo_min} min gives {rate_at(rb, lo_min):.1f}%" + expl,
               "`results/m4_measured.json`"))
     ids = video_ids(src)
     lock = ts.cells.get((PRIMARY, 60, "full"), {}).get(ids["LOCK_ID"])
@@ -754,7 +840,7 @@ def narration_rows(src: Sources, ts: TestState) -> list[tuple]:
     if not nv or nv[0].get("hum_present_v1_full") != "False" or any(r.get("verdict") != "no verdict" for r in nv):
         raise FillError(f"the no-hum example {ids['NV_ID']} of video/make_video.py has a hum flag or a verdict "
                         f"in test_results.csv")
-    R.append((10, "no hum, so Gunj gives no verdict", "no hum, no verdict",
+    R.append((10, "no hum, so no verdict", "no hum, no verdict",
               f"Test stream {ids['NV_ID']}: M1 hum flag off, and no verdict in any of its {len(nv)} v2 searches",
               "`results/test_results.csv`"))
     m3 = ts.m3()
@@ -790,6 +876,19 @@ def b_narration_sources(src, ts) -> str:
 
 def b_narration_words(src, ts) -> str:
     return str(sum(len(text.split()) for _, _, text in narration(src)["lines"]))
+
+
+def b_narration_pace(src, ts) -> str:
+    """Whether every line fits the time until the next line starts at two words a second."""
+    pace = narration_pace(src)
+    n, w, slot, wps = max(pace, key=lambda p: (p[3], -p[0]))
+    if wps <= 2.0:
+        return (f"At two words a second every line ends before the next one starts; the tightest is line {n}, "
+                f"{w} words in {slot} s ({wps:.1f} words a second)")
+    over = [p[0] for p in pace if p[3] > 2.0]
+    return (f"At two words a second {plural(len(over), 'line')} {', '.join(str(x) for x in over)} "
+            f"{plural(len(over), 'runs', 'run')} past the next caption; line {n} needs {wps:.1f} words a second "
+            f"({w} words in {slot} s)")
 
 
 def b_vo(n: int):
@@ -962,8 +1061,13 @@ def b_lim_m4(src, ts) -> str:
     if mm is None:
         return "not computed (run `scripts/make_figures.py`)"
     ra, rb = (mm["readings"][k]["median"]["hann16"]["full"] for k in ("A", "B"))
-    return (f"{ra['shortest_length_min']} min at {ra['sigma_mhz']:.1f} mHz (the correlation as scored) and "
-            f"{rb['shortest_length_min']} min at {rb['sigma_mhz']:.1f} mHz (the unweighted correlation)")
+    if rb["status"] != "read":
+        return f"not read at the measured level ({rb['status']})"
+    prev = rb.get("previous_tested_min")
+    short = f" ({prev} min falls short)" if prev is not None else ""
+    expl = (f"; an {M4_EXPLORATORY} reading with v2's weighted correlation gives {ra['shortest_length_min']} min at "
+            f"{ra['sigma_mhz']:.1f} mHz" if ra["status"] == "read" else "")
+    return f"{rb['shortest_length_min']} min at {rb['sigma_mhz']:.1f} mHz{short}{expl}"
 
 
 # ----------------------------------------------------------------- headline and status
@@ -992,25 +1096,32 @@ def b_headline(src, ts) -> str:
              f"{hp['k']} of the {hp['n']} such streams with a 60-min excerpt ({100 * hp['rate']:.1f}%, 95% CI "
              f"{100 * hp['wilson95'][0]:.1f} to {100 * hp['wilson95'][1]:.1f}%).")
     p = gate["by_extractor"][PRIMARY]
+    lk = lock_facts(ts)
+    lock_def = (f" (a lock is a top candidate within 30 s with confidence at or above tau, at any excerpt length; "
+                f"{lk['confident']} of the {lk['locks']} locking streams also get the verdict \"match\")"
+                if lk else "")
     L.append(f"- **Label-drift correction.** The grid log's own time labels run late by up to "
              f"{secs_text(dr['max_last'])}. Without Gunj's per-stream correction the primary endpoint falls to "
              f"{prose_rate(m2['top1_hit_D0'])}, and the streams that lock blind at the gate fall from "
-             f"{p['n_streams_with_lock']} to {p['n_streams_with_lock_D0']} of {gate['N_processed']}.")
+             f"{p['n_streams_with_lock']} to {p['n_streams_with_lock_D0']} of {gate['N_processed']}{lock_def}.")
     bd = breakdown_facts(src, ts)
     nv = m2["no_verdict"]["k"]
+    cw = m2["confident_wrong"]
     if bd is None:
         L.append(f"- **Confident verdicts.** {m2['confident_hit']['k']} are within 30 s and "
-                 f"{m2['confident_wrong']['k']} are further off; the other {nv} excerpts get no verdict.")
+                 f"{cw['k']} are further off; the other {nv} excerpts get no verdict.")
     else:
         c = bd["cells"][PRIMARY]["60"]["full"]["confident"]
         far = far_verdicts(ts)
         far_txt = (" (" + " and ".join(dur_text(e) for e, _ in far) + ")") if far else ""
         be = lambda n: plural(n, "is", "are")
         L.append(f"- **Confident verdicts.** Gunj gives a verdict for {c['n']} of the {m2['n']} and none for the "
-                 f"other {nv}. Of the {c['n']}, {c['within_30']} {be(c['within_30'])} within 30 s, "
-                 f"{c['from_30_to_120']} {be(c['from_30_to_120'])} 30 to 120 s off, {c['from_120_to_600']} "
-                 f"{be(c['from_120_to_600'])} 120 to 600 s off, and {c['beyond_600']} {be(c['beyond_600'])} wrong by "
-                 f"more than 10 minutes{far_txt}.")
+                 f"other {nv}. Of the {c['n']}, {c['within_30']} {be(c['within_30'])} within 30 s and {cw['k']} "
+                 f"count as confident wrong ({cw['k']}/{cw['n']}, {100 * cw['k'] / cw['n']:.1f}%, 95% CI "
+                 f"{100 * cw['wilson95'][0]:.1f} to {100 * cw['wilson95'][1]:.1f}%): {c['from_30_to_120']} "
+                 f"{be(c['from_30_to_120'])} 30 to 120 s off, {c['from_120_to_600']} {be(c['from_120_to_600'])} "
+                 f"120 to 600 s off and {c['beyond_600']} {be(c['beyond_600'])} wrong by more than 10 "
+                 f"minutes{far_txt}.")
     m3 = ts.m3()
     real, syn = m3["real"]["false_match"], m3["SYNTHETIC"]["false_match"]
     if real["n"]:
@@ -1218,8 +1329,10 @@ def _sec_breakdown(src, ts, bd) -> list[str]:
         L.append(f"| {lab} | {d['n']} | {d['within_30']} | {d['from_30_to_120']} | {d['from_120_to_600']} | "
                  f"{d['beyond_600']} | {d['no_candidate']} |")
     L.append("")
-    L.append(f"- Confident verdicts, cumulative: within 30 s {rate_of(c['within_30_share'])}; within 120 s "
-             f"{rate_of(c['within_120_share'])}; within 600 s {rate_of(c['within_600_share'])}.")
+    w120 = c["within_30"] + c["from_30_to_120"]
+    L.append(f"- Confident verdicts, counted with the coarse columns: {c['within_30']} within 30 s, {w120} within "
+             f"120 s and {w120 + c['from_120_to_600']} within 600 s of the {c['n']}. PROTOCOL section 11 defines no "
+             f"rate over confident verdicts, so no share or interval is given for them.")
     if far:
         L.append(f"- The {len(far)} confident {plural(len(far), 'verdict')} beyond 600 s "
                  f"{plural(len(far), 'is', 'are')} off by "
@@ -1294,6 +1407,15 @@ def _sec_m1(src, ts) -> list[str]:
             L.append(f"| {v} | {fmt_rate(kv, nv)} |")
     k, n = ts.m1()
     L += [f"| all | {fmt_rate(k, n)} |", ""]
+    neg = m1_negatives(src)
+    if neg is None:
+        L += ["M1 for the real negatives (description only, PROTOCOL section 11): not computed, because "
+              "`data/harvest_manifest.csv` or `data/splits.csv` is missing.", ""]
+    else:
+        L += [f"M1 for the real foreign 50 Hz negatives, as description only (PROTOCOL section 11): the v1 hum flag is "
+              f"set for {fmt_rate(*neg['all'])} harvested streams, {neg['threshold'][0]}/{neg['threshold'][1]} in the "
+              f"threshold half and {neg['report'][0]}/{neg['report'][1]} in the report half (`data/harvest_manifest.csv`, "
+              f"column `hum_present_v1`; halves from `data/splits.csv`).", ""]
     return L
 
 
@@ -1409,8 +1531,29 @@ def _sec_m5(src, ts, m5) -> list[str]:
 def _sec_flow(src, ts) -> list[str]:
     L = ["### Flow, Test streams (`results/evaluation.json`; drop reasons in `results/flow_table.md`)", ""]
     L += ["| step | streams |", "|---|---|"]
-    for s in ts.ev["flow"]["steps"]:
-        L.append(f"| {s['step']} | {s['n']} |")
+    steps = ts.ev["flow"]["steps"]
+    hum_at = next((i for i, s in enumerate(steps) if s["step"].startswith("hum present")), None)
+    for i, s in enumerate(steps):
+        lab = s["step"].replace("+-90 d", "±90 days")
+        if hum_at is not None and i > hum_at:
+            lab += f", of the {steps[hum_at]['n']} hum-present streams"
+        L.append(f"| {lab} | {s['n']} |")
+    L.append("")
+    lk = lock_facts(ts)
+    if lk is None or hum_at is None:
+        return L
+    if (lk["m1"], lk["match_m1"], lk["confident_m1"]) != tuple(steps[j]["n"] for j in range(hum_at, hum_at + 3)):
+        raise FillError("the flow of evaluation.json differs from the counts recounted from test_results.csv")
+    nm, nc = len(lk["match_without_m1"]), len(lk["confident_without_m1"])
+    L.append(f"- The flow follows the {lk['m1']} streams with the M1 hum flag on all their audio. A verdict uses the "
+             f"hum flag of the excerpt's own trace, so {nm} more {plural(nm, 'stream')} got the verdict \"match\" "
+             f"although the M1 flag is off, {nc} of them with a confident hit (`results/flow_table.md`).")
+    L.append(f"- Over all {ts.ev['n_with_trace']} streams with a trace, {lk['match']} get the verdict \"match\" at some "
+             f"excerpt length (v2, full span or ±90 days) and {lk['confident']} have a confident hit. The gate's "
+             f"{lk['locks']} locks need a top candidate within 30 s and confidence at or above tau, but not the hum "
+             f"flag, so {lk['locks_without_verdict']} of them get no verdict at the excerpts that lock. None of these "
+             f"stream counts is the primary endpoint, which counts the 60-min excerpts over the full span "
+             f"({ts.m2()['top1_hit']['k']} of {ts.m2()['n']}).")
     return L + [""]
 
 
@@ -1431,7 +1574,7 @@ def _sec_pretest(src) -> list[str]:
              + (", and the clock check gives the same four offsets within 1 s. " if dr["agree"] else
                 "; the clock check does not reproduce all four offsets. ")
              + f"Gunj therefore corrects every stream by its own drift estimate D. For {dr['gt30']} of the "
-             f"{dr['test_n']} Test streams |D| is over 30 s, wider than the hit window itself (median |D| "
+             f"{dr['test_n']} Test streams |D| is over 30 s, more than the ±30 s hit tolerance itself (median |D| "
              f"{secs_text(dr['median_abs'])}, largest {secs_text(dr['max_abs'])}; `results/splits_summary.json`). "
              f"{dr['stable']} Test streams are label-stable (S2).")
     rr, iq = lf["range"], lf["iqr"]
@@ -1478,8 +1621,8 @@ def _m4_table(src) -> list[str]:
             c = f["cells"][(scope, kind)]
             fr = c["first"]
             shortest = "none of the tested lengths" if fr is None else f"{fr['length_min']} min"
-            rate = "n/a" if fr is None else fmt_rate(int(fr["hits"]), int(fr["N"]),
-                                                     (float(fr["wilson95_lo"]), float(fr["wilson95_hi"])))
+            # the interval is computed from hits and N (PROTOCOL section 13), not from the CSV's rounded columns
+            rate = "n/a" if fr is None else fmt_rate(int(fr["hits"]), int(fr["N"]))
             ns = sorted({r["N"] for r in c["rows"]})
             per = ((", ".join(r["hits"] for r in c["rows"]) + f" of {ns[0]}") if len(ns) == 1 else
                    ", ".join(f"{r['hits']}/{r['N']}" for r in c["rows"]))
@@ -1502,29 +1645,36 @@ def _m4_measured(src, ts) -> list[str]:
             return r["status"]
         m = r["shortest_length_min"]
         return f"{m} min ({100 * r['rates_by_length_min'][str(m)]['rate']:.1f}%)"
-    labels = {"A": "A: r as scored (v2's weighted correlation)", "B": "B: unweighted r of the same traces"}
+    labels = {"B": "B, pre-registered: unweighted r, as in `scripts/probe_noise.py`",
+              "A": f"A, {M4_EXPLORATORY}: r as scored (v2's weighted correlation)"}
     L = ["", f"**M4 at the measured noise level.** PROTOCOL section 11 reads the curve at the equivalent trace noise "
-             f"of the Test streams that lock, computed as in `scripts/probe_noise.py`. For the "
-             f"{mm['streams_that_lock']['n']} streams the gate counts as locks ({mm['streams_that_lock']['n_excerpts']} "
-             f"locking excerpts, one median per stream) the noise depends on which correlation r is used. The "
-             f"protocol does not say which, and the simulation's matcher is unweighted, so both readings are "
-             f"reported and neither is preferred. Source: `results/m4_measured.json` (`scripts/make_figures.py`); "
-             f"SYNTHETIC `hann16` noise, rates interpolated linearly between the tested noise levels.", "",
+             f"of the Test streams that lock, \"computed as in `scripts/probe_noise.py`\". That script turns the plain "
+             f"(unweighted) Pearson r of a trace with the reference window it matched, and the plain standard "
+             f"deviation s of that window, into sigma = s · sqrt(1/r² − 1). Reading B applies the same computation to "
+             f"the {mm['streams_that_lock']['n']} streams the gate counts as locks "
+             f"({mm['streams_that_lock']['n_excerpts']} locking excerpts, one median per stream), so it is the "
+             f"pre-registered reading. Reading A puts v2's weighted correlation, as scored, into the same formula; it "
+             f"was added after the Test results were known and is {M4_EXPLORATORY}. Source: "
+             f"`results/m4_measured.json` (`scripts/make_figures.py`); SYNTHETIC `hann16` noise, rates interpolated "
+             f"linearly between the tested noise levels.", "",
          "| reading | median noise over streams (Q1 to Q3) | full span | ±90 days | ±1 day |", "|---|---|---|---|---|"]
-    for k in ("A", "B"):
+    for k in ("B", "A"):
         d = dist[k]
         L.append(f"| {labels[k]} | {mhz(d['median'])} mHz ({mhz(d['q1'])} to {mhz(d['q3'])}) | "
                  + " | ".join(entry(k, s) for s in SCOPES) + " |")
     tested = ", ".join(str(x) for x in mm["uniqueness_lengths_min"])
     L += ["", f"Each entry is the shortest tested length ({tested} min) whose interpolated share of unique locks is "
-              f"at least 90%, with that share. The readings at the quartiles and for other definitions of \"streams "
-              f"that lock\" are in `results/m4_measured.md`.", ""]
+              f"at least 90%, with that share; the length needed lies between the tested length before it and the "
+              f"one shown. The readings at the quartiles, and the {M4_EXPLORATORY} readings for other definitions of "
+              f"\"streams that lock\", are in `results/m4_measured.md`.", ""]
     ra, rb = (mm["readings"][k]["median"]["hann16"]["full"] for k in ("A", "B"))
-    cap = (f"look at the two medians in the top panel, {ra['sigma_mhz']:.1f} mHz with r as scored and "
-           f"{rb['sigma_mhz']:.1f} mHz with the unweighted r")
-    if ra["status"] == "read" and rb["status"] == "read":
-        cap += (f": in the bottom-left panel (full span) their curves are first at or above the 90% line at "
-                f"{ra['shortest_length_min']} min and at {rb['shortest_length_min']} min")
+    cap = f"look at the reading B median in the top panel, {rb['sigma_mhz']:.1f} mHz (pre-registered)"
+    if rb["status"] == "read":
+        cap += (f": in the bottom-left panel (full span) its curve first reaches the 90% line at "
+                f"{rb['shortest_length_min']} min")
+    if ra["status"] == "read":
+        cap += (f". The {M4_EXPLORATORY} reading A ({ra['sigma_mhz']:.1f} mHz, r as scored) reaches it at "
+                f"{ra['shortest_length_min']} min")
     L += figure(src, "m4_measured_noise.png",
                 "Equivalent trace noise of the Test streams that lock, and the uniqueness table read at the two medians",
                 cap + ".")
@@ -1555,9 +1705,14 @@ def _sec_exploratory(src, ts, bd, m5) -> list[str]:
         g = m5["exploratory"]["gate_locks"]
         add = g["additional_streams_only"]
         oc = (add.get("uncut_60min_excerpt_in_results_table") or {}).get("full_scope_outcome") or {}
-        why = ("" if not oc else " The additional streams are gate locks through another excerpt length or scope; "
-               "the 60-min excerpt of " + " and of ".join(f"{n} is \"{k}\"" for k, n in sorted(oc.items()))
-               + " over the full span.")
+        prim = ts.cells.get((PRIMARY, 60, "full"), {})
+        in_cell = [v for v in add.get("stream_ids") or [] if v in prim and prim[v].get("hit_30s") == "True"
+                   and prim[v].get("confidence_ge_tau") == "True" and prim[v].get("outcome") == "no verdict"]
+        cell_txt = (f" {len(in_cell)} of the {add['n_streams']} lock in the 60-min full-span cell itself and get no "
+                    f"verdict there only because their trace has no hum flag." if in_cell else "")
+        why = ("" if not oc else " The additional streams are gate locks through another excerpt length, the ±90-day "
+               "scope, or a lock without the hum flag; over the full span the 60-min excerpt of "
+               + " and of ".join(f"{n} is \"{k}\"" for k, n in sorted(oc.items())) + "." + cell_txt)
         L.append(f"- **EXPLORATORY (post hoc): M5 on every gate lock that has SYNTHETIC cut traces** "
                  f"(`results/m5.md`). Of the {g['n_gate_locks']} gate locks, {g['n_streams']} have SYNTHETIC cut "
                  f"traces: the pre-registered streams and {add['n_streams']} more. Over all of them "
@@ -1653,8 +1808,8 @@ def b_unstop_results(src, ts) -> str:
         conf = f" Confident verdicts: {m2['confident_hit']['k']} within 30 s, {m2['confident_wrong']['k']} further off."
     else:
         c = bd["cells"][PRIMARY]["60"]["full"]["confident"]
-        conf = (f" Confident verdicts: {c['n']} ({c['within_30']} within 30 s, {c['within_120_share']['k']} within "
-                f"120 s, {c['beyond_600']} beyond 600 s).")
+        conf = (f" Confident verdicts: {c['n']} ({c['within_30']} within 30 s, {m2['confident_wrong']['k']} "
+                f"confident wrong).")
     m5 = m5_facts(src, ts)
     cuts = "" if m5 is None else f" SYNTHETIC cuts detected: {tiny(m5['preregistered']['totals']['all']['detected'])}."
     return (f"{head}Results: hum in {fmt_tiny(k, n)} of streams. Primary endpoint (60-min excerpts, whole log): top "
@@ -1686,6 +1841,26 @@ def b_unstop_harvest(src, ts) -> str:
     return f"{h['with_trace']} harvested"
 
 
+def b_does_accuracy(src, ts) -> str:
+    """How close the confident verdicts of the blind test came, for the README's 'What Gunj does' box."""
+    if not ts.show:
+        return PENDING
+    m2 = ts.m2()
+    ch, cw = m2["confident_hit"]["k"], m2["confident_wrong"]["k"]
+    return (f"{ch} of the {ch + cw} confident verdicts on 60-min excerpts were within 30 s of the expected start and "
+            f"{cw} were further off")
+
+
+def b_edit_reach(src, ts) -> str:
+    """What find_edits can find, from the defaults of the frozen gunj/match.py."""
+    e = edit_reach(src)
+    return (f"`find_edits` in `gunj/match.py` splits a locked trace wherever the two sides fit the reference at "
+            f"offsets at least {e['min_jump']} s apart. A positive jump means missing audio, which is a cut. Split "
+            f"points are searched at least {e['min_seg']} s from either end of the trace, and the refinement of a "
+            f"split can move it up to {e['refine']} s closer, so an edit within {e['closest']} s of either end "
+            f"cannot be found")
+
+
 BLOCKS = {
     "span": b_span,
     "span-end": b_span_end,
@@ -1714,7 +1889,10 @@ BLOCKS = {
     "unstop-baselines": b_unstop_baselines,
     "unstop-limits": b_unstop_limits,
     "unstop-harvest": b_unstop_harvest,
+    "does-accuracy": b_does_accuracy,
+    "edit-reach": b_edit_reach,
     "narration-words": b_narration_words,
+    "narration-pace": b_narration_pace,
     "narration-sources": b_narration_sources,
 }
 

@@ -139,7 +139,7 @@ TOY = [  # video id, error_s, verdict, M1 hum flag, label_drift_s, label-stable
 V1_HITS, NAIVE_HITS = {"T1"}, set()
 COLS = ["mode", "video_id", "venue_type", "label_drift_s", "label_stable", "channel_status", "harvest_status",
         "hum_present_v1_full", "extractor", "excerpt_min", "scope", "verdict", "error_s", "hit_30s", "hit_120s",
-        "hit_600s", "outcome"]
+        "hit_600s", "outcome", "confidence_ge_tau", "trace_hum_present"]
 
 
 def _rate(k, n):
@@ -165,7 +165,8 @@ def _toy_rows():
                                  "label_drift_s": drift, "label_stable": stable, "channel_status": fr.VERIFIED,
                                  "harvest_status": "done", "hum_present_v1_full": hum, "extractor": ext,
                                  "excerpt_min": str(m), "scope": scope, "verdict": verdict, "error_s": err,
-                                 "hit_30s": hit(30), "hit_120s": hit(120), "hit_600s": hit(600), "outcome": outcome})
+                                 "hit_30s": hit(30), "hit_120s": hit(120), "hit_600s": hit(600), "outcome": outcome,
+                                 "confidence_ge_tau": str(verdict == "match"), "trace_hum_present": hum})
     return rows
 
 
@@ -236,13 +237,16 @@ def _toy_eval_dir(d: Path) -> Path:
                                              "edits_reported": 0}},
           "exploratory": {"gate_locks": {"n_gate_locks": 2, "n_streams": 2, "totals": {"all": cut(1, 4, [3.0])},
                                          "additional_streams_only": {"n_streams": 0, "totals": {"all": cut(0, 0, [])}}}}}
-    reading = lambda sig, mins: {"median": {"hann16": {s: {"sigma_mhz": sig, "status": "read", "shortest_length_min": mins,
-                                                           "rates_by_length_min": {str(mins): {"rate": 0.93}}}
-                                                       for s in fr.SCOPES}}}
+    reading = lambda sig, mins, prev: {"median": {"hann16": {s: {"sigma_mhz": sig, "status": "read",
+                                                                 "shortest_length_min": mins, "previous_tested_min": prev,
+                                                                 "rates_by_length_min": {str(prev): {"rate": 0.5},
+                                                                                         str(mins): {"rate": 0.93}}}
+                                                             for s in fr.SCOPES}}}
     m4 = {"streams_that_lock": {"n": 2, "n_excerpts": 5, "video_ids": ["T2", "T1"]},
           "distribution_hz": {"A": {"median": 0.009, "q1": 0.004, "q3": 0.017},
                               "B": {"median": 0.037, "q1": 0.013, "q3": 0.071}},
-          "uniqueness_lengths_min": [5, 10, 20, 40, 60], "readings": {"A": reading(9.0, 10), "B": reading(37.0, 40)}}
+          "uniqueness_lengths_min": [5, 10, 20, 40, 60],
+          "readings": {"A": reading(9.0, 10, 5), "B": reading(37.0, 40, 20)}}
     bins = [{"bin": "[0, 0.025)", "lo": 0.0, "hi": 0.025, **_rate(0, 1)},
             {"bin": "[0.1, 0.2)", "lo": 0.1, "hi": 0.2, **_rate(2, 5)}]
     figs = {"m3_primary_cell": {"test": {"n_excerpts": 7, "n_without_confidence": 1, "bins": bins},
@@ -291,14 +295,22 @@ def test_toy_fill_carries_every_final_result(tmp_path):
     assert not fr.ABS_PATH_RE.search(out)
     # headline: primary endpoint, breakdown with the verdict beyond 10 minutes, real false match
     assert "the top candidate starts within 30 s of the expected time for 2 of 7 streams" in out
-    assert "Of the 5, 2 are within 30 s, 1 is 30 to 120 s off, 1 is 120 to 600 s off, and 1 is wrong by more " \
-           "than 10 minutes (88 minutes)" in out
+    assert "Of the 5, 2 are within 30 s and 3 count as confident wrong (3/7, 42.9%, 95% CI " in out
+    assert "1 is 30 to 120 s off, 1 is 120 to 600 s off and 1 is wrong by more than 10 minutes (88 minutes)" in out
+    assert "the streams that lock blind at the gate fall from 2 to 1 of 7 (a lock is a top candidate within 30 s" in out
+    assert "2 of the 2 locking streams also get the verdict \"match\"" in out
     assert "1 of 3 real foreign 50 Hz recordings reaches the threshold" in out
-    # breakdown table, M3 real beside SYNTHETIC, M4 at the measured level, libhum
+    # breakdown table (counts only for the confident verdicts), M3 real beside SYNTHETIC, M4, libhum
     assert '| verdict "match" (confident) | 5 | 2 | 1 | 1 | 1 | 0 |' in out
     assert "| all, whatever the verdict | 7 | 2 | 1 | 1 | 2 | 1 |" in out
+    assert "Confident verdicts, counted with the coarse columns: 2 within 30 s, 3 within 120 s and 4 within 600 s" in out
+    assert "Confident verdicts, cumulative" not in out
     assert "3 of the 25 real foreign 50 Hz streams and 2 of the 20 SYNTHETIC items were searched" in out
-    assert "| A: r as scored (v2's weighted correlation) | 9.0 mHz (4.0 to 17.0) | 10 min (93.0%) |" in out
+    assert "| B, pre-registered: unweighted r, as in `scripts/probe_noise.py` | 37.0 mHz (13.0 to 71.0) | 40 min (93.0%) |" in out
+    assert "| A, EXPLORATORY (post hoc): r as scored (v2's weighted correlation) | 9.0 mHz (4.0 to 17.0) | 10 min (93.0%) |" in out
+    assert out.index("| B, pre-registered") < out.index("| A, EXPLORATORY")
+    assert "40 min at 37.0 mHz (20 min falls short); an EXPLORATORY (post hoc) reading" in out       # lim-m4
+    assert "Confident verdicts: 5 (2 within 30 s, 3 confident wrong)." in out                    # unstop-results
     assert "| libhum | not run: libhum was never installed" in out
     assert "1 bot check (8 Nov 2026, 05:30 IST)" in out
     assert "Of the other 3, 1 was no longer available on YouTube, 1 had not been attempted and 1 met the bot check" in out
@@ -306,6 +318,76 @@ def test_toy_fill_carries_every_final_result(tmp_path):
     assert "![Signed error of the top candidate for every excerpt length and scope, extractor v2]" \
            "(results/figures/m2_signed_error_v2.png)" in out
     assert "Figure `results/figures/m4_measured_noise.png` is not made yet" in out
+
+
+def test_edit_reach_is_read_from_the_matcher_code(tmp_path):
+    src, _ = _toy_state(tmp_path)
+    toy = tmp_path / "toyrepo"
+    (toy / "gunj").mkdir(parents=True)
+    (toy / "gunj" / "match.py").write_text(
+        "def _segment(t, a, b, *, step):\n    s = _refine_split(t, a, s, b, left[0], right[0], step + 7)\n\n"
+        "def find_edits(trace, lock_index: int, max_shift: int = 300,\n               min_seg: int = 100, "
+        "step: int = 4, min_jump: int = 3,\n               r_min: float = 0.6) -> dict:\n    pass\n", encoding="utf-8")
+    src.repo = toy
+    e = fr.edit_reach(src)
+    assert e == {"min_seg": 100, "step": 4, "min_jump": 3, "refine": 11, "closest": 89}
+    text = fr.b_edit_reach(src, None)
+    assert "at least 3 s apart" in text and "at least 100 s from either end" in text
+    assert "up to 11 s closer, so an edit within 89 s of either end cannot be found" in text
+    (toy / "gunj" / "match.py").write_text("def find_edits(trace) -> dict:\n    pass\n", encoding="utf-8")
+    src2, _ = _toy_state(tmp_path / "b")
+    src2.repo = toy
+    with pytest.raises(fr.FillError, match="find_edits"):
+        fr.edit_reach(src2)
+
+
+def test_m1_of_the_real_negatives_is_counted_by_half(tmp_path):
+    src, _ = _toy_state(tmp_path)
+    toy = tmp_path / "toyrepo"
+    (toy / "data").mkdir(parents=True)
+    man = [("NEG-1", "negative", "done", "True"), ("NEG-2", "negative", "done", "False"),
+           ("NEG-3", "negative", "done", "True"), ("NEG-4", "negative", "failed", ""),
+           ("T1", "test", "done", "True")]
+    with (toy / "data" / "harvest_manifest.csv").open("w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["video_id", "split", "status", "hum_present_v1"])
+        w.writerows(man)
+    with (toy / "data" / "splits.csv").open("w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["video_id", "split", "half"])
+        w.writerows([("NEG-1", "negative", "threshold"), ("NEG-2", "negative", "report"),
+                     ("NEG-3", "negative", "report"), ("NEG-4", "negative", "threshold"), ("T1", "test", "")])
+    src.repo = toy
+    assert fr.m1_negatives(src) == {"all": (2, 3), "threshold": (1, 1), "report": (1, 2)}
+
+
+def test_flow_notes_reconcile_the_stream_counts(tmp_path):
+    src, ts = _toy_state(tmp_path)
+    lk = fr.lock_facts(ts)
+    assert (lk["locks"], lk["confident"], lk["locks_without_verdict"], lk["match"]) == (2, 2, 0, 5)
+    ts.ev["flow"]["steps"] = [{"step": "selected", "n": 10}, {"step": "hum present (M1)", "n": lk["m1"]},
+                              {"step": "match (v2, any length, full or +-90 d)", "n": lk["match_m1"]},
+                              {"step": "hit (confident hit)", "n": lk["confident_m1"]}]
+    out = "\n".join(fr._sec_flow(src, ts))
+    assert "| match (v2, any length, full or ±90 days), of the 5 hum-present streams | 5 |" in out
+    assert "| hit (confident hit), of the 5 hum-present streams | 2 |" in out
+    assert "The gate's 2 locks need a top candidate within 30 s" in out
+    assert "the primary endpoint, which counts the 60-min excerpts over the full span (2 of 7)" in out
+
+
+def test_narration_pace_is_computed_per_line(tmp_path):
+    src, _ = _toy_state(tmp_path)
+    p = tmp_path / "pace.md"
+    p.write_text("1. **0:01** One two three four five six seven eight.\n"
+                 "2. **0:05** One two three.\n\nThe video ends at **0:10**.\n", encoding="utf-8")
+    src.narration = p
+    assert fr.narration_pace(src) == [(1, 8, 4, 2.0), (2, 3, 5, 0.6)]
+    assert fr.b_narration_pace(src, None).startswith("At two words a second every line ends before the next")
+    p.write_text("1. **0:01** One two three four five six seven eight nine.\n"
+                 "2. **0:05** One two three.\n\nThe video ends at **0:10**.\n", encoding="utf-8")
+    src2, _ = _toy_state(tmp_path / "b")
+    src2.narration = p
+    assert "line 1 runs past the next caption" in fr.b_narration_pace(src2, None)
 
 
 def test_every_m5_line_says_synthetic(tmp_path):
@@ -380,7 +462,8 @@ def test_narration_numbers_are_checked_against_the_results(tmp_path):
     assert {line for line, *_ in rows if line} >= {3, 5, 6, 7, 8, 9, 10}
     said = {phrase for _, phrase, *_ in rows if phrase}
     assert "Seven had an hour of audio" in said
-    assert "Two within thirty seconds, one more within two minutes, one within ten, one plainly wrong" in said
+    assert "Two were within thirty seconds and three were wrong" in said
+    assert "needed twenty to forty minutes" in said                     # reading B, the pre-registered one
     assert "eight seconds from its expected start" in said and "almost five minutes of drift correction" in said
     assert "On three hour-long recordings from other grids, it gave one false match" in said
     src.narration = _narration_from(rows, tmp_path)
@@ -415,10 +498,10 @@ def test_repo_narration_keeps_its_timeline():
     assert [t for _, t, _ in lines] == [1, 6, 16, 26, 36, 48, 63, 76, 85, 94, 107]      # the 11 fixed start times
     assert narr["end"] == 114                                                          # 1:54
     counts = [len(text.split()) for _, _, text in lines]
-    assert 225 <= sum(counts) <= 245
+    assert 190 <= sum(counts) <= 245
     ends = [t for _, t, _ in lines[1:]] + [narr["end"]]
     for (n, start, _), end, words in zip(lines, ends, counts):
-        assert words / (end - start) <= 2.4, f"line {n} is too long for its slot"
+        assert words / (end - start) <= 2.0, f"line {n} is too long for its slot at two words a second"
     text = (REPO / "video" / "NARRATION.md").read_text(encoding="utf-8")
     m = re.search(r"<!-- narration-words:start -->(\d+)<!-- narration-words:end -->", text)
     assert m and int(m.group(1)) == sum(counts)
@@ -437,7 +520,8 @@ def test_repo_shot_list_follows_the_narration():
 
 def test_repo_readme_shape():
     text = (REPO / "README.md").read_text(encoding="utf-8")
-    assert text.count("[pending") == 1 and "[pending: video link]" in text      # the only placeholder left
+    assert "[pending" not in text                                               # true without a video link
+    assert "docs/gunj-report.pdf" in text.split("## Results")[0]                # the report is linked on top
     assert not DASHES & set(text)                                               # no em or en dash
     assert not fr.ABS_PATH_RE.search(text)
     head = text.split("<!-- headline:start -->")[1].split("<!-- headline:end -->")[0]

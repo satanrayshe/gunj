@@ -45,12 +45,18 @@ output it affects)
   +-90-day scope within 30 s of T* for at least one excerpt length, with
   confidence >= tau of that cell). Confident hits and all top-1 hits are
   given beside it.
-- "Equivalent trace noise ... as in scripts/probe_noise.py" (M4): reading A
-  uses the r the frozen evaluation recorded for the locking excerpt (v2's
-  weighted correlation) and s = the standard deviation of the gap-filled
-  reference over the matched window. Reading B uses the plain (unweighted)
-  correlation of the same trace with the same window, which is what the
-  unweighted matcher of the M4 simulation would see. Both are reported.
+- "Equivalent trace noise ... as in scripts/probe_noise.py" (M4): that script
+  turns the plain (unweighted) Pearson r that the probe's matcher printed,
+  and s = the plain standard deviation of the reference over the matched
+  window, into sigma = s * sqrt(1 / r**2 - 1). Reading B applies the same
+  computation to the Test traces (plain r of the trace with the window it
+  matched), so it is the pre-registered reading; it is also what the
+  unweighted matcher of the M4 simulation would see. Reading A puts the r1
+  that the frozen evaluation recorded (v2's weighted correlation) into the
+  same formula with the plain s. It was added after the Test results were
+  known and is labelled EXPLORATORY (post hoc), as are the other variants
+  (s weighted too, medians by excerpt length, other definitions of
+  "streams that lock").
 - One value per stream: the median over that stream's locking excerpts.
 - The clip length "needed" (M4) is the shortest tested length whose
   interpolated rate is at least 90%, the convention of results/uniqueness.md.
@@ -108,6 +114,19 @@ Z95 = 1.959964                                       # PROTOCOL section 13
 CONF_BINS = (0.0, 0.025, 0.05, 0.1, 0.2, 0.4, math.inf)   # PROTOCOL section 11, M3
 UNIQUE_TARGET = 0.9                                  # PROTOCOL section 11, M4: "90% unique locks"
 FRAME0_S = 128                                       # PROTOCOL section 8: frame 0 is centred 128 s in
+
+EXPLORATORY = "EXPLORATORY (post hoc)"
+# M4: which reading of "computed as in scripts/probe_noise.py" (PROTOCOL section 11) is the pre-registered one.
+# probe_noise.py used the plain Pearson r of the probe's unweighted matcher and the plain std s of the window.
+M4_PREREGISTERED = "B"
+M4_READING_LABEL = {
+    "B": "pre-registered: the computation of scripts/probe_noise.py (plain Pearson r of the trace with the "
+         "window it matched, plain std s of that window)",
+    "A": f"{EXPLORATORY}: r1 as scored by the frozen evaluation (v2's weighted correlation) in the same formula, "
+         "with the plain s",
+}
+M4_SHORT = {"B": "B, pre-registered: unweighted r, as in scripts/probe_noise.py",
+            "A": f"A, {EXPLORATORY}: r as scored (v2, weighted)"}
 
 CLASSES = ("within_30", "from_30_to_120", "from_120_to_600", "beyond_600", "no_candidate")
 CLASS_LABEL = {"within_30": "within 30 s (hit)", "from_30_to_120": "30 to 120 s",
@@ -1036,8 +1055,8 @@ def _nice_ceiling(v: float) -> float:
 def fig_m4(m4: dict, path: Path) -> None:
     """Measured equivalent trace noise against the pre-set levels, and the uniqueness readings."""
     plt = _plt()
-    series = [("A", "reading A\nr as scored (v2, weighted)", AMBER),
-              ("B", "reading B\nsame traces, unweighted r", GREY)]
+    series = [("B", "reading B, pre-registered\nunweighted r (probe_noise.py)", AMBER),
+              ("A", "reading A, EXPLORATORY\n(post hoc): r as scored", GREY)]
     levels = [lv for lv in m4["uniqueness_levels_mhz"] if lv > 0]
     fig_h = 6.3
     with plt.rc_context(STYLE):
@@ -1096,7 +1115,8 @@ def fig_m4(m4: dict, path: Path) -> None:
                 h, = a.plot(lens, [p[1] for p in pts], color=colour, lw=2, marker="o", ms=5.5,
                             markeredgecolor="white", markeredgewidth=1.0, zorder=3, clip_on=False)
                 if j == 0:
-                    handles.append((h, f"at the reading {key} median ({rd['sigma_mhz']:.1f} mHz)"))
+                    tag = "pre-registered" if key == M4_PREREGISTERED else "EXPLORATORY (post hoc)"
+                    handles.append((h, f"reading {key} median, {tag} ({rd['sigma_mhz']:.1f} mHz)"))
             a.axhline(UNIQUE_TARGET, color=INK, lw=0.9, ls=(0, (4, 3)), zorder=2)
             a.set_xscale("log")
             if lens:
@@ -1122,10 +1142,12 @@ def fig_m4(m4: dict, path: Path) -> None:
         fig.text(0.012, 0.99, "M4 at the measured noise level: Test streams that lock (extractor v2)", ha="left",
                  va="top", fontsize=10.5, color=INK)
         fig.text(0.012, 0.955, _wrap("Top: equivalent trace noise, one dot per stream (the median over its locking "
-                                     "excerpts). Vertical lines are the pre-set SYNTHETIC noise levels of the M4 "
-                                     "simulation. Bottom: the share of unique locks read from the uniqueness table at "
-                                     "each median by linear interpolation between those levels. The dashed line is "
-                                     "the 90% target."),
+                                     "excerpts). Reading B applies the computation of scripts/probe_noise.py (plain "
+                                     "Pearson r) and is the pre-registered reading; reading A, with v2's weighted r, "
+                                     "is EXPLORATORY (post hoc). Vertical lines are the pre-set SYNTHETIC noise levels "
+                                     "of the M4 simulation. Bottom: the share of unique locks read from the uniqueness "
+                                     "table at each median by linear interpolation between those levels. The dashed "
+                                     "line is the 90% target."),
                  ha="left", va="top", fontsize=8, color=INK_2, linespacing=1.35)
         save_png(fig, path)
 
@@ -1313,8 +1335,13 @@ def breakdown_md(bd: dict, meta: dict) -> str:
              "\"match\" needs the hum flag and confidence at or above tau of the cell.")
     L.append("- The distance classes do not overlap: within 30 s; more than 30 s and up to 120 s; more than 120 s "
              "and up to 600 s; beyond 600 s.")
-    L.append("- The three shares are cumulative (within 30 s, within 120 s, within 600 s) and carry Wilson 95% "
-             "intervals (PROTOCOL.md section 13).")
+    L.append("- For all excerpts, the three shares are cumulative (within 30 s, within 120 s, within 600 s): the "
+             "top-1 hit rate and the pre-registered coarse hit rates, with Wilson 95% intervals (PROTOCOL.md "
+             "sections 9 and 13). For the excerpts with verdict \"match\" only the counts are given: PROTOCOL.md "
+             "section 11 defines no rate over confident verdicts, so a share of them would be a new, post hoc "
+             "measure.")
+    L.append("- Every verdict \"match\" more than 30 s from T* is a confident wrong verdict (PROTOCOL.md section 9), "
+             "whatever its class.")
     L.append(f"- Check: for all {meta['cells_checked']} cells the within-30 s counts equal `top1_hit`, "
              f"`confident_hit` and `confident_wrong` in `{meta['evaluation']}` (`m2`), and "
              f"{meta['column_mismatches']} rows have hit columns that disagree with `error_s`.")
@@ -1331,27 +1358,35 @@ def breakdown_md(bd: dict, meta: dict) -> str:
     L.append(f"| all, whatever the verdict | {t['n']} | {t['within_30']} | {t['from_30_to_120']} | "
              f"{t['from_120_to_600']} | {t['beyond_600']} | {t['no_candidate']} |")
     L.append("")
-    L.append(f"- Verdict \"match\": within 30 s {fmt_rate(c['within_30_share'])}; within 120 s "
-             f"{fmt_rate(c['within_120_share'])}; within 600 s {fmt_rate(c['within_600_share'])}.")
+    wrong = c["n"] - c["within_30"] - c["no_candidate"]
+    L.append(f"- Verdict \"match\", as counts: {c['within_30']} within 30 s, "
+             f"{c['within_30'] + c['from_30_to_120']} within 120 s and "
+             f"{c['within_30'] + c['from_30_to_120'] + c['from_120_to_600']} within 600 s of {c['n']}; "
+             f"{wrong} of the {c['n']} are confident wrong.")
     L.append(f"- All excerpts: within 30 s {fmt_rate(t['within_30_share'])}; within 120 s "
              f"{fmt_rate(t['within_120_share'])}; within 600 s {fmt_rate(t['within_600_share'])}.")
     L.append("")
     for ext in EXTRACTORS:
         name = f"Extractor {ext}" + (" (primary)" if ext == PRIMARY else " (baseline)")
-        for key, head in (("confident", "excerpts with verdict \"match\""),
+        for key, head in (("confident", "excerpts with verdict \"match\" (counts)"),
                           ("top1", "top-1 candidate of every excerpt, whatever the verdict")):
             L.append(f"## {name}: {head}")
             L.append("")
-            extra = " no top-1 candidate |" if key == "top1" else ""
-            L.append("| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s |" + extra
-                     + " within 30 s, share | within 120 s, share | within 600 s, share |")
-            L.append("|---|---|---|---|---|---|---|" + ("---|" if key == "top1" else "") + "---|---|---|")
+            if key == "top1":
+                L.append("| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s | no top-1 "
+                         "candidate | within 30 s, share | within 120 s, share | within 600 s, share |")
+                L.append("|---|---|---|---|---|---|---|---|---|---|---|")
+            else:
+                L.append("| excerpt | scope | n | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s |")
+                L.append("|---|---|---|---|---|---|---|")
             for m in LENGTHS:
                 for s in SCOPES:
                     d = bd[ext][str(m)][s][key]
-                    nc = f" {d['no_candidate']} |" if key == "top1" else ""
-                    L.append(f"| {m} min | {SCOPE_LABEL[s]} | {d['n']} | {d['within_30']} | {d['from_30_to_120']} | "
-                             f"{d['from_120_to_600']} | {d['beyond_600']} |{nc} {_share_cells(d)} |")
+                    row = (f"| {m} min | {SCOPE_LABEL[s]} | {d['n']} | {d['within_30']} | {d['from_30_to_120']} | "
+                           f"{d['from_120_to_600']} | {d['beyond_600']} |")
+                    if key == "top1":
+                        row += f" {d['no_candidate']} | {_share_cells(d)} |"
+                    L.append(row)
             L.append("")
     L.append("\"No top-1 candidate\" counts excerpts whose search could not run (a constant trace). They stay in "
              "the denominator, as in M2.")
@@ -1396,35 +1431,30 @@ def m4_md(m4: dict) -> str:
              "standard deviation of the gap-filled reference over the window the excerpt matched and r is the "
              "correlation at the lock.")
     L.append("- **One value per stream:** the median over its locking excerpts.")
-    L.append("- **Reading A (r as scored):** r is the r1 that the frozen evaluation recorded. For v2 this is the "
-             "weighted correlation of `gunj/match_v2.py`, which gives little weight to frames with weak hum.")
-    L.append("- **Reading B (unweighted r):** r is the plain correlation of the same trace with the same window, "
-             "every frame weighted equally. The M4 simulation adds noise of one size to every second and uses the "
-             "unweighted matcher, so this is the noise that simulation's matcher would see in these traces.")
+    L.append("- **Reading B, pre-registered (unweighted r):** r is the plain Pearson correlation of the trace with the "
+             "window it matched, every frame weighted equally, and s is the plain standard deviation of that window. "
+             "This is the computation of `scripts/probe_noise.py`, which took the plain r that the probe's unweighted "
+             "matcher printed. The M4 simulation also adds noise of one size to every second and uses the unweighted "
+             "matcher, so this is the noise that simulation's matcher would see in these traces.")
+    L.append(f"- **Reading A, {EXPLORATORY} (r as scored):** r is the r1 that the frozen evaluation recorded. For v2 "
+             "this is the weighted correlation of `gunj/match_v2.py`, which gives little weight to frames with weak "
+             "hum, while s stays unweighted, which the model of `scripts/probe_noise.py` does not cover. It was "
+             "added after the Test results were known.")
     L.append("")
     L.append("## Measured noise (mHz)")
     L.append("")
     L.append("| reading | streams | min | Q1 | median | Q3 | max |")
     L.append("|---|---|---|---|---|---|---|")
-    for key, lab in (("A", "A: r as scored (v2, weighted)"), ("B", "B: same traces, unweighted r")):
+    for key in ("B", "A"):
         d = m4["distribution_hz"][key]
-        L.append(f"| {lab} | {d['n']} | {_mhz(d['min'])} | {_mhz(d['q1'])} | {_mhz(d['median'])} | {_mhz(d['q3'])} | "
-                 f"{_mhz(d['max'])} |")
+        L.append(f"| {M4_SHORT[key]} | {d['n']} | {_mhz(d['min'])} | {_mhz(d['q1'])} | {_mhz(d['median'])} | "
+                 f"{_mhz(d['q3'])} | {_mhz(d['max'])} |")
     L.append("")
-    aw = m4["distribution_hz"].get("A_weighted_std")
-    if aw:
-        L.append(f"- Reading A with s also weighted by the frame weights: median {_mhz(aw['median'])} mHz "
-                 f"(Q1 {_mhz(aw['q1'])}, Q3 {_mhz(aw['q3'])}).")
     pr = m4.get("probe")
     if pr:
         L.append(f"- For comparison, the 5 Nov feasibility probe (one stream, an earlier extractor): median "
                  f"{_mhz(pr['sigma_eff_all_median_hz'])} mHz over {pr['n_all_points']} excerpts "
                  f"(`{m4['inputs']['probe_noise']}`).")
-    bl = m4["by_length_hz"]
-    L.append("- Median over locking excerpts by excerpt length, reading A / reading B: "
-             + "; ".join(f"{m} min {_mhz(bl[str(m)]['A']['median'])} / {_mhz(bl[str(m)]['B']['median'])} mHz "
-                         f"(n = {bl[str(m)]['A']['n']})" for m in LENGTHS if bl.get(str(m)) and bl[str(m)]["A"])
-             + ". The cells have different tau, so different streams lock at each length.")
     L.append("")
     L.append("## Clip length needed for 90% unique locks at the measured level")
     L.append("")
@@ -1438,61 +1468,98 @@ def m4_md(m4: dict) -> str:
              "independent each second; `hann16` is smoothed with a 16 s Hann window like real extractor error and "
              "is the closer stand-in (`scripts/uniqueness.py`).")
     L.append("")
+    L.append("### Reading B, pre-registered")
+    L.append("")
     L.append("| reading | level (mHz) | SYNTHETIC noise | full span | ±90 days | ±1 day |")
     L.append("|---|---|---|---|---|---|")
-    for key in ("A", "B"):
-        rd = m4["readings"][key]["median"]
-        for kind in ("hann16", "white"):
-            L.append(f"| {key}, median | {_mhz(m4['distribution_hz'][key]['median'])} | {kind} | "
-                     + " | ".join(_reading_cell(rd[kind][s]) for s in SCOPES) + " |")
-    L.append("")
-    L.append("Interpolated share of unique locks by excerpt length, `hann16` noise:")
+    rd = m4["readings"]["B"]["median"]
+    for kind in ("hann16", "white"):
+        L.append(f"| B, median | {_mhz(m4['distribution_hz']['B']['median'])} | {kind} | "
+                 + " | ".join(_reading_cell(rd[kind][s]) for s in SCOPES) + " |")
     L.append("")
     lens = m4["uniqueness_lengths_min"]
-    L.append("| reading | scope | " + " | ".join(f"{m} min" for m in lens) + " |")
-    L.append("|---|---|" + "---|" * len(lens))
-    for key in ("A", "B"):
+
+    def share_rows(key):
+        out = ["| reading | scope | " + " | ".join(f"{m} min" for m in lens) + " |", "|---|---|" + "---|" * len(lens)]
         for s in SCOPES:
-            rd = m4["readings"][key]["median"]["hann16"][s]
-            cells = [("n/a" if str(m) not in rd["rates_by_length_min"]
-                      else f"{100 * rd['rates_by_length_min'][str(m)]['rate']:.1f}%") for m in lens]
-            L.append(f"| {key}, median | {SCOPE_LABEL[s]} | " + " | ".join(cells) + " |")
+            r_ = m4["readings"][key]["median"]["hann16"][s]
+            cells = [("n/a" if str(m) not in r_["rates_by_length_min"]
+                      else f"{100 * r_['rates_by_length_min'][str(m)]['rate']:.1f}%") for m in lens]
+            out.append(f"| {key}, median | {SCOPE_LABEL[s]} | " + " | ".join(cells) + " |")
+        return out
+    L.append("Interpolated share of unique locks by excerpt length, reading B, `hann16` noise:")
     L.append("")
-    L.append("The same reading at the quartiles of each distribution (`hann16`, shortest tested length reaching 90%):")
+    L += share_rows("B")
+    L.append("")
+    L.append("The spread of reading B: the same reading at the quartiles of its distribution over the streams "
+             "(`hann16`, shortest tested length reaching 90%):")
     L.append("")
     L.append("| reading | level (mHz) | full span | ±90 days | ±1 day |")
     L.append("|---|---|---|---|---|")
-    for key in ("A", "B"):
-        for q in ("q1", "q3"):
-            rd = m4["readings"][key][q]["hann16"]
-            L.append(f"| {key}, {q.upper()} | {_mhz(m4['distribution_hz'][key][q])} | "
-                     + " | ".join(_reading_cell(rd[s]) for s in SCOPES) + " |")
+    for q in ("q1", "q3"):
+        rq = m4["readings"]["B"][q]["hann16"]
+        L.append(f"| B, {q.upper()} | {_mhz(m4['distribution_hz']['B'][q])} | "
+                 + " | ".join(_reading_cell(rq[s]) for s in SCOPES) + " |")
     L.append("")
-    L.append("## Other readings of \"streams that lock\"")
+    L.append(f"## {EXPLORATORY}: other readings")
     L.append("")
-    L.append("| streams | n | reading A median (mHz) | reading B median (mHz) |")
+    L.append("Nothing in this section is the pre-registered reading. These variants were computed after the Test "
+             "results were known, to show how far the answer moves with the choices that PROTOCOL.md section 11 "
+             "leaves open.")
+    L.append("")
+    L.append(f"### {EXPLORATORY}: reading A, r as scored (v2's weighted correlation)")
+    L.append("")
+    L.append("| reading | level (mHz) | SYNTHETIC noise | full span | ±90 days | ±1 day |")
+    L.append("|---|---|---|---|---|---|")
+    rd = m4["readings"]["A"]["median"]
+    for kind in ("hann16", "white"):
+        L.append(f"| A, median | {_mhz(m4['distribution_hz']['A']['median'])} | {kind} | "
+                 + " | ".join(_reading_cell(rd[kind][s]) for s in SCOPES) + " |")
+    for q in ("q1", "q3"):
+        rq = m4["readings"]["A"][q]["hann16"]
+        L.append(f"| A, {q.upper()} | {_mhz(m4['distribution_hz']['A'][q])} | hann16 | "
+                 + " | ".join(_reading_cell(rq[s]) for s in SCOPES) + " |")
+    L.append("")
+    L += share_rows("A")
+    L.append("")
+    aw = m4["distribution_hz"].get("A_weighted_std")
+    L.append(f"### {EXPLORATORY}: further variants")
+    L.append("")
+    if aw:
+        L.append(f"- Reading A with s also weighted by the frame weights: median {_mhz(aw['median'])} mHz "
+                 f"(Q1 {_mhz(aw['q1'])}, Q3 {_mhz(aw['q3'])}).")
+    bl = m4["by_length_hz"]
+    L.append("- Median over locking excerpts by excerpt length, reading B / reading A: "
+             + "; ".join(f"{m} min {_mhz(bl[str(m)]['B']['median'])} / {_mhz(bl[str(m)]['A']['median'])} mHz "
+                         f"(n = {bl[str(m)]['B']['n']})" for m in LENGTHS if bl.get(str(m)) and bl[str(m)]["B"])
+             + ". The cells have different tau, so different streams lock at each length.")
+    L.append("")
+    L.append("Other definitions of \"streams that lock\":")
+    L.append("")
+    L.append("| streams | n | reading B median (mHz) | reading A median (mHz) |")
     L.append("|---|---|---|---|")
-    for k, lab in (("gate_locks", "gate locks (used above)"),
+    for k, lab in (("gate_locks", "gate locks (the definition used above)"),
                    ("confident_hits", "confident hits: verdict \"match\" and within 30 s, full span or ±90 days"),
                    ("all_top1_hits", "every stream with a top-1 within 30 s, full span or ±90 days, whatever tau"),
                    ("primary_cell_locks", f"locks in the primary cell only ({LENGTHS[-1]} min, full span)")):
         a = m4["alternatives_hz"][k]
-        L.append(f"| {lab} | {a['A']['n'] if a['A'] else 0} | {_mhz(a['A']['median']) if a['A'] else 'n/a'} | "
-                 f"{_mhz(a['B']['median']) if a['B'] else 'n/a'} |")
+        L.append(f"| {lab} | {a['B']['n'] if a['B'] else 0} | {_mhz(a['B']['median']) if a['B'] else 'n/a'} | "
+                 f"{_mhz(a['A']['median']) if a['A'] else 'n/a'} |")
     L.append("")
     L.append("## Ambiguities and limits")
     L.append("")
     ma, mb = m4["distribution_hz"]["A"]["median"], m4["distribution_hz"]["B"]["median"]
     ratio = "" if not ma or not mb else f" At the median, reading B is {mb / ma:.1f} times reading A."
-    L.append("- PROTOCOL.md does not say which correlation to use for an extractor with a weighted matcher. "
-             "`scripts/probe_noise.py` took the r that its matcher printed, which corresponds to reading A. "
-             "Reading B is given because the simulation it is compared with is unweighted." + ratio
-             + " The clip length read from the table depends on the reading, so both are reported.")
+    L.append("- PROTOCOL.md section 11 computes the noise \"as in `scripts/probe_noise.py`\". That script took the "
+             "plain Pearson r that the probe's unweighted matcher printed and the plain standard deviation s of the "
+             "window, and its model, r = s / sqrt(s^2 + sigma^2), holds for that pair. Reading B applies the same "
+             f"computation and is the reading reported as M4. Reading A is {EXPLORATORY}." + ratio
+             + " The clip length read from the table depends on the reading, so reading A is shown beside it.")
     L.append("- Neither reading fits the simulation exactly. Reading A can flatter v2: a weighted correlation rests "
              "on fewer effective frames than the excerpt has, and the simulation does not model that. Reading B can "
              "understate v2: it counts noisy frames in full, and v2's matcher gives them little weight.")
-    L.append("- \"Streams that lock\" could also mean confident hits or every top-1 hit; the table above gives "
-             "their medians.")
+    L.append("- \"Streams that lock\" is read as the gate locks of PROTOCOL.md section 15. Confident hits or every "
+             f"top-1 hit would be other readings; their medians are in the {EXPLORATORY} section.")
     L.append("- The level is measured only on streams that lock, so it describes recordings with usable hum. "
              "It says nothing about the Test streams that do not lock.")
     L.append("- sigma is an equivalent white noise. It lumps together extraction noise, smoothing and any error "
@@ -1688,8 +1755,25 @@ def _inputs(repo: Path, names: dict) -> dict:
     return {k: {"path": rel(p, repo), "sha256": sha256_file(p)} for k, p in names.items() if Path(p).exists()}
 
 
+def label_m4(m4: dict) -> dict:
+    """Which reading is the pre-registered one, and which parts are EXPLORATORY (post hoc). The labels are
+    added to a reused results/m4_measured.json too; no number changes."""
+    out = dict(m4)
+    out["preregistered_reading"] = M4_PREREGISTERED
+    out["reading_labels"] = dict(M4_READING_LABEL)
+    out["exploratory"] = {
+        "label": EXPLORATORY,
+        "parts": ["readings.A", "distribution_hz.A", "distribution_hz.A_weighted_std", "per_stream_sigma_hz.A",
+                  "per_stream_sigma_hz.A_weighted_std", "by_length_hz", "alternatives_hz"],
+        "why": "PROTOCOL.md section 11 computes the noise as in scripts/probe_noise.py, which uses the plain Pearson "
+               "r and the plain std s of the matched window (reading B). The other readings were computed after the "
+               "Test results were known."}
+    return out
+
+
 def run_m4(rows: list, repo: Path, ref_dir, skip: bool, log=print):
-    """Measure the noise (needs the reference) or reuse results/m4_measured.json. Returns (dict or None, note)."""
+    """Measure the noise (needs the reference) or reuse results/m4_measured.json. Returns (dict or None, note).
+    The note is "measured", "reused" or "reused, labels added" (the JSON then needs writing again)."""
     res = repo / "results"
     out_path = res / "m4_measured.json"
     ref = None
@@ -1703,7 +1787,9 @@ def run_m4(rows: list, repo: Path, ref_dir, skip: bool, log=print):
             log(f"M4: {why} ({type(e).__name__}); not measured in this run")
     if ref is None:
         if out_path.exists():
-            return read_json(out_path), "reused"
+            old = read_json(out_path)
+            new = label_m4(old)
+            return new, ("reused" if new == old else "reused, labels added")
         return None, f"not computed: {why} and results/m4_measured.json does not exist"
     table = read_csv(res / "uniqueness_table.csv")
     frozen = read_json(res / "gate_frozen.json")
@@ -1767,7 +1853,7 @@ def run_m4(rows: list, repo: Path, ref_dir, skip: bool, log=print):
         "excerpts": excerpts,
         "figure": "results/figures/m4_measured_noise.png",
     }
-    return m4, "measured"
+    return label_m4(m4), "measured"
 
 
 def main(argv=None) -> int:
@@ -1809,7 +1895,10 @@ def main(argv=None) -> int:
             "classes": {"within_30": "abs(e) <= 30 s (hit)", "from_30_to_120": "30 s < abs(e) <= 120 s",
                         "from_120_to_600": "120 s < abs(e) <= 600 s", "beyond_600": "abs(e) > 600 s",
                         "no_candidate": "the search could not run; no top-1 candidate"},
-            "shares": "cumulative: within 30 s, within 120 s, within 600 s; Wilson 95% (z = 1.959964)",
+            "shares": "cumulative: within 30 s, within 120 s, within 600 s; Wilson 95% (z = 1.959964). For the "
+                      "top1 group these are the top-1 hit rate and the pre-registered coarse hit rates (PROTOCOL.md "
+                      "section 9). PROTOCOL.md section 11 defines no rate over confident verdicts, so the shares of "
+                      "the confident group are EXPLORATORY (post hoc); the Markdown and the README give its counts only.",
             "checks": {"cells_equal_to_evaluation_m2": meta["cells_checked"],
                        "rows_with_inconsistent_hit_columns": meta["column_mismatches"]},
             "figure": meta["figure"], "cells": bd}, repo)
@@ -1896,7 +1985,7 @@ def main(argv=None) -> int:
         # 4. M4 at the measured noise level
         m4, note = run_m4(rows, repo, args.ref, args.skip_m4_measure)
         if m4 is not None:
-            if note == "measured":
+            if note != "reused":                     # measured now, or labels added to the reused JSON
                 write_json(res / "m4_measured.json", m4, repo)
             write_text(res / "m4_measured.md", m4_md(m4), repo)
             fig_m4(m4, figs / "m4_measured_noise.png")
@@ -1904,10 +1993,12 @@ def main(argv=None) -> int:
             figures.append({"file": "m4_measured_noise.png",
                             "caption": "M4 at the measured noise level. Top: equivalent trace noise of the "
                                        f"{m4['streams_that_lock']['n']} Test streams that lock, one dot per stream, "
-                                       f"under reading A (r as scored, median {_mhz(a['median'])} mHz) and reading B "
-                                       f"(unweighted r, median {_mhz(b['median'])} mHz), against the pre-set levels "
-                                       "of the M4 simulation. Bottom: the uniqueness table (real reference excerpts "
-                                       "with SYNTHETIC hann16 noise) read at each median by linear interpolation.",
+                                       f"under reading B (unweighted r, the computation of scripts/probe_noise.py "
+                                       f"and the pre-registered reading; median {_mhz(b['median'])} mHz) and reading "
+                                       f"A ({EXPLORATORY}: r as scored, median {_mhz(a['median'])} mHz), against the "
+                                       "pre-set levels of the M4 simulation. Bottom: the uniqueness table (real "
+                                       "reference excerpts with SYNTHETIC hann16 noise) read at each median by "
+                                       "linear interpolation.",
                             "source": "`results/m4_measured.json`, from `results/test_results.csv`, "
                                       "`results/gate_frozen.json`, `results/search_cache/test`, `traces/test`, the "
                                       "built reference and `results/uniqueness_table.csv`"})
