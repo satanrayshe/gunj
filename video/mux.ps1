@@ -14,6 +14,10 @@
 .PARAMETER TrimStart
   Optional. Seconds to cut from the start of the recording, if it began before the video did.
 
+.PARAMETER Force
+  Use a narration file even if it is older than video\NARRATION.md. Without it the script refuses,
+  because an older file may speak an earlier version of the lines under the current captions.
+
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File video\mux.ps1 "narration.m4a"
 
@@ -22,7 +26,8 @@
 #>
 param(
     [Parameter(Mandatory = $true, Position = 0)][string]$Narration,
-    [double]$TrimStart = 0
+    [double]$TrimStart = 0,
+    [switch]$Force
 )
 $ErrorActionPreference = 'Stop'
 $inv = [Globalization.CultureInfo]::InvariantCulture
@@ -35,6 +40,11 @@ foreach ($tool in 'ffmpeg', 'ffprobe') {
 if (-not (Test-Path -LiteralPath $Narration -PathType Leaf)) { throw "Narration file not found: $Narration" }
 if (-not (Test-Path -LiteralPath $video -PathType Leaf)) { throw "Silent video not found: $video" }
 $Narration = (Resolve-Path -LiteralPath $Narration).Path
+$lines = Join-Path $PSScriptRoot 'NARRATION.md'
+if (-not $Force -and (Get-Item -LiteralPath $Narration).LastWriteTime -lt (Get-Item -LiteralPath $lines).LastWriteTime) {
+    throw ("The narration file is older than video\NARRATION.md, so it may speak an earlier version of the lines. " +
+           "Make it again from the current lines, or add -Force if the lines have not changed since it was made.")
+}
 
 function Get-Duration([string]$path) {
     $s = & ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 $path

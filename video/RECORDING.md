@@ -21,3 +21,16 @@ powershell -ExecutionPolicy Bypass -File video\mux.ps1 "path\to\narration.m4a" -
 ```
 
 If the script warns that the narration is longer than the video, the end of the last line was cut: re-record a little faster.
+
+## Or record one line at a time
+
+This needs no timing while you speak. Record each numbered line of `video/NARRATION.md` as its own file and name it by its number: `01.m4a`, `02.m4a`, ... `11.m4a`. Leave a moment of silence at the start and end of each file; it is cut off. Put the eleven files in one folder, then:
+
+```
+python video\place_voice.py "path\to\folder"
+powershell -ExecutionPolicy Bypass -File video\mux.ps1 video\narration-voice.wav
+```
+
+`place_voice.py` starts each line when its caption appears. A line that would run into the next caption is sped up without changing its pitch, by at most 25%. If a line is still too long, the script names it and writes nothing: record that line again a little faster and run it again.
+
+`mux.ps1` refuses a narration file older than `video/NARRATION.md`, since it may speak an earlier version of the lines.
