@@ -321,6 +321,11 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - How: the same harvester and rules as before (commit 3936ca8 behaviour, unchanged code). No sign-in, cookies or proxies, with the same sleeps. `--clear-block` is used only so that the run can start: the blocked Test row vMIFXzQiZMA stays recorded as blocked and is not retried. The run stops for good at the first bot check, CAPTCHA, sign-in wall or HTTP 429, and then M3 is reported with whatever real negatives it got.
   - M3 is then recomputed by the frozen `scripts/evaluate.py` with the frozen τ. The gate in `results/gate_frozen.json` does not change.
 
+- **11 Nov 2026, 18:36 IST. Outcome of the retry, and the libhum baseline (sections 11 M3 and 12).** The gate and every Test result are unchanged.
+  - The single retry of 10 Nov ran from 19:19 to 19:58 IST (run 876489de, 74 yt-dlp requests, signed out). It harvested 24 of the 25 report-half real negatives. IO4DlH7J11w failed with "This video is not available". No bot check, CAPTCHA, sign-in wall or HTTP 429 was met. No further YouTube download is planned.
+  - M3 is recomputed on 11 Nov by the frozen `scripts/evaluate.py` with the frozen τ (run started 18:33 IST), now with 24 real and 20 SYNTHETIC report-half negatives.
+  - The libhum baseline of section 12 has not been run. libhum was never installed, and the time went to the harvest problems recorded above. It is reported as "not run" with this reason. The naive 50 Hz extractor, extractor v1 and the analytic random guess remain as baselines.
+
 ## 20. How to check this file
 
 From the repo root:
