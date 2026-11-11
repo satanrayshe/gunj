@@ -1,0 +1,5937 @@
+{
+ "written_ist": "2026-11-11T18:59:58+05:30",
+ "script": "scripts/m5_edits.py",
+ "protocol": "PROTOCOL.md section 11, M5 (edit detection on SYNTHETIC cuts)",
+ "SYNTHETIC": true,
+ "note": "Every cut is SYNTHETIC: a stretch removed from the 60-min excerpt audio with gunj.synthetic.cut_audio at harvest time. Positions are seconds into the excerpt, which starts 120 s into the recording.",
+ "inputs": {
+  "results_table": {
+   "path": "results/test_results.csv",
+   "sha256": "c94f326c9e12795c856ec70153713653438c3e00fc2803ac531d29cb458b8af6"
+  },
+  "splits": {
+   "path": "data/splits.csv",
+   "sha256": "94d13272de9f2cc3c7548d89daf02f7bdeb2fad0d55a049ae4e4eb08859af781"
+  },
+  "traces_dir": "traces/test",
+  "search_cache": "results/search_cache/test",
+  "reference": {
+   "t0_ist": "2020-12-20 17:21:01",
+   "length": 84046325,
+   "memory_mapped": true
+  },
+  "matcher_sha256": {
+   "gunj/match.py": "8810a350065256c2785720a1211fadca4c3bbe37b67a8cf44c465b9ed16f7343",
+   "gunj/match_v2.py": "de41f0fc50d80e7c6b810d4e92e8c8884b2076e91b60bea1e7a131e168ccd306"
+  },
+  "gate_frozen": {
+   "path": "results/gate_frozen.json",
+   "sha256": "d3d9c259dae0f381e88fdf92103e08c4403ae1b882fdef56d9b0aa90a51cf496"
+  }
+ },
+ "method": {
+  "extractor": "v2",
+  "excerpt_min": 60,
+  "locate_scope": "1d",
+  "locate_call": "calibrate_latency.run_search (weighted v2 matcher, +-1 day around the release time in IST), top candidate",
+  "find_edits_call": "gunj.match.find_edits(trace, reference, validity mask, lock) with no keyword",
+  "find_edits_defaults": {
+   "max_shift": 300,
+   "min_seg": 180,
+   "step": 10,
+   "min_jump": 5,
+   "r_min": 0.6,
+   "min_gain": 0.15,
+   "max_edits": 3,
+   "relock_radius": 86400,
+   "win": 120,
+   "offset_s": 8.0,
+   "hop_s": 1.0
+  },
+  "detection": "an edit of kind \"cut\" with |clip_time_s - true position| <= 30 s; the nearest one",
+  "detection_window_s": 30.0,
+  "duration_error": "|jump_s of the detecting edit - true cut length|, detected cuts only",
+  "false_alarm": "any edit reported on the uncut 60-min excerpt of the same streams",
+  "intervals": "Wilson 95%, z = 1.959964 (PROTOCOL section 13; eval_common.wilson)",
+  "per_cut_description_fields": "either_kind_within_window, other_edits and lock_minus_uncut_lock_s describe a cut trace and are not part of the metric; their totals are under \"exploratory\" (EXPLORATORY, post hoc)",
+  "readings": "see the docstring of scripts/m5_edits.py"
+ },
+ "checks_summary": {
+  "n_streams_scored": 31,
+  "all_cache_checks_passed": true,
+  "preregistered_uncut_lock_equals_full_scope_lock": 14,
+  "cuts_equal_harvest_cut_plan": 31
+ },
+ "preregistered": {
+  "label": "PRE-REGISTERED: PROTOCOL.md section 11, M5. Every cut is SYNTHETIC.",
+  "stream_rule": "Test streams whose uncut 60-min excerpt is a confident hit in the full scope (extractor v2; results table)",
+  "n_streams": 14,
+  "n_cuts": 28,
+  "stream_ids": [
+   "K3atjTKsNiA",
+   "BvFUpGaie2E",
+   "kwRCr1M3ONo",
+   "I9SJk-TTrBg",
+   "JSCPPnRAJZY",
+   "5LW0lKI1jx8",
+   "jgtDaCE6HUk",
+   "vXH6fVeWn5s",
+   "LHBG6cdgdsU",
+   "r-dKUfuPxLQ",
+   "a6u8ZkZ5D58",
+   "bFlgoacpxZU",
+   "3dxthmsAvWE",
+   "hwnKuf3aciU"
+  ],
+  "totals": {
+   "by_cut_length_s": {
+    "10": {
+     "SYNTHETIC": true,
+     "n_cuts": 3,
+     "detected": {
+      "k": 0,
+      "n": 3,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.5614970356393196
+      ]
+     },
+     "duration_error_s": {
+      "n": 0,
+      "median": null,
+      "max": null,
+      "values": []
+     }
+    },
+    "20": {
+     "SYNTHETIC": true,
+     "n_cuts": 5,
+     "detected": {
+      "k": 2,
+      "n": 5,
+      "rate": 0.4,
+      "wilson95": [
+       0.11762077314099711,
+       0.7692757205908813
+      ]
+     },
+     "duration_error_s": {
+      "n": 2,
+      "median": 0.5,
+      "max": 1.0,
+      "values": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "40": {
+     "SYNTHETIC": true,
+     "n_cuts": 6,
+     "detected": {
+      "k": 3,
+      "n": 6,
+      "rate": 0.5,
+      "wilson95": [
+       0.18761630498040816,
+       0.8123836950195918
+      ]
+     },
+     "duration_error_s": {
+      "n": 3,
+      "median": 2.0,
+      "max": 4.0,
+      "values": [
+       0.0,
+       2.0,
+       4.0
+      ]
+     }
+    },
+    "60": {
+     "SYNTHETIC": true,
+     "n_cuts": 5,
+     "detected": {
+      "k": 3,
+      "n": 5,
+      "rate": 0.6,
+      "wilson95": [
+       0.23072427940911855,
+       0.8823792268590028
+      ]
+     },
+     "duration_error_s": {
+      "n": 3,
+      "median": 1.0,
+      "max": 3.0,
+      "values": [
+       0.0,
+       1.0,
+       3.0
+      ]
+     }
+    },
+    "90": {
+     "SYNTHETIC": true,
+     "n_cuts": 1,
+     "detected": {
+      "k": 1,
+      "n": 1,
+      "rate": 1.0,
+      "wilson95": [
+       0.2065493117918027,
+       1.0
+      ]
+     },
+     "duration_error_s": {
+      "n": 1,
+      "median": 2.0,
+      "max": 2.0,
+      "values": [
+       2.0
+      ]
+     }
+    },
+    "120": {
+     "SYNTHETIC": true,
+     "n_cuts": 8,
+     "detected": {
+      "k": 5,
+      "n": 8,
+      "rate": 0.625,
+      "wilson95": [
+       0.30574239265377096,
+       0.8631557152608771
+      ]
+     },
+     "duration_error_s": {
+      "n": 5,
+      "median": 2.0,
+      "max": 5.0,
+      "values": [
+       0.0,
+       0.0,
+       2.0,
+       3.0,
+       5.0
+      ]
+     }
+    }
+   },
+   "all": {
+    "SYNTHETIC": true,
+    "n_cuts": 28,
+    "detected": {
+     "k": 14,
+     "n": 28,
+     "rate": 0.5,
+     "wilson95": [
+      0.32633127336832435,
+      0.6736687266316757
+     ]
+    },
+    "duration_error_s": {
+     "n": 14,
+     "median": 1.5,
+     "max": 5.0,
+     "values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      2.0,
+      2.0,
+      2.0,
+      3.0,
+      3.0,
+      4.0,
+      5.0
+     ]
+    }
+   }
+  },
+  "false_alarms": {
+   "n_uncut_excerpts": 14,
+   "excerpts_with_a_reported_edit": {
+    "k": 2,
+    "n": 14,
+    "rate": 0.14285714285714285,
+    "wilson95": [
+     0.04009392090764893,
+     0.39941379723733705
+    ]
+   },
+   "edits_reported": 2,
+   "stream_ids_with_a_reported_edit": [
+    "5LW0lKI1jx8",
+    "r-dKUfuPxLQ"
+   ],
+   "find_edits_did_not_run": []
+  },
+  "streams_without_cut_traces": [],
+  "streams": [
+   {
+    "video_id": "K3atjTKsNiA",
+    "trace_path": "traces/test/K3atjTKsNiA.npz",
+    "release_timestamp": 1626424728,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -3,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -3,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 17959853,
+      "recording_start_ist": "2021-07-16 14:09:46",
+      "r": 0.9967834012430653,
+      "confidence": 2.5057229794370626
+     },
+     "anchor": {
+      "given": 17959853,
+      "used": 17959856,
+      "first_half": 17959852,
+      "second_half": 17959856,
+      "chosen": "second_half",
+      "scores": {
+       "given": 0.9957,
+       "first_half": 0.9957,
+       "second_half": 0.9957
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      17873395,
+      18046196
+     ],
+     "n_positions": 169050,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 910.632,
+      "true_position_recording_s": 1030.632,
+      "true_length_s": 40,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 917.0,
+      "position_error_s": 6.368,
+      "reported_jump_s": 44.0,
+      "duration_error_s": 4.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 17959887,
+       "recording_start_ist": "2021-07-16 14:10:20",
+       "r": 0.9265369652215669,
+       "confidence": 0.8875519369053726
+      },
+      "anchor": {
+       "given": 17959887,
+       "used": 17959896,
+       "first_half": 17959859,
+       "second_half": 17959896,
+       "chosen": "second_half",
+       "scores": {
+        "given": 0.9421,
+        "first_half": 0.9421,
+        "second_half": 0.9421
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 909,
+        "clip_time_s": 917.0,
+        "jump_s": 44.0,
+        "kind": "cut",
+        "offset_before_s": -45.0,
+        "offset_after_s": -1.0,
+        "r_before": 0.984,
+        "r_after": 0.9933,
+        "residual_drop": 0.8586,
+        "recording_time_s": 1037.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3545,
+      "weighted_search": true,
+      "scope_positions": [
+       17873395,
+       18046196
+      ],
+      "n_positions": 169082,
+      "lock_minus_uncut_lock_s": 34
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2911.927,
+      "true_position_recording_s": 3031.927,
+      "true_length_s": 60,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 2898.0,
+      "position_error_s": -13.927,
+      "reported_jump_s": 61.0,
+      "duration_error_s": 1.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 17959854,
+       "recording_start_ist": "2021-07-16 14:09:47",
+       "r": 0.9587666673485347,
+       "confidence": 1.2061445347608053
+      },
+      "anchor": {
+       "given": 17959854,
+       "used": 17959854,
+       "first_half": 17959852,
+       "second_half": 17959859,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9673,
+        "first_half": 0.9673,
+        "second_half": 0.9673
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 2890,
+        "clip_time_s": 2898.0,
+        "jump_s": 61.0,
+        "kind": "cut",
+        "offset_before_s": 0.0,
+        "offset_after_s": 61.0,
+        "r_before": 0.9965,
+        "r_after": 0.9741,
+        "residual_drop": 0.8495,
+        "recording_time_s": 3018.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3525,
+      "weighted_search": true,
+      "scope_positions": [
+       17873395,
+       18046196
+      ],
+      "n_positions": 169098,
+      "lock_minus_uncut_lock_s": 1
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "BvFUpGaie2E",
+    "trace_path": "traces/test/BvFUpGaie2E.npz",
+    "release_timestamp": 1636867502,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -2,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -2,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 28402624,
+      "recording_start_ist": "2021-11-14 10:55:57",
+      "r": 0.9851189680455466,
+      "confidence": 0.9459506039147361
+     },
+     "anchor": {
+      "given": 28402624,
+      "used": 28402620,
+      "first_half": 28347455,
+      "second_half": 28402620,
+      "chosen": "second_half",
+      "scores": {
+       "given": 0.432,
+       "first_half": 0.1206,
+       "second_half": 0.432
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      28316169,
+      28488970
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2188.428,
+      "true_position_recording_s": 2308.428,
+      "true_length_s": 20,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 28402636,
+       "recording_start_ist": "2021-11-14 10:56:09",
+       "r": 0.9777724666402909,
+       "confidence": 0.7424152223010703
+      },
+      "anchor": {
+       "given": 28402636,
+       "used": 28402638,
+       "first_half": 28347455,
+       "second_half": 28402638,
+       "chosen": "second_half",
+       "scores": {
+        "given": 0.4287,
+        "first_half": 0.126,
+        "second_half": 0.4287
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3565,
+      "weighted_search": true,
+      "scope_positions": [
+       28316169,
+       28488970
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 12
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 3116.129,
+      "true_position_recording_s": 3236.129,
+      "true_length_s": 120,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 1,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 28402624,
+       "recording_start_ist": "2021-11-14 10:55:57",
+       "r": 0.9773121968411544,
+       "confidence": 0.7501203784113288
+      },
+      "anchor": {
+       "given": 28402624,
+       "used": 28348426,
+       "first_half": 28348426,
+       "second_half": 28397224,
+       "chosen": "first_half",
+       "scores": {
+        "given": 0.3988,
+        "first_half": 0.4405,
+        "second_half": 0.3205
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 2646,
+        "clip_time_s": 2654.0,
+        "jump_s": -301.0,
+        "kind": "insertion",
+        "offset_before_s": -2.0,
+        "offset_after_s": -303.0,
+        "r_before": 0.6691,
+        "r_after": 0.7848,
+        "residual_drop": 0.2407,
+        "recording_time_s": 2774.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       28316169,
+       28488970
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 0
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "kwRCr1M3ONo",
+    "trace_path": "traces/test/kwRCr1M3ONo.npz",
+    "release_timestamp": 1641198288,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": 3,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": 3,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 32733411,
+      "recording_start_ist": "2022-01-03 13:55:44",
+      "r": 0.9984253570669512,
+      "confidence": 1.985308320131747
+     },
+     "anchor": {
+      "given": 32733411,
+      "used": 32733411,
+      "first_half": 32733411,
+      "second_half": 32733411,
+      "chosen": "given",
+      "scores": {
+       "given": 0.994,
+       "first_half": 0.994,
+       "second_half": 0.994
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      32646955,
+      32819756
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1810.264,
+      "true_position_recording_s": 1930.264,
+      "true_length_s": 20,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 1806.0,
+      "position_error_s": -4.264,
+      "reported_jump_s": 21.0,
+      "duration_error_s": 1.0,
+      "either_kind_within_window": true,
+      "other_edits": 1,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 32733413,
+       "recording_start_ist": "2022-01-03 13:55:46",
+       "r": 0.9941653418447625,
+       "confidence": 1.3177464498967486
+      },
+      "anchor": {
+       "given": 32733413,
+       "used": 32733413,
+       "first_half": 32733411,
+       "second_half": 32733432,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9937,
+        "first_half": 0.9937,
+        "second_half": 0.9937
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 1798,
+        "clip_time_s": 1806.0,
+        "jump_s": 21.0,
+        "kind": "cut",
+        "offset_before_s": -2.0,
+        "offset_after_s": 19.0,
+        "r_before": 0.9915,
+        "r_after": 0.996,
+        "residual_drop": 0.6131,
+        "recording_time_s": 1926.0
+       },
+       {
+        "trace_frame": 3288,
+        "clip_time_s": 3296.0,
+        "jump_s": -6.0,
+        "kind": "insertion",
+        "offset_before_s": 19.0,
+        "offset_after_s": 13.0,
+        "r_before": 0.997,
+        "r_after": 0.9643,
+        "residual_drop": 0.1979,
+        "recording_time_s": 3416.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3565,
+      "weighted_search": true,
+      "scope_positions": [
+       32646955,
+       32819756
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 2
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2287.189,
+      "true_position_recording_s": 2407.189,
+      "true_length_s": 40,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 2280.0,
+      "position_error_s": -7.189,
+      "reported_jump_s": 40.0,
+      "duration_error_s": 0.0,
+      "either_kind_within_window": true,
+      "other_edits": 1,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 32733412,
+       "recording_start_ist": "2022-01-03 13:55:45",
+       "r": 0.9906985888737719,
+       "confidence": 1.1002419489113886
+      },
+      "anchor": {
+       "given": 32733412,
+       "used": 32733412,
+       "first_half": 32733411,
+       "second_half": 32733449,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9902,
+        "first_half": 0.9902,
+        "second_half": 0.9902
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 2272,
+        "clip_time_s": 2280.0,
+        "jump_s": 40.0,
+        "kind": "cut",
+        "offset_before_s": -1.0,
+        "offset_after_s": 39.0,
+        "r_before": 0.9935,
+        "r_after": 0.9873,
+        "residual_drop": 0.7661,
+        "recording_time_s": 2400.0
+       },
+       {
+        "trace_frame": 3269,
+        "clip_time_s": 3277.0,
+        "jump_s": -5.0,
+        "kind": "insertion",
+        "offset_before_s": 39.0,
+        "offset_after_s": 34.0,
+        "r_before": 0.9911,
+        "r_after": 0.9645,
+        "residual_drop": 0.2002,
+        "recording_time_s": 3397.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3545,
+      "weighted_search": true,
+      "scope_positions": [
+       32646955,
+       32819756
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 1
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "I9SJk-TTrBg",
+    "trace_path": "traces/test/I9SJk-TTrBg.npz",
+    "release_timestamp": 1648100218,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -4,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -4,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 39635364,
+      "recording_start_ist": "2022-03-24 11:08:17",
+      "r": 0.9652304245602475,
+      "confidence": 0.6476988702277542
+     },
+     "anchor": {
+      "given": 39635364,
+      "used": 39635364,
+      "first_half": 39635358,
+      "second_half": 39635369,
+      "chosen": "given",
+      "scores": {
+       "given": 0.8114,
+       "first_half": 0.8114,
+       "second_half": 0.8114
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      39548885,
+      39721686
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 802.036,
+      "true_position_recording_s": 922.036,
+      "true_length_s": 120,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 39635484,
+       "recording_start_ist": "2022-03-24 11:10:17",
+       "r": 0.9557856748924712,
+       "confidence": 0.5058329871024665
+      },
+      "anchor": {
+       "given": 39635484,
+       "used": 39635484,
+       "first_half": 39560254,
+       "second_half": 39635489,
+       "chosen": "given",
+       "scores": {
+        "given": 0.7993,
+        "first_half": 0.4629,
+        "second_half": 0.7993
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       39548885,
+       39721686
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 120
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2630.377,
+      "true_position_recording_s": 2750.377,
+      "true_length_s": 40,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 39635367,
+       "recording_start_ist": "2022-03-24 11:08:20",
+       "r": 0.9606971012550211,
+       "confidence": 0.5955450035845655
+      },
+      "anchor": {
+       "given": 39635367,
+       "used": 39635367,
+       "first_half": 39635359,
+       "second_half": 39635404,
+       "chosen": "given",
+       "scores": {
+        "given": 0.8039,
+        "first_half": 0.8039,
+        "second_half": 0.8039
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3545,
+      "weighted_search": true,
+      "scope_positions": [
+       39548885,
+       39721686
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 3
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "JSCPPnRAJZY",
+    "trace_path": "traces/test/JSCPPnRAJZY.npz",
+    "release_timestamp": 1652675703,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -11,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -11,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 44210849,
+      "recording_start_ist": "2022-05-16 10:06:22",
+      "r": 0.9401618695270862,
+      "confidence": 1.0186784949840062
+     },
+     "anchor": {
+      "given": 44210849,
+      "used": 44210849,
+      "first_half": 44210852,
+      "second_half": 44210849,
+      "chosen": "given",
+      "scores": {
+       "given": 0.7962,
+       "first_half": 0.7962,
+       "second_half": 0.7962
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      44124370,
+      44297171
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 517.936,
+      "true_position_recording_s": 637.936,
+      "true_length_s": 60,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 1,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 44210909,
+       "recording_start_ist": "2022-05-16 10:07:22",
+       "r": 0.9218476532265965,
+       "confidence": 0.8877220260116144
+      },
+      "anchor": {
+       "given": 44210909,
+       "used": 44210909,
+       "first_half": 44210916,
+       "second_half": 44210909,
+       "chosen": "given",
+       "scores": {
+        "given": 0.7823,
+        "first_half": 0.7823,
+        "second_half": 0.7823
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 256,
+        "clip_time_s": 264.0,
+        "jump_s": 257.0,
+        "kind": "cut",
+        "offset_before_s": -258.0,
+        "offset_after_s": -1.0,
+        "r_before": 0.7177,
+        "r_after": 0.8252,
+        "residual_drop": 0.209,
+        "recording_time_s": 384.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3525,
+      "weighted_search": true,
+      "scope_positions": [
+       44124370,
+       44297171
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 60
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2199.772,
+      "true_position_recording_s": 2319.772,
+      "true_length_s": 120,
+      "detected": true,
+      "detecting_edit": 1,
+      "reported_position_s": 2195.0,
+      "position_error_s": -4.772,
+      "reported_jump_s": 117.0,
+      "duration_error_s": 3.0,
+      "either_kind_within_window": true,
+      "other_edits": 1,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 44210849,
+       "recording_start_ist": "2022-05-16 10:06:22",
+       "r": 0.8612363231409165,
+       "confidence": 0.5567094234963277
+      },
+      "anchor": {
+       "given": 44210849,
+       "used": 44210849,
+       "first_half": 44210852,
+       "second_half": 44210969,
+       "chosen": "given",
+       "scores": {
+        "given": 0.6595,
+        "first_half": 0.6595,
+        "second_half": 0.6595
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 154,
+        "clip_time_s": 162.0,
+        "jump_s": 197.0,
+        "kind": "cut",
+        "offset_before_s": -197.0,
+        "offset_after_s": 0.0,
+        "r_before": 0.7344,
+        "r_after": 0.8667,
+        "residual_drop": 0.1559,
+        "recording_time_s": 282.0
+       },
+       {
+        "trace_frame": 2187,
+        "clip_time_s": 2195.0,
+        "jump_s": 117.0,
+        "kind": "cut",
+        "offset_before_s": 3.0,
+        "offset_after_s": 120.0,
+        "r_before": 0.8245,
+        "r_after": 0.7165,
+        "residual_drop": 0.2077,
+        "recording_time_s": 2315.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       44124370,
+       44297171
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 0
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "5LW0lKI1jx8",
+    "trace_path": "traces/test/5LW0lKI1jx8.npz",
+    "release_timestamp": 1659505168,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -8,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -8,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 51040522,
+      "recording_start_ist": "2022-08-03 11:14:15",
+      "r": 0.9970012166616572,
+      "confidence": 1.9375639096477961
+     },
+     "anchor": {
+      "given": 51040522,
+      "used": 51040522,
+      "first_half": 51040523,
+      "second_half": 51040521,
+      "chosen": "given",
+      "scores": {
+       "given": 0.9907,
+       "first_half": 0.9907,
+       "second_half": 0.9907
+      }
+     },
+     "reported_edits": [
+      {
+       "trace_frame": 3424,
+       "clip_time_s": 3432.0,
+       "jump_s": -277.0,
+       "kind": "insertion",
+       "offset_before_s": 0.0,
+       "offset_after_s": -277.0,
+       "r_before": 0.9932,
+       "r_after": 0.9342,
+       "residual_drop": 0.2344,
+       "recording_time_s": 3552.0
+      }
+     ],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      50953835,
+      51126636
+     ],
+     "n_positions": 172801,
+     "false_alarms": 1
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 426.01,
+      "true_position_recording_s": 546.01,
+      "true_length_s": 60,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 426.0,
+      "position_error_s": -0.01,
+      "reported_jump_s": 57.0,
+      "duration_error_s": 3.0,
+      "either_kind_within_window": true,
+      "other_edits": 1,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 51040581,
+       "recording_start_ist": "2022-08-03 11:15:14",
+       "r": 0.9889311836972016,
+       "confidence": 1.2578005842649105
+      },
+      "anchor": {
+       "given": 51040581,
+       "used": 51040581,
+       "first_half": 51040581,
+       "second_half": 51040581,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9549,
+        "first_half": 0.9549,
+        "second_half": 0.9549
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 418,
+        "clip_time_s": 426.0,
+        "jump_s": 57.0,
+        "kind": "cut",
+        "offset_before_s": -57.0,
+        "offset_after_s": 0.0,
+        "r_before": 0.996,
+        "r_after": 0.9926,
+        "residual_drop": 0.6219,
+        "recording_time_s": 546.0
+       },
+       {
+        "trace_frame": 3364,
+        "clip_time_s": 3372.0,
+        "jump_s": -277.0,
+        "kind": "insertion",
+        "offset_before_s": 1.0,
+        "offset_after_s": -276.0,
+        "r_before": 0.993,
+        "r_after": 0.9342,
+        "residual_drop": 0.2466,
+        "recording_time_s": 3492.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3525,
+      "weighted_search": true,
+      "scope_positions": [
+       50953835,
+       51126636
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 59
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2216.907,
+      "true_position_recording_s": 2336.907,
+      "true_length_s": 40,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 2221.0,
+      "position_error_s": 4.093,
+      "reported_jump_s": 38.0,
+      "duration_error_s": 2.0,
+      "either_kind_within_window": true,
+      "other_edits": 1,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 51040548,
+       "recording_start_ist": "2022-08-03 11:14:41",
+       "r": 0.9680000189138845,
+       "confidence": 0.7627344504205305
+      },
+      "anchor": {
+       "given": 51040548,
+       "used": 51040523,
+       "first_half": 51040523,
+       "second_half": 51040558,
+       "chosen": "first_half",
+       "scores": {
+        "given": 0.9841,
+        "first_half": 0.9841,
+        "second_half": 0.9841
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 2213,
+        "clip_time_s": 2221.0,
+        "jump_s": 38.0,
+        "kind": "cut",
+        "offset_before_s": 0.0,
+        "offset_after_s": 38.0,
+        "r_before": 0.9852,
+        "r_after": 0.994,
+        "residual_drop": 0.824,
+        "recording_time_s": 2341.0
+       },
+       {
+        "trace_frame": 3389,
+        "clip_time_s": 3397.0,
+        "jump_s": -341.0,
+        "kind": "insertion",
+        "offset_before_s": 38.0,
+        "offset_after_s": -303.0,
+        "r_before": 0.9973,
+        "r_after": 0.9256,
+        "residual_drop": 0.4931,
+        "recording_time_s": 3517.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3545,
+      "weighted_search": true,
+      "scope_positions": [
+       50953835,
+       51126636
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 26
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "jgtDaCE6HUk",
+    "trace_path": "traces/test/jgtDaCE6HUk.npz",
+    "release_timestamp": 1663845386,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": 14,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": 14,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 55380531,
+      "recording_start_ist": "2022-09-22 16:47:44",
+      "r": 0.9226186079839934,
+      "confidence": 0.5681999349941698
+     },
+     "anchor": {
+      "given": 55380531,
+      "used": 55380542,
+      "first_half": 55380513,
+      "second_half": 55380542,
+      "chosen": "second_half",
+      "scores": {
+       "given": 0.5363,
+       "first_half": 0.5363,
+       "second_half": 0.5363
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      55294053,
+      55466854
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2356.402,
+      "true_position_recording_s": 2476.402,
+      "true_length_s": 40,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 55380531,
+       "recording_start_ist": "2022-09-22 16:47:44",
+       "r": 0.9164159439186683,
+       "confidence": 0.49360830813895706
+      },
+      "anchor": {
+       "given": 55380531,
+       "used": 55380513,
+       "first_half": 55380513,
+       "second_half": 55380582,
+       "chosen": "first_half",
+       "scores": {
+        "given": 0.5336,
+        "first_half": 0.5336,
+        "second_half": 0.5336
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3545,
+      "weighted_search": true,
+      "scope_positions": [
+       55294053,
+       55466854
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 0
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1546.445,
+      "true_position_recording_s": 1666.445,
+      "true_length_s": 120,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 55380531,
+       "recording_start_ist": "2022-09-22 16:47:44",
+       "r": 0.8828235315871505,
+       "confidence": 0.19410962037475032
+      },
+      "anchor": {
+       "given": 55380531,
+       "used": 55380531,
+       "first_half": 55380515,
+       "second_half": 55380673,
+       "chosen": "given",
+       "scores": {
+        "given": 0.5425,
+        "first_half": 0.5425,
+        "second_half": 0.5425
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       55294053,
+       55466854
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 0
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "vXH6fVeWn5s",
+    "trace_path": "traces/test/vXH6fVeWn5s.npz",
+    "release_timestamp": 1664443239,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -20,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -20,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 55978355,
+      "recording_start_ist": "2022-09-29 14:51:28",
+      "r": 0.9946438453950044,
+      "confidence": 1.83832266180504
+     },
+     "anchor": {
+      "given": 55978355,
+      "used": 55978356,
+      "first_half": 55978355,
+      "second_half": 55978356,
+      "chosen": "second_half",
+      "scores": {
+       "given": 0.9362,
+       "first_half": 0.9362,
+       "second_half": 0.9362
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      55891906,
+      56064707
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1459.936,
+      "true_position_recording_s": 1579.936,
+      "true_length_s": 120,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 1459.0,
+      "position_error_s": -0.936,
+      "reported_jump_s": 120.0,
+      "duration_error_s": 0.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 55978361,
+       "recording_start_ist": "2022-09-29 14:51:34",
+       "r": 0.86954671094962,
+       "confidence": 0.2762919487627762
+      },
+      "anchor": {
+       "given": 55978361,
+       "used": 55978476,
+       "first_half": 55978356,
+       "second_half": 55978476,
+       "chosen": "second_half",
+       "scores": {
+        "given": 0.9097,
+        "first_half": 0.9097,
+        "second_half": 0.9097
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 1451,
+        "clip_time_s": 1459.0,
+        "jump_s": 120.0,
+        "kind": "cut",
+        "offset_before_s": -121.0,
+        "offset_after_s": -1.0,
+        "r_before": 0.931,
+        "r_after": 0.9217,
+        "residual_drop": 0.7109,
+        "recording_time_s": 1579.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       55891906,
+       56064707
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 6
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 3154.415,
+      "true_position_recording_s": 3274.415,
+      "true_length_s": 120,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 3160.0,
+      "position_error_s": 5.585,
+      "reported_jump_s": 120.0,
+      "duration_error_s": 0.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 55978355,
+       "recording_start_ist": "2022-09-29 14:51:28",
+       "r": 0.9833747928702617,
+       "confidence": 1.2365208418826583
+      },
+      "anchor": {
+       "given": 55978355,
+       "used": 55978355,
+       "first_half": 55978355,
+       "second_half": 55978355,
+       "chosen": "given",
+       "scores": {
+        "given": 0.8961,
+        "first_half": 0.8961,
+        "second_half": 0.8961
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 3152,
+        "clip_time_s": 3160.0,
+        "jump_s": 120.0,
+        "kind": "cut",
+        "offset_before_s": 0.0,
+        "offset_after_s": 120.0,
+        "r_before": 0.9432,
+        "r_after": 0.9649,
+        "residual_drop": 0.2189,
+        "recording_time_s": 3280.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       55891906,
+       56064707
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 0
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "LHBG6cdgdsU",
+    "trace_path": "traces/test/LHBG6cdgdsU.npz",
+    "release_timestamp": 1670328816,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -2,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -2,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 61864053,
+      "recording_start_ist": "2022-12-06 17:46:26",
+      "r": 0.9557737080831794,
+      "confidence": 1.032730207411173
+     },
+     "anchor": {
+      "given": 61864053,
+      "used": 61864053,
+      "first_half": 61784464,
+      "second_half": 61864052,
+      "chosen": "given",
+      "scores": {
+       "given": 0.7685,
+       "first_half": 0.3164,
+       "second_half": 0.7685
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      61777483,
+      61950284
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1313.126,
+      "true_position_recording_s": 1433.126,
+      "true_length_s": 10,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 61864061,
+       "recording_start_ist": "2022-12-06 17:46:34",
+       "r": 0.9538325852446634,
+       "confidence": 1.0075785433797952
+      },
+      "anchor": {
+       "given": 61864061,
+       "used": 61864061,
+       "first_half": 61784464,
+       "second_half": 61864062,
+       "chosen": "given",
+       "scores": {
+        "given": 0.7692,
+        "first_half": 0.3207,
+        "second_half": 0.7692
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3575,
+      "weighted_search": true,
+      "scope_positions": [
+       61777483,
+       61950284
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 8
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1144.659,
+      "true_position_recording_s": 1264.659,
+      "true_length_s": 10,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 61864061,
+       "recording_start_ist": "2022-12-06 17:46:34",
+       "r": 0.9541580262843945,
+       "confidence": 1.0157499132585808
+      },
+      "anchor": {
+       "given": 61864061,
+       "used": 61864061,
+       "first_half": 61784464,
+       "second_half": 61864062,
+       "chosen": "given",
+       "scores": {
+        "given": 0.769,
+        "first_half": 0.3196,
+        "second_half": 0.769
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3575,
+      "weighted_search": true,
+      "scope_positions": [
+       61777483,
+       61950284
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 8
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "r-dKUfuPxLQ",
+    "trace_path": "traces/test/r-dKUfuPxLQ.npz",
+    "release_timestamp": 1675906103,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -13,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -13,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 67441159,
+      "recording_start_ist": "2023-02-09 06:58:12",
+      "r": 0.9506857234097733,
+      "confidence": 0.6530191853392471
+     },
+     "anchor": {
+      "given": 67441159,
+      "used": 67441159,
+      "first_half": 67441155,
+      "second_half": 67441159,
+      "chosen": "given",
+      "scores": {
+       "given": 0.9268,
+       "first_half": 0.9268,
+       "second_half": 0.9268
+      }
+     },
+     "reported_edits": [
+      {
+       "trace_frame": 666,
+       "clip_time_s": 674.0,
+       "jump_s": -49.0,
+       "kind": "insertion",
+       "offset_before_s": 49.0,
+       "offset_after_s": 0.0,
+       "r_before": 0.8905,
+       "r_after": 0.9729,
+       "residual_drop": 0.3273,
+       "recording_time_s": 794.0
+      }
+     ],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      67354770,
+      67527571
+     ],
+     "n_positions": 172801,
+     "false_alarms": 1
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1582.651,
+      "true_position_recording_s": 1702.651,
+      "true_length_s": 120,
+      "detected": true,
+      "detecting_edit": 2,
+      "reported_position_s": 1581.0,
+      "position_error_s": -1.651,
+      "reported_jump_s": 125.0,
+      "duration_error_s": 5.0,
+      "either_kind_within_window": true,
+      "other_edits": 2,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 67441196,
+       "recording_start_ist": "2023-02-09 06:58:49",
+       "r": 0.9022878741710566,
+       "confidence": 0.32462902081157674
+      },
+      "anchor": {
+       "given": 67441196,
+       "used": 67441196,
+       "first_half": 67441155,
+       "second_half": 67441279,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9244,
+        "first_half": 0.9244,
+        "second_half": 0.9244
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 666,
+        "clip_time_s": 674.0,
+        "jump_s": -51.0,
+        "kind": "insertion",
+        "offset_before_s": 12.0,
+        "offset_after_s": -39.0,
+        "r_before": 0.8905,
+        "r_after": 0.9607,
+        "residual_drop": 0.3182,
+        "recording_time_s": 794.0
+       },
+       {
+        "trace_frame": 876,
+        "clip_time_s": 884.0,
+        "jump_s": -167.0,
+        "kind": "insertion",
+        "offset_before_s": 129.0,
+        "offset_after_s": -38.0,
+        "r_before": 0.9418,
+        "r_after": 0.8797,
+        "residual_drop": 0.1637,
+        "recording_time_s": 1004.0
+       },
+       {
+        "trace_frame": 1573,
+        "clip_time_s": 1581.0,
+        "jump_s": 125.0,
+        "kind": "cut",
+        "offset_before_s": -42.0,
+        "offset_after_s": 83.0,
+        "r_before": 0.8749,
+        "r_after": 0.9695,
+        "residual_drop": 0.4013,
+        "recording_time_s": 1701.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       67354770,
+       67527571
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 37
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 3152.743,
+      "true_position_recording_s": 3272.743,
+      "true_length_s": 60,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 1,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 67441161,
+       "recording_start_ist": "2023-02-09 06:58:14",
+       "r": 0.9472650384567165,
+       "confidence": 0.5852609617045834
+      },
+      "anchor": {
+       "given": 67441161,
+       "used": 67441161,
+       "first_half": 67441155,
+       "second_half": 67441161,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9222,
+        "first_half": 0.9222,
+        "second_half": 0.9222
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 666,
+        "clip_time_s": 674.0,
+        "jump_s": -48.0,
+        "kind": "insertion",
+        "offset_before_s": 47.0,
+        "offset_after_s": -1.0,
+        "r_before": 0.8905,
+        "r_after": 0.9686,
+        "residual_drop": 0.3165,
+        "recording_time_s": 794.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3525,
+      "weighted_search": true,
+      "scope_positions": [
+       67354770,
+       67527571
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 2
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "a6u8ZkZ5D58",
+    "trace_path": "traces/test/a6u8ZkZ5D58.npz",
+    "release_timestamp": 1679894840,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": 0,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": 0,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 71429896,
+      "recording_start_ist": "2023-03-27 10:57:09",
+      "r": 0.9945585863416609,
+      "confidence": 2.1465251341719305
+     },
+     "anchor": {
+      "given": 71429896,
+      "used": 71429895,
+      "first_half": 71429895,
+      "second_half": 71429895,
+      "chosen": "first_half",
+      "scores": {
+       "given": 0.9004,
+       "first_half": 0.9004,
+       "second_half": 0.9004
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      71343507,
+      71516308
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1341.154,
+      "true_position_recording_s": 1461.154,
+      "true_length_s": 20,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 71429912,
+       "recording_start_ist": "2023-03-27 10:57:25",
+       "r": 0.9793806497633996,
+       "confidence": 1.445648510116396
+      },
+      "anchor": {
+       "given": 71429912,
+       "used": 71429912,
+       "first_half": 71429897,
+       "second_half": 71429915,
+       "chosen": "given",
+       "scores": {
+        "given": 0.894,
+        "first_half": 0.894,
+        "second_half": 0.894
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3565,
+      "weighted_search": true,
+      "scope_positions": [
+       71343507,
+       71516308
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 16
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 368.407,
+      "true_position_recording_s": 488.407,
+      "true_length_s": 40,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 71429935,
+       "recording_start_ist": "2023-03-27 10:57:48",
+       "r": 0.9867213948372497,
+       "confidence": 1.6579987537651037
+      },
+      "anchor": {
+       "given": 71429935,
+       "used": 71429933,
+       "first_half": 71429933,
+       "second_half": 71429935,
+       "chosen": "first_half",
+       "scores": {
+        "given": 0.8927,
+        "first_half": 0.8927,
+        "second_half": 0.8927
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3545,
+      "weighted_search": true,
+      "scope_positions": [
+       71343507,
+       71516308
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 39
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "bFlgoacpxZU",
+    "trace_path": "traces/test/bFlgoacpxZU.npz",
+    "release_timestamp": 1680251142,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -10,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -10,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 71786188,
+      "recording_start_ist": "2023-03-31 13:55:21",
+      "r": 0.9693672048868639,
+      "confidence": 1.0451943614144636
+     },
+     "anchor": {
+      "given": 71786188,
+      "used": 71786188,
+      "first_half": 71786189,
+      "second_half": 71786186,
+      "chosen": "given",
+      "scores": {
+       "given": 0.7197,
+       "first_half": 0.7197,
+       "second_half": 0.7197
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      71699809,
+      71872610
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1935.395,
+      "true_position_recording_s": 2055.395,
+      "true_length_s": 120,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 1938.0,
+      "position_error_s": 2.605,
+      "reported_jump_s": 118.0,
+      "duration_error_s": 2.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 71786279,
+       "recording_start_ist": "2023-03-31 13:56:52",
+       "r": 0.8977069971353019,
+       "confidence": 0.44511689777712804
+      },
+      "anchor": {
+       "given": 71786279,
+       "used": 71786290,
+       "first_half": 71786170,
+       "second_half": 71786290,
+       "chosen": "second_half",
+       "scores": {
+        "given": 0.6915,
+        "first_half": 0.6915,
+        "second_half": 0.6915
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 1930,
+        "clip_time_s": 1938.0,
+        "jump_s": 118.0,
+        "kind": "cut",
+        "offset_before_s": -102.0,
+        "offset_after_s": 16.0,
+        "r_before": 0.6319,
+        "r_after": 0.8268,
+        "residual_drop": 0.2169,
+        "recording_time_s": 2058.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3465,
+      "weighted_search": true,
+      "scope_positions": [
+       71699809,
+       71872610
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 91
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2449.79,
+      "true_position_recording_s": 2569.79,
+      "true_length_s": 90,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 2445.0,
+      "position_error_s": -4.79,
+      "reported_jump_s": 88.0,
+      "duration_error_s": 2.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 71786222,
+       "recording_start_ist": "2023-03-31 13:55:55",
+       "r": 0.9124150564823497,
+       "confidence": 0.5219069719263065
+      },
+      "anchor": {
+       "given": 71786222,
+       "used": 71786222,
+       "first_half": 71786188,
+       "second_half": 71786255,
+       "chosen": "given",
+       "scores": {
+        "given": 0.686,
+        "first_half": 0.686,
+        "second_half": 0.686
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 2437,
+        "clip_time_s": 2445.0,
+        "jump_s": 88.0,
+        "kind": "cut",
+        "offset_before_s": -34.0,
+        "offset_after_s": 54.0,
+        "r_before": 0.7227,
+        "r_after": 0.6915,
+        "residual_drop": 0.168,
+        "recording_time_s": 2565.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3495,
+      "weighted_search": true,
+      "scope_positions": [
+       71699809,
+       71872610
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 34
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "3dxthmsAvWE",
+    "trace_path": "traces/test/3dxthmsAvWE.npz",
+    "release_timestamp": 1681262804,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -8,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -8,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 72797862,
+      "recording_start_ist": "2023-04-12 06:56:35",
+      "r": 0.9810428313093066,
+      "confidence": 1.4090261649708413
+     },
+     "anchor": {
+      "given": 72797862,
+      "used": 72797862,
+      "first_half": 72797862,
+      "second_half": 72797862,
+      "chosen": "given",
+      "scores": {
+       "given": 0.9426,
+       "first_half": 0.9426,
+       "second_half": 0.9426
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      72711471,
+      72884272
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 987.576,
+      "true_position_recording_s": 1107.576,
+      "true_length_s": 20,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 995.0,
+      "position_error_s": 7.424,
+      "reported_jump_s": 20.0,
+      "duration_error_s": 0.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 72797881,
+       "recording_start_ist": "2023-04-12 06:56:54",
+       "r": 0.9730553379990238,
+       "confidence": 1.2433667537513422
+      },
+      "anchor": {
+       "given": 72797881,
+       "used": 72797867,
+       "first_half": 72797867,
+       "second_half": 72797882,
+       "chosen": "first_half",
+       "scores": {
+        "given": 0.9308,
+        "first_half": 0.9308,
+        "second_half": 0.9308
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 987,
+        "clip_time_s": 995.0,
+        "jump_s": 20.0,
+        "kind": "cut",
+        "offset_before_s": -5.0,
+        "offset_after_s": 15.0,
+        "r_before": 0.9119,
+        "r_after": 0.9773,
+        "residual_drop": 0.2064,
+        "recording_time_s": 1115.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3565,
+      "weighted_search": true,
+      "scope_positions": [
+       72711471,
+       72884272
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 19
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2550.208,
+      "true_position_recording_s": 2670.208,
+      "true_length_s": 10,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 72797867,
+       "recording_start_ist": "2023-04-12 06:56:40",
+       "r": 0.9768743320653284,
+       "confidence": 1.318309829964112
+      },
+      "anchor": {
+       "given": 72797867,
+       "used": 72797862,
+       "first_half": 72797862,
+       "second_half": 72797869,
+       "chosen": "first_half",
+       "scores": {
+        "given": 0.9409,
+        "first_half": 0.9409,
+        "second_half": 0.9409
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3575,
+      "weighted_search": true,
+      "scope_positions": [
+       72711471,
+       72884272
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 5
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   },
+   {
+    "video_id": "hwnKuf3aciU",
+    "trace_path": "traces/test/hwnKuf3aciU.npz",
+    "release_timestamp": 1690623623,
+    "results_table": {
+     "full": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -9,
+      "confidence_ge_tau": true
+     },
+     "1d": {
+      "outcome": "confident hit",
+      "hit_30s": true,
+      "error_s": -9,
+      "confidence_ge_tau": true
+     }
+    },
+    "checks": {
+     "trace_sha256_equals_cache": true,
+     "matcher_sha256_equals_cache": true,
+     "release_timestamp_equals_cache": true,
+     "uncut_1d_search_reproduces_cache": true,
+     "uncut_lock_equals_full_scope_lock": true,
+     "cuts_equal_harvest_cut_plan": true
+    },
+    "uncut": {
+     "trace_key": "v2__x60",
+     "lock": {
+      "index": 82158797,
+      "recording_start_ist": "2023-07-29 15:12:10",
+      "r": 0.9979328223664986,
+      "confidence": 1.8731035885498517
+     },
+     "anchor": {
+      "given": 82158797,
+      "used": 82158797,
+      "first_half": 82158797,
+      "second_half": 82158797,
+      "chosen": "given",
+      "scores": {
+       "given": 0.9261,
+       "first_half": 0.9261,
+       "second_half": 0.9261
+      }
+     },
+     "reported_edits": [],
+     "find_edits_ran": true,
+     "note": null,
+     "n_frames": 3585,
+     "weighted_search": true,
+     "scope_positions": [
+      82072290,
+      82245091
+     ],
+     "n_positions": 172801,
+     "false_alarms": 0
+    },
+    "cuts": [
+     {
+      "cut": 1,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 2017.487,
+      "true_position_recording_s": 2137.487,
+      "true_length_s": 20,
+      "detected": false,
+      "detecting_edit": null,
+      "reported_position_s": null,
+      "position_error_s": null,
+      "reported_jump_s": null,
+      "duration_error_s": null,
+      "either_kind_within_window": false,
+      "other_edits": 0,
+      "trace_key": "v2__cut1",
+      "lock": {
+       "index": 82158811,
+       "recording_start_ist": "2023-07-29 15:12:24",
+       "r": 0.9914939931307365,
+       "confidence": 1.1617412740322994
+      },
+      "anchor": {
+       "given": 82158811,
+       "used": 82158811,
+       "first_half": 82158797,
+       "second_half": 82158814,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9243,
+        "first_half": 0.9243,
+        "second_half": 0.9243
+       }
+      },
+      "reported_edits": [],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3565,
+      "weighted_search": true,
+      "scope_positions": [
+       82072290,
+       82245091
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 14
+     },
+     {
+      "cut": 2,
+      "SYNTHETIC": true,
+      "label": "SYNTHETIC cut (PROTOCOL M5)",
+      "true_position_s": 1787.4,
+      "true_position_recording_s": 1907.4,
+      "true_length_s": 60,
+      "detected": true,
+      "detecting_edit": 0,
+      "reported_position_s": 1787.0,
+      "position_error_s": -0.4,
+      "reported_jump_s": 60.0,
+      "duration_error_s": 0.0,
+      "either_kind_within_window": true,
+      "other_edits": 0,
+      "trace_key": "v2__cut2",
+      "lock": {
+       "index": 82158851,
+       "recording_start_ist": "2023-07-29 15:13:04",
+       "r": 0.9734551294977185,
+       "confidence": 0.5592207823015976
+      },
+      "anchor": {
+       "given": 82158851,
+       "used": 82158851,
+       "first_half": 82158797,
+       "second_half": 82158855,
+       "chosen": "given",
+       "scores": {
+        "given": 0.9228,
+        "first_half": 0.9228,
+        "second_half": 0.9228
+       }
+      },
+      "reported_edits": [
+       {
+        "trace_frame": 1779,
+        "clip_time_s": 1787.0,
+        "jump_s": 60.0,
+        "kind": "cut",
+        "offset_before_s": -54.0,
+        "offset_after_s": 6.0,
+        "r_before": 0.8599,
+        "r_after": 0.9912,
+        "residual_drop": 0.4792,
+        "recording_time_s": 1907.0
+       }
+      ],
+      "find_edits_ran": true,
+      "note": null,
+      "n_frames": 3525,
+      "weighted_search": true,
+      "scope_positions": [
+       82072290,
+       82245091
+      ],
+      "n_positions": 172801,
+      "lock_minus_uncut_lock_s": 54
+     }
+    ],
+    "cuts_listed_without_a_trace": []
+   }
+  ]
+ },
+ "exploratory": {
+  "label": "EXPLORATORY (post hoc). Nothing under this key is in PROTOCOL.md, and none of it is part of the pre-registered M5 result. Every cut is SYNTHETIC.",
+  "reading_checks_on_preregistered_streams": {
+   "either_kind_within_30s": {
+    "k": 14,
+    "n": 28,
+    "rate": 0.5,
+    "wilson95": [
+     0.32633127336832435,
+     0.6736687266316757
+    ]
+   },
+   "other_edits_on_cut_traces": 10,
+   "cut_traces_with_another_edit": 9,
+   "not_detected": 14,
+   "not_detected_no_edit_reported": 11,
+   "not_detected_edits_reported_elsewhere": 3
+  },
+  "gate_locks": {
+   "label": "EXPLORATORY (post hoc): every gate lock (extractor v2, any excerpt length, full or +-90-day scope) that has SYNTHETIC cut traces. Includes the pre-registered streams.",
+   "n_gate_locks": 38,
+   "gate_locks_recomputed_from_results_table_equal": true,
+   "gate_locks_without_cut_traces": [
+    "JfAbDuKRUqQ",
+    "KVblO36WdiY",
+    "WYoKaThec_k",
+    "aFwlCwTZmU8",
+    "l1qc3tk3bxw",
+    "sv6D2j7Ats0",
+    "vyBSiPQEXRg"
+   ],
+   "n_streams": 31,
+   "n_cuts": 62,
+   "stream_ids": [
+    "K3atjTKsNiA",
+    "BvFUpGaie2E",
+    "kwRCr1M3ONo",
+    "I9SJk-TTrBg",
+    "JSCPPnRAJZY",
+    "5LW0lKI1jx8",
+    "jgtDaCE6HUk",
+    "vXH6fVeWn5s",
+    "LHBG6cdgdsU",
+    "r-dKUfuPxLQ",
+    "a6u8ZkZ5D58",
+    "bFlgoacpxZU",
+    "3dxthmsAvWE",
+    "hwnKuf3aciU",
+    "8YaC-FzdRPA",
+    "Y2nNag-70w4",
+    "8gsXSa4UzaQ",
+    "xgYK-TBnCOY",
+    "FGPtrBiqhJY",
+    "Lza3R2AyHmM",
+    "DfjXpqRP2uE",
+    "mqDrSP29cPE",
+    "3j8-qlHHnIE",
+    "YoJlliek2Sg",
+    "Q0QZ3Je68Sc",
+    "HDfWJP4QYo0",
+    "FU27mso1GaE",
+    "TbqOkXM630s",
+    "n8HWbA8edWs",
+    "l8-ZICFYjRA",
+    "S8xr4terOXE"
+   ],
+   "totals": {
+    "by_cut_length_s": {
+     "10": {
+      "SYNTHETIC": true,
+      "n_cuts": 6,
+      "detected": {
+       "k": 0,
+       "n": 6,
+       "rate": 0.0,
+       "wilson95": [
+        0.0,
+        0.39033429165637346
+       ]
+      },
+      "duration_error_s": {
+       "n": 0,
+       "median": null,
+       "max": null,
+       "values": []
+      }
+     },
+     "20": {
+      "SYNTHETIC": true,
+      "n_cuts": 14,
+      "detected": {
+       "k": 3,
+       "n": 14,
+       "rate": 0.21428571428571427,
+       "wilson95": [
+        0.07571386653293533,
+        0.4758923079830535
+       ]
+      },
+      "duration_error_s": {
+       "n": 3,
+       "median": 1.0,
+       "max": 7.0,
+       "values": [
+        0.0,
+        1.0,
+        7.0
+       ]
+      }
+     },
+     "40": {
+      "SYNTHETIC": true,
+      "n_cuts": 14,
+      "detected": {
+       "k": 4,
+       "n": 14,
+       "rate": 0.2857142857142857,
+       "wilson95": [
+        0.11721378562701742,
+        0.5464908452599742
+       ]
+      },
+      "duration_error_s": {
+       "n": 4,
+       "median": 3.0,
+       "max": 5.0,
+       "values": [
+        0.0,
+        2.0,
+        4.0,
+        5.0
+       ]
+      }
+     },
+     "60": {
+      "SYNTHETIC": true,
+      "n_cuts": 12,
+      "detected": {
+       "k": 3,
+       "n": 12,
+       "rate": 0.25,
+       "wilson95": [
+        0.08894166769488562,
+        0.5323053370816633
+       ]
+      },
+      "duration_error_s": {
+       "n": 3,
+       "median": 1.0,
+       "max": 3.0,
+       "values": [
+        0.0,
+        1.0,
+        3.0
+       ]
+      }
+     },
+     "90": {
+      "SYNTHETIC": true,
+      "n_cuts": 5,
+      "detected": {
+       "k": 1,
+       "n": 5,
+       "rate": 0.2,
+       "wilson95": [
+        0.03622410822563066,
+        0.6244653729700049
+       ]
+      },
+      "duration_error_s": {
+       "n": 1,
+       "median": 2.0,
+       "max": 2.0,
+       "values": [
+        2.0
+       ]
+      }
+     },
+     "120": {
+      "SYNTHETIC": true,
+      "n_cuts": 11,
+      "detected": {
+       "k": 5,
+       "n": 11,
+       "rate": 0.45454545454545453,
+       "wilson95": [
+        0.21271271487637833,
+        0.7199084642140241
+       ]
+      },
+      "duration_error_s": {
+       "n": 5,
+       "median": 2.0,
+       "max": 5.0,
+       "values": [
+        0.0,
+        0.0,
+        2.0,
+        3.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "all": {
+     "SYNTHETIC": true,
+     "n_cuts": 62,
+     "detected": {
+      "k": 16,
+      "n": 62,
+      "rate": 0.25806451612903225,
+      "wilson95": [
+       0.16554876082007103,
+       0.37881127448707047
+      ]
+     },
+     "duration_error_s": {
+      "n": 16,
+      "median": 2.0,
+      "max": 7.0,
+      "values": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       1.0,
+       1.0,
+       2.0,
+       2.0,
+       2.0,
+       3.0,
+       3.0,
+       4.0,
+       5.0,
+       5.0,
+       7.0
+      ]
+     }
+    }
+   },
+   "false_alarms": {
+    "n_uncut_excerpts": 31,
+    "excerpts_with_a_reported_edit": {
+     "k": 2,
+     "n": 31,
+     "rate": 0.06451612903225806,
+     "wilson95": [
+      0.01787478336061983,
+      0.2071863688721744
+     ]
+    },
+    "edits_reported": 2,
+    "stream_ids_with_a_reported_edit": [
+     "5LW0lKI1jx8",
+     "r-dKUfuPxLQ"
+    ],
+    "find_edits_did_not_run": []
+   },
+   "reading_checks": {
+    "either_kind_within_30s": {
+     "k": 16,
+     "n": 62,
+     "rate": 0.25806451612903225,
+     "wilson95": [
+      0.16554876082007103,
+      0.37881127448707047
+     ]
+    },
+    "other_edits_on_cut_traces": 13,
+    "cut_traces_with_another_edit": 11,
+    "not_detected": 46,
+    "not_detected_no_edit_reported": 42,
+    "not_detected_edits_reported_elsewhere": 4
+   },
+   "additional_streams_only": {
+    "label": "EXPLORATORY (post hoc): gate locks that are not in the pre-registered M5 set",
+    "n_streams": 17,
+    "n_cuts": 34,
+    "stream_ids": [
+     "8YaC-FzdRPA",
+     "Y2nNag-70w4",
+     "8gsXSa4UzaQ",
+     "xgYK-TBnCOY",
+     "FGPtrBiqhJY",
+     "Lza3R2AyHmM",
+     "DfjXpqRP2uE",
+     "mqDrSP29cPE",
+     "3j8-qlHHnIE",
+     "YoJlliek2Sg",
+     "Q0QZ3Je68Sc",
+     "HDfWJP4QYo0",
+     "FU27mso1GaE",
+     "TbqOkXM630s",
+     "n8HWbA8edWs",
+     "l8-ZICFYjRA",
+     "S8xr4terOXE"
+    ],
+    "totals": {
+     "by_cut_length_s": {
+      "10": {
+       "SYNTHETIC": true,
+       "n_cuts": 3,
+       "detected": {
+        "k": 0,
+        "n": 3,
+        "rate": 0.0,
+        "wilson95": [
+         0.0,
+         0.5614970356393196
+        ]
+       },
+       "duration_error_s": {
+        "n": 0,
+        "median": null,
+        "max": null,
+        "values": []
+       }
+      },
+      "20": {
+       "SYNTHETIC": true,
+       "n_cuts": 9,
+       "detected": {
+        "k": 1,
+        "n": 9,
+        "rate": 0.1111111111111111,
+        "wilson95": [
+         0.01989088741690992,
+         0.4349997083707909
+        ]
+       },
+       "duration_error_s": {
+        "n": 1,
+        "median": 7.0,
+        "max": 7.0,
+        "values": [
+         7.0
+        ]
+       }
+      },
+      "40": {
+       "SYNTHETIC": true,
+       "n_cuts": 8,
+       "detected": {
+        "k": 1,
+        "n": 8,
+        "rate": 0.125,
+        "wilson95": [
+         0.022417491199971912,
+         0.47088818505608376
+        ]
+       },
+       "duration_error_s": {
+        "n": 1,
+        "median": 5.0,
+        "max": 5.0,
+        "values": [
+         5.0
+        ]
+       }
+      },
+      "60": {
+       "SYNTHETIC": true,
+       "n_cuts": 7,
+       "detected": {
+        "k": 0,
+        "n": 7,
+        "rate": 0.0,
+        "wilson95": [
+         0.0,
+         0.35433043867586833
+        ]
+       },
+       "duration_error_s": {
+        "n": 0,
+        "median": null,
+        "max": null,
+        "values": []
+       }
+      },
+      "90": {
+       "SYNTHETIC": true,
+       "n_cuts": 4,
+       "detected": {
+        "k": 0,
+        "n": 4,
+        "rate": 0.0,
+        "wilson95": [
+         0.0,
+         0.4898908403969213
+        ]
+       },
+       "duration_error_s": {
+        "n": 0,
+        "median": null,
+        "max": null,
+        "values": []
+       }
+      },
+      "120": {
+       "SYNTHETIC": true,
+       "n_cuts": 3,
+       "detected": {
+        "k": 0,
+        "n": 3,
+        "rate": 0.0,
+        "wilson95": [
+         0.0,
+         0.5614970356393196
+        ]
+       },
+       "duration_error_s": {
+        "n": 0,
+        "median": null,
+        "max": null,
+        "values": []
+       }
+      }
+     },
+     "all": {
+      "SYNTHETIC": true,
+      "n_cuts": 34,
+      "detected": {
+       "k": 2,
+       "n": 34,
+       "rate": 0.058823529411764705,
+       "wilson95": [
+        0.016282655063251508,
+        0.19093607045929484
+       ]
+      },
+      "duration_error_s": {
+       "n": 2,
+       "median": 6.0,
+       "max": 7.0,
+       "values": [
+        5.0,
+        7.0
+       ]
+      }
+     }
+    },
+    "false_alarms": {
+     "n_uncut_excerpts": 17,
+     "excerpts_with_a_reported_edit": {
+      "k": 0,
+      "n": 17,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.18431813738065556
+      ]
+     },
+     "edits_reported": 0,
+     "stream_ids_with_a_reported_edit": [],
+     "find_edits_did_not_run": []
+    },
+    "uncut_60min_excerpt_in_results_table": {
+     "full_scope_outcome": {
+      "confident wrong": 5,
+      "no verdict": 12
+     },
+     "top1_within_30s_in_1d_scope": 10
+    },
+    "reading_checks": {
+     "either_kind_within_30s": {
+      "k": 2,
+      "n": 34,
+      "rate": 0.058823529411764705,
+      "wilson95": [
+       0.016282655063251508,
+       0.19093607045929484
+      ]
+     },
+     "other_edits_on_cut_traces": 3,
+     "cut_traces_with_another_edit": 2,
+     "not_detected": 32,
+     "not_detected_no_edit_reported": 31,
+     "not_detected_edits_reported_elsewhere": 1
+    },
+    "streams": [
+     {
+      "video_id": "8YaC-FzdRPA",
+      "trace_path": "traces/test/8YaC-FzdRPA.npz",
+      "release_timestamp": 1636698678,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 4,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 4,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 28233806,
+        "recording_start_ist": "2021-11-12 12:02:19",
+        "r": 0.8464439436261683,
+        "confidence": 0.40393552547677136
+       },
+       "anchor": {
+        "given": 28233806,
+        "used": 28233803,
+        "first_half": 28233803,
+        "second_half": 28233852,
+        "chosen": "first_half",
+        "scores": {
+         "given": 0.6568,
+         "first_half": 0.6568,
+         "second_half": 0.6568
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        28147345,
+        28320146
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 607.967,
+        "true_position_recording_s": 727.967,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 28233823,
+         "recording_start_ist": "2021-11-12 12:02:36",
+         "r": 0.8363165870471237,
+         "confidence": 0.3569470965658694
+        },
+        "anchor": {
+         "given": 28233823,
+         "used": 28233805,
+         "first_half": 28233805,
+         "second_half": 28233872,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.6442,
+          "first_half": 0.6442,
+          "second_half": 0.6442
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         28147345,
+         28320146
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 17
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2109.702,
+        "true_position_recording_s": 2229.702,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 28233803,
+         "recording_start_ist": "2021-11-12 12:02:16",
+         "r": 0.836201092545507,
+         "confidence": 0.36300962156783867
+        },
+        "anchor": {
+         "given": 28233803,
+         "used": 28233803,
+         "first_half": 28233803,
+         "second_half": 28233871,
+         "chosen": "given",
+         "scores": {
+          "given": 0.6502,
+          "first_half": 0.6502,
+          "second_half": 0.6502
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         28147345,
+         28320146
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": -3
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "Y2nNag-70w4",
+      "trace_path": "traces/test/Y2nNag-70w4.npz",
+      "release_timestamp": 1645007415,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 4,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 4,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 36542565,
+        "recording_start_ist": "2022-02-16 16:01:38",
+        "r": 0.8867379568250284,
+        "confidence": 0.28236293519449385
+       },
+       "anchor": {
+        "given": 36542565,
+        "used": 36542565,
+        "first_half": 36628961,
+        "second_half": 36542566,
+        "chosen": "given",
+        "scores": {
+         "given": 0.576,
+         "first_half": 0.3851,
+         "second_half": 0.576
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        36456082,
+        36628883
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2610.609,
+        "true_position_recording_s": 2730.609,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 36542600,
+         "recording_start_ist": "2022-02-16 16:02:13",
+         "r": 0.8623133522740065,
+         "confidence": 0.17578949787341291
+        },
+        "anchor": {
+         "given": 36542600,
+         "used": 36542600,
+         "first_half": 36628961,
+         "second_half": 36542612,
+         "chosen": "given",
+         "scores": {
+          "given": 0.5698,
+          "first_half": 0.3969,
+          "second_half": 0.5698
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         36456082,
+         36628883
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 35
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 986.887,
+        "true_position_recording_s": 1106.887,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 36542583,
+         "recording_start_ist": "2022-02-16 16:01:56",
+         "r": 0.880744576826324,
+         "confidence": 0.24791696999044066
+        },
+        "anchor": {
+         "given": 36542583,
+         "used": 36542583,
+         "first_half": 36477409,
+         "second_half": 36542586,
+         "chosen": "given",
+         "scores": {
+          "given": 0.5768,
+          "first_half": 0.4164,
+          "second_half": 0.5768
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         36456082,
+         36628883
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 18
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "8gsXSa4UzaQ",
+      "trace_path": "traces/test/8gsXSa4UzaQ.npz",
+      "release_timestamp": 1645594065,
+      "results_table": {
+       "full": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": 33,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": 33,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 37129254,
+        "recording_start_ist": "2022-02-23 10:59:47",
+        "r": 0.9946326791683063,
+        "confidence": 1.792890320121592
+       },
+       "anchor": {
+        "given": 37129254,
+        "used": 37129254,
+        "first_half": 37129250,
+        "second_half": 37129256,
+        "chosen": "given",
+        "scores": {
+         "given": 0.9872,
+         "first_half": 0.9872,
+         "second_half": 0.9872
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        37042732,
+        37215533
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2767.23,
+        "true_position_recording_s": 2887.23,
+        "true_length_s": 40,
+        "detected": true,
+        "detecting_edit": 0,
+        "reported_position_s": 2771.0,
+        "position_error_s": 3.77,
+        "reported_jump_s": 45.0,
+        "duration_error_s": 5.0,
+        "either_kind_within_window": true,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 37129260,
+         "recording_start_ist": "2022-02-23 10:59:53",
+         "r": 0.9775244353594659,
+         "confidence": 1.1100962768726355
+        },
+        "anchor": {
+         "given": 37129260,
+         "used": 37129260,
+         "first_half": 37129250,
+         "second_half": 37129263,
+         "chosen": "given",
+         "scores": {
+          "given": 0.9759,
+          "first_half": 0.9759,
+          "second_half": 0.9759
+         }
+        },
+        "reported_edits": [
+         {
+          "trace_frame": 2763,
+          "clip_time_s": 2771.0,
+          "jump_s": 45.0,
+          "kind": "cut",
+          "offset_before_s": -8.0,
+          "offset_after_s": 37.0,
+          "r_before": 0.986,
+          "r_after": 0.9873,
+          "residual_drop": 0.4748,
+          "recording_time_s": 2891.0
+         }
+        ],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         37042732,
+         37215533
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 6
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 851.679,
+        "true_position_recording_s": 971.679,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 2,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 37129274,
+         "recording_start_ist": "2022-02-23 11:00:07",
+         "r": 0.9906009760041201,
+         "confidence": 1.534839084619746
+        },
+        "anchor": {
+         "given": 37129274,
+         "used": 37129274,
+         "first_half": 37129267,
+         "second_half": 37129276,
+         "chosen": "given",
+         "scores": {
+          "given": 0.983,
+          "first_half": 0.983,
+          "second_half": 0.983
+         }
+        },
+        "reported_edits": [
+         {
+          "trace_frame": 186,
+          "clip_time_s": 194.0,
+          "jump_s": -195.0,
+          "kind": "insertion",
+          "offset_before_s": 169.0,
+          "offset_after_s": -26.0,
+          "r_before": 0.766,
+          "r_after": 0.983,
+          "residual_drop": 0.1803,
+          "recording_time_s": 314.0
+         },
+         {
+          "trace_frame": 978,
+          "clip_time_s": 986.0,
+          "jump_s": 29.0,
+          "kind": "cut",
+          "offset_before_s": -28.0,
+          "offset_after_s": 1.0,
+          "r_before": 0.9798,
+          "r_after": 0.9866,
+          "residual_drop": 0.3173,
+          "recording_time_s": 1106.0
+         }
+        ],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         37042732,
+         37215533
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 20
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "xgYK-TBnCOY",
+      "trace_path": "traces/test/xgYK-TBnCOY.npz",
+      "release_timestamp": 1653456487,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -23,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -23,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 44991632,
+        "recording_start_ist": "2022-05-25 10:59:25",
+        "r": 0.787870544750357,
+        "confidence": 0.3712136027868219
+       },
+       "anchor": {
+        "given": 44991632,
+        "used": 44991613,
+        "first_half": 44970432,
+        "second_half": 44991613,
+        "chosen": "second_half",
+        "scores": {
+         "given": 0.4222,
+         "first_half": 0.2304,
+         "second_half": 0.4222
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        44905154,
+        45077955
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 3025.589,
+        "true_position_recording_s": 3145.589,
+        "true_length_s": 90,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 44991639,
+         "recording_start_ist": "2022-05-25 10:59:32",
+         "r": 0.7735487052268865,
+         "confidence": 0.34833143671355604
+        },
+        "anchor": {
+         "given": 44991639,
+         "used": 44991655,
+         "first_half": 44970431,
+         "second_half": 44991655,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.4117,
+          "first_half": 0.2368,
+          "second_half": 0.4117
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3495,
+        "weighted_search": true,
+        "scope_positions": [
+         44905154,
+         45077955
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 7
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1102.275,
+        "true_position_recording_s": 1222.275,
+        "true_length_s": 10,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 44991639,
+         "recording_start_ist": "2022-05-25 10:59:32",
+         "r": 0.7871566273037495,
+         "confidence": 0.37265784248127864
+        },
+        "anchor": {
+         "given": 44991639,
+         "used": 44991639,
+         "first_half": 44970430,
+         "second_half": 44991624,
+         "chosen": "given",
+         "scores": {
+          "given": 0.4253,
+          "first_half": 0.2274,
+          "second_half": 0.4253
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3575,
+        "weighted_search": true,
+        "scope_positions": [
+         44905154,
+         45077955
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 7
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "FGPtrBiqhJY",
+      "trace_path": "traces/test/FGPtrBiqhJY.npz",
+      "release_timestamp": 1654149630,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -24,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -24,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 45684774,
+        "recording_start_ist": "2022-06-02 11:31:47",
+        "r": 0.6726640132570952,
+        "confidence": 0.3005526931218738
+       },
+       "anchor": {
+        "given": 45684774,
+        "used": 45684774,
+        "first_half": 45749254,
+        "second_half": 45684774,
+        "chosen": "given",
+        "scores": {
+         "given": 0.4313,
+         "first_half": 0.2941,
+         "second_half": 0.4313
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        45598297,
+        45771098
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2022.147,
+        "true_position_recording_s": 2142.147,
+        "true_length_s": 120,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 45684888,
+         "recording_start_ist": "2022-06-02 11:33:41",
+         "r": 0.5342990567073147,
+         "confidence": 0.04628889675655945
+        },
+        "anchor": {
+         "given": 45684888,
+         "used": 45684890,
+         "first_half": 45749254,
+         "second_half": 45684890,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.4001,
+          "first_half": 0.206,
+          "second_half": 0.4001
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3465,
+        "weighted_search": true,
+        "scope_positions": [
+         45598297,
+         45771098
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 114
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1996.149,
+        "true_position_recording_s": 2116.149,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 45684832,
+         "recording_start_ist": "2022-06-02 11:32:45",
+         "r": 0.6241779147718219,
+         "confidence": 0.2051104609650488
+        },
+        "anchor": {
+         "given": 45684832,
+         "used": 45684832,
+         "first_half": 45749254,
+         "second_half": 45684832,
+         "chosen": "given",
+         "scores": {
+          "given": 0.4333,
+          "first_half": 0.2435,
+          "second_half": 0.4333
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         45598297,
+         45771098
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 58
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "Lza3R2AyHmM",
+      "trace_path": "traces/test/Lza3R2AyHmM.npz",
+      "release_timestamp": 1656998522,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": -26366937,
+        "confidence_ge_tau": false
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -15,
+        "confidence_ge_tau": false
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": false,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 48533733,
+        "recording_start_ist": "2022-07-05 10:54:26",
+        "r": 0.9154833377728461,
+        "confidence": 0.02263532596071305
+       },
+       "anchor": {
+        "given": 48533733,
+        "used": 48533733,
+        "first_half": 48543041,
+        "second_half": 48533760,
+        "chosen": "given",
+        "scores": {
+         "given": 0.4861,
+         "first_half": 0.4215,
+         "second_half": 0.4861
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        48447189,
+        48619990
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 642.314,
+        "true_position_recording_s": 762.314,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 48464019,
+         "recording_start_ist": "2022-07-04 15:32:32",
+         "r": 0.9050345341925716,
+         "confidence": 0.008605209757356569
+        },
+        "anchor": {
+         "given": 48464019,
+         "used": 48533820,
+         "first_half": 48543102,
+         "second_half": 48533820,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.3579,
+          "first_half": 0.3923,
+          "second_half": 0.4976
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         48447189,
+         48619990
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": -69714
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 702.305,
+        "true_position_recording_s": 822.305,
+        "true_length_s": 90,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 48539491,
+         "recording_start_ist": "2022-07-05 12:30:24",
+         "r": 0.9063827428922318,
+         "confidence": 0.031188705198281763
+        },
+        "anchor": {
+         "given": 48539491,
+         "used": 48533850,
+         "first_half": 48515863,
+         "second_half": 48533850,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.2734,
+          "first_half": 0.4363,
+          "second_half": 0.4943
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3495,
+        "weighted_search": true,
+        "scope_positions": [
+         48447189,
+         48619990
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 5758
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "DfjXpqRP2uE",
+      "trace_path": "traces/test/DfjXpqRP2uE.npz",
+      "release_timestamp": 1658899123,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -4,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -4,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 50434481,
+        "recording_start_ist": "2022-07-27 10:53:34",
+        "r": 0.8326651998907181,
+        "confidence": 0.3666057498237625
+       },
+       "anchor": {
+        "given": 50434481,
+        "used": 50434481,
+        "first_half": 50467902,
+        "second_half": 50387274,
+        "chosen": "given",
+        "scores": {
+         "given": 0.3542,
+         "first_half": 0.2448,
+         "second_half": 0.2538
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        50347790,
+        50520591
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1379.161,
+        "true_position_recording_s": 1499.161,
+        "true_length_s": 10,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 50434484,
+         "recording_start_ist": "2022-07-27 10:53:37",
+         "r": 0.8290444714489054,
+         "confidence": 0.34606143490565144
+        },
+        "anchor": {
+         "given": 50434484,
+         "used": 50434484,
+         "first_half": 50467890,
+         "second_half": 50387284,
+         "chosen": "given",
+         "scores": {
+          "given": 0.3459,
+          "first_half": 0.2401,
+          "second_half": 0.2605
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3575,
+        "weighted_search": true,
+        "scope_positions": [
+         50347790,
+         50520591
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 3
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1296.976,
+        "true_position_recording_s": 1416.976,
+        "true_length_s": 10,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 50434484,
+         "recording_start_ist": "2022-07-27 10:53:37",
+         "r": 0.8294655373319239,
+         "confidence": 0.3526861174868695
+        },
+        "anchor": {
+         "given": 50434484,
+         "used": 50434484,
+         "first_half": 50434491,
+         "second_half": 50387284,
+         "chosen": "given",
+         "scores": {
+          "given": 0.3606,
+          "first_half": 0.3606,
+          "second_half": 0.2682
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3575,
+        "weighted_search": true,
+        "scope_positions": [
+         50347790,
+         50520591
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 3
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "mqDrSP29cPE",
+      "trace_path": "traces/test/mqDrSP29cPE.npz",
+      "release_timestamp": 1663738247,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": 26572060,
+        "confidence_ge_tau": false
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": 53282,
+        "confidence_ge_tau": false
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": false,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 55326649,
+        "recording_start_ist": "2022-09-22 01:49:42",
+        "r": 0.24096785364593132,
+        "confidence": 0.03241605361475275
+       },
+       "anchor": {
+        "given": 55326649,
+        "used": 55326649,
+        "first_half": 55261865,
+        "second_half": 55375195,
+        "chosen": "given",
+        "scores": {
+         "given": 0.2265,
+         "first_half": 0.1945,
+         "second_half": 0.1775
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        55186914,
+        55359715
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1933.265,
+        "true_position_recording_s": 2053.265,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 55242833,
+         "recording_start_ist": "2022-09-21 02:32:46",
+         "r": 0.21107191012656737,
+         "confidence": 0.0045185134150008965
+        },
+        "anchor": {
+         "given": 55242833,
+         "used": 55261865,
+         "first_half": 55261865,
+         "second_half": 55308940,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.2033,
+          "first_half": 0.2136,
+          "second_half": 0.1472
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         55186914,
+         55359715
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": -83816
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 971.058,
+        "true_position_recording_s": 1091.058,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 55326710,
+         "recording_start_ist": "2022-09-22 01:50:43",
+         "r": 0.2249277688570019,
+         "confidence": 0.014155721494660684
+        },
+        "anchor": {
+         "given": 55326710,
+         "used": 55326710,
+         "first_half": 55387887,
+         "second_half": 55375255,
+         "chosen": "given",
+         "scores": {
+          "given": 0.211,
+          "first_half": 0.2063,
+          "second_half": 0.154
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         55186914,
+         55359715
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 61
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "3j8-qlHHnIE",
+      "trace_path": "traces/test/3j8-qlHHnIE.npz",
+      "release_timestamp": 1664712808,
+      "results_table": {
+       "full": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": 44,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": 44,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 56247988,
+        "recording_start_ist": "2022-10-02 17:45:21",
+        "r": 0.9533427276618698,
+        "confidence": 1.0168229868085623
+       },
+       "anchor": {
+        "given": 56247988,
+        "used": 56247988,
+        "first_half": 56247964,
+        "second_half": 56326228,
+        "chosen": "given",
+        "scores": {
+         "given": 0.6643,
+         "first_half": 0.6643,
+         "second_half": 0.6587
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        56161475,
+        56334276
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 782.495,
+        "true_position_recording_s": 902.495,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 56248028,
+         "recording_start_ist": "2022-10-02 17:46:01",
+         "r": 0.9039610433310068,
+         "confidence": 0.5953181709033203
+        },
+        "anchor": {
+         "given": 56248028,
+         "used": 56326268,
+         "first_half": 56247965,
+         "second_half": 56326268,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.6364,
+          "first_half": 0.6364,
+          "second_half": 0.6436
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         56161475,
+         56334276
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 40
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 741.152,
+        "true_position_recording_s": 861.152,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 56248028,
+         "recording_start_ist": "2022-10-02 17:46:01",
+         "r": 0.9039702078350982,
+         "confidence": 0.5953560037842356
+        },
+        "anchor": {
+         "given": 56248028,
+         "used": 56326268,
+         "first_half": 56247967,
+         "second_half": 56326268,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.635,
+          "first_half": 0.635,
+          "second_half": 0.6423
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         56161475,
+         56334276
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 40
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "YoJlliek2Sg",
+      "trace_path": "traces/test/YoJlliek2Sg.npz",
+      "release_timestamp": 1664799293,
+      "results_table": {
+       "full": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": 46,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": 46,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 56334475,
+        "recording_start_ist": "2022-10-03 17:46:48",
+        "r": 0.9861724924079944,
+        "confidence": 1.347893330237707
+       },
+       "anchor": {
+        "given": 56334475,
+        "used": 56334475,
+        "first_half": 56334448,
+        "second_half": 56416480,
+        "chosen": "given",
+        "scores": {
+         "given": 0.5447,
+         "first_half": 0.5339,
+         "second_half": 0.3789
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        56247960,
+        56420761
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2213.002,
+        "true_position_recording_s": 2333.002,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 56334535,
+         "recording_start_ist": "2022-10-03 17:47:48",
+         "r": 0.9547259559632086,
+         "confidence": 0.7428305215731834
+        },
+        "anchor": {
+         "given": 56334535,
+         "used": 56334535,
+         "first_half": 56334448,
+         "second_half": 56416540,
+         "chosen": "given",
+         "scores": {
+          "given": 0.5609,
+          "first_half": 0.5193,
+          "second_half": 0.3795
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         56247960,
+         56420761
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 60
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 3142.722,
+        "true_position_recording_s": 3262.722,
+        "true_length_s": 120,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 56334475,
+         "recording_start_ist": "2022-10-03 17:46:48",
+         "r": 0.9852514983319635,
+         "confidence": 1.3085902478839395
+        },
+        "anchor": {
+         "given": 56334475,
+         "used": 56334448,
+         "first_half": 56334448,
+         "second_half": 56345036,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.5957,
+          "first_half": 0.5957,
+          "second_half": 0.5006
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3465,
+        "weighted_search": true,
+        "scope_positions": [
+         56247960,
+         56420761
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 0
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "Q0QZ3Je68Sc",
+      "trace_path": "traces/test/Q0QZ3Je68Sc.npz",
+      "release_timestamp": 1677475818,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -6,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -6,
+        "confidence_ge_tau": false
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 69010873,
+        "recording_start_ist": "2023-02-27 11:00:06",
+        "r": 0.6525797168466413,
+        "confidence": 0.2127256786834466
+       },
+       "anchor": {
+        "given": 69010873,
+        "used": 69049595,
+        "first_half": 68972573,
+        "second_half": 69049595,
+        "chosen": "second_half",
+        "scores": {
+         "given": 0.2369,
+         "first_half": 0.2224,
+         "second_half": 0.2769
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        68924485,
+        69097286
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2111.437,
+        "true_position_recording_s": 2231.437,
+        "true_length_s": 120,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 68985044,
+         "recording_start_ist": "2023-02-27 03:49:37",
+         "r": 0.5151171841973083,
+         "confidence": 0.039582327573916554
+        },
+        "anchor": {
+         "given": 68985044,
+         "used": 68972583,
+         "first_half": 68972583,
+         "second_half": 68965800,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.2331,
+          "first_half": 0.2623,
+          "second_half": 0.1978
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3465,
+        "weighted_search": true,
+        "scope_positions": [
+         68924485,
+         69097286
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": -25829
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 322.878,
+        "true_position_recording_s": 442.878,
+        "true_length_s": 90,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 69010962,
+         "recording_start_ist": "2023-02-27 11:01:35",
+         "r": 0.6464026933068139,
+         "confidence": 0.19122898307609326
+        },
+        "anchor": {
+         "given": 69010962,
+         "used": 69008565,
+         "first_half": 69008565,
+         "second_half": 69049685,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.2534,
+          "first_half": 0.2772,
+          "second_half": 0.258
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3495,
+        "weighted_search": true,
+        "scope_positions": [
+         68924485,
+         69097286
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 89
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "HDfWJP4QYo0",
+      "trace_path": "traces/test/HDfWJP4QYo0.npz",
+      "release_timestamp": 1677626634,
+      "results_table": {
+       "full": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": -2876519,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": 61037,
+        "confidence_ge_tau": false
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": false,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 69222732,
+        "recording_start_ist": "2023-03-01 21:51:05",
+        "r": 0.9372395266928224,
+        "confidence": 0.02713384160164556
+       },
+       "anchor": {
+        "given": 69222732,
+        "used": 69161658,
+        "first_half": 69161658,
+        "second_half": 69142661,
+        "chosen": "first_half",
+        "scores": {
+         "given": 0.7811,
+         "first_half": 0.9011,
+         "second_half": 0.5101
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        69075301,
+        69248102
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 453.145,
+        "true_position_recording_s": 573.145,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 69222764,
+         "recording_start_ist": "2023-03-01 21:51:37",
+         "r": 0.9373352687891999,
+         "confidence": 0.1052581892489941
+        },
+        "anchor": {
+         "given": 69222764,
+         "used": 69161696,
+         "first_half": 69161696,
+         "second_half": 69142695,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.7743,
+          "first_half": 0.8878,
+          "second_half": 0.5422
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         69075301,
+         69248102
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 32
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 493.649,
+        "true_position_recording_s": 613.649,
+        "true_length_s": 20,
+        "detected": true,
+        "detecting_edit": 0,
+        "reported_position_s": 490.0,
+        "position_error_s": -3.649,
+        "reported_jump_s": 13.0,
+        "duration_error_s": 7.0,
+        "either_kind_within_window": true,
+        "other_edits": 1,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 69161671,
+         "recording_start_ist": "2023-03-01 04:53:24",
+         "r": 0.966415768827372,
+         "confidence": 0.2654631729260679
+        },
+        "anchor": {
+         "given": 69161671,
+         "used": 69161671,
+         "first_half": 69161676,
+         "second_half": 69142677,
+         "chosen": "given",
+         "scores": {
+          "given": 0.8942,
+          "first_half": 0.8942,
+          "second_half": 0.5252
+         }
+        },
+        "reported_edits": [
+         {
+          "trace_frame": 482,
+          "clip_time_s": 490.0,
+          "jump_s": 13.0,
+          "kind": "cut",
+          "offset_before_s": -6.0,
+          "offset_after_s": 7.0,
+          "r_before": 0.9964,
+          "r_after": 0.9955,
+          "residual_drop": 0.1507,
+          "recording_time_s": 610.0
+         },
+         {
+          "trace_frame": 2275,
+          "clip_time_s": 2283.0,
+          "jump_s": 65.0,
+          "kind": "cut",
+          "offset_before_s": 6.0,
+          "offset_after_s": 71.0,
+          "r_before": 0.9962,
+          "r_after": 0.127,
+          "residual_drop": 0.9616,
+          "recording_time_s": 2403.0
+         }
+        ],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         69075301,
+         69248102
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": -61061
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "FU27mso1GaE",
+      "trace_path": "traces/test/FU27mso1GaE.npz",
+      "release_timestamp": 1678363037,
+      "results_table": {
+       "full": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": -32,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "confident wrong",
+        "hit_30s": false,
+        "error_s": -32,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 69898066,
+        "recording_start_ist": "2023-03-09 17:26:39",
+        "r": 0.9822487043501336,
+        "confidence": 0.977128689397454
+       },
+       "anchor": {
+        "given": 69898066,
+        "used": 69898066,
+        "first_half": 69898066,
+        "second_half": 69863520,
+        "chosen": "given",
+        "scores": {
+         "given": 0.7769,
+         "first_half": 0.7769,
+         "second_half": 0.5756
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        69811704,
+        69984505
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 625.489,
+        "true_position_recording_s": 745.489,
+        "true_length_s": 60,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 69898120,
+         "recording_start_ist": "2023-03-09 17:27:33",
+         "r": 0.9613283617833626,
+         "confidence": 0.7504370172052739
+        },
+        "anchor": {
+         "given": 69898120,
+         "used": 69898115,
+         "first_half": 69898115,
+         "second_half": 69863581,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.7788,
+          "first_half": 0.7788,
+          "second_half": 0.5776
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3525,
+        "weighted_search": true,
+        "scope_positions": [
+         69811704,
+         69984505
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 54
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1102.438,
+        "true_position_recording_s": 1222.438,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 69898094,
+         "recording_start_ist": "2023-03-09 17:27:07",
+         "r": 0.9613744410016214,
+         "confidence": 0.683645518835623
+        },
+        "anchor": {
+         "given": 69898094,
+         "used": 69898094,
+         "first_half": 69898071,
+         "second_half": 69863560,
+         "chosen": "given",
+         "scores": {
+          "given": 0.7958,
+          "first_half": 0.7958,
+          "second_half": 0.5796
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         69811704,
+         69984505
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 28
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "TbqOkXM630s",
+      "trace_path": "traces/test/TbqOkXM630s.npz",
+      "release_timestamp": 1679387367,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": -16856721,
+        "confidence_ge_tau": false
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 5,
+        "confidence_ge_tau": false
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": false,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 70922428,
+        "recording_start_ist": "2023-03-21 13:59:21",
+        "r": 0.7881960869414707,
+        "confidence": 0.17341178530350798
+       },
+       "anchor": {
+        "given": 70922428,
+        "used": 70918842,
+        "first_half": 70932077,
+        "second_half": 70918842,
+        "chosen": "second_half",
+        "scores": {
+         "given": 0.2477,
+         "first_half": 0.3886,
+         "second_half": 0.5545
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        70836034,
+        71008835
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1856.593,
+        "true_position_recording_s": 1976.593,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 70922448,
+         "recording_start_ist": "2023-03-21 13:59:41",
+         "r": 0.7793418781843191,
+         "confidence": 0.1425600508585807
+        },
+        "anchor": {
+         "given": 70922448,
+         "used": 70918854,
+         "first_half": 70932077,
+         "second_half": 70918854,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.2606,
+          "first_half": 0.4096,
+          "second_half": 0.5551
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         70836034,
+         71008835
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 20
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2009.404,
+        "true_position_recording_s": 2129.404,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 70922446,
+         "recording_start_ist": "2023-03-21 13:59:39",
+         "r": 0.7808600868075145,
+         "confidence": 0.14130856859751584
+        },
+        "anchor": {
+         "given": 70922446,
+         "used": 70918853,
+         "first_half": 70932077,
+         "second_half": 70918853,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.2629,
+          "first_half": 0.4097,
+          "second_half": 0.5584
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         70836034,
+         71008835
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 18
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "n8HWbA8edWs",
+      "trace_path": "traces/test/n8HWbA8edWs.npz",
+      "release_timestamp": 1679715653,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": -26343159,
+        "confidence_ge_tau": false
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": false,
+        "error_s": -55988,
+        "confidence_ge_tau": false
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": false,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 71194721,
+        "recording_start_ist": "2023-03-24 17:37:34",
+        "r": 0.26535350228368176,
+        "confidence": 0.0066158177513222505
+       },
+       "anchor": {
+        "given": 71194721,
+        "used": 71252619,
+        "first_half": 71164030,
+        "second_half": 71252619,
+        "chosen": "second_half",
+        "scores": {
+         "given": 0.2018,
+         "first_half": 0.2171,
+         "second_half": 0.2248
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        71164320,
+        71337121
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1693.492,
+        "true_position_recording_s": 1813.492,
+        "true_length_s": 90,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 71312329,
+         "recording_start_ist": "2023-03-26 02:17:42",
+         "r": 0.2821455909786914,
+         "confidence": 0.007456675255947287
+        },
+        "anchor": {
+         "given": 71312329,
+         "used": 71312329,
+         "first_half": 71365720,
+         "second_half": 71252709,
+         "chosen": "given",
+         "scores": {
+          "given": 0.2276,
+          "first_half": 0.2055,
+          "second_half": 0.2059
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3495,
+        "weighted_search": true,
+        "scope_positions": [
+         71164320,
+         71337121
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 117608
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 1794.623,
+        "true_position_recording_s": 1914.623,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 71194725,
+         "recording_start_ist": "2023-03-24 17:37:38",
+         "r": 0.27426614189669896,
+         "confidence": 0.008667364742098504
+        },
+        "anchor": {
+         "given": 71194725,
+         "used": 71252639,
+         "first_half": 71164030,
+         "second_half": 71252639,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.2073,
+          "first_half": 0.2236,
+          "second_half": 0.2262
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         71164320,
+         71337121
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 4
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "l8-ZICFYjRA",
+      "trace_path": "traces/test/l8-ZICFYjRA.npz",
+      "release_timestamp": 1687239064,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 9,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": 9,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 78774182,
+        "recording_start_ist": "2023-06-20 11:01:55",
+        "r": 0.7086106001075347,
+        "confidence": 0.32912258331894406
+       },
+       "anchor": {
+        "given": 78774182,
+        "used": 78774182,
+        "first_half": 78774180,
+        "second_half": 78774190,
+        "chosen": "given",
+        "scores": {
+         "given": 0.4367,
+         "first_half": 0.4367,
+         "second_half": 0.4367
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        78687731,
+        78860532
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 2036.791,
+        "true_position_recording_s": 2156.791,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 78774209,
+         "recording_start_ist": "2023-06-20 11:02:22",
+         "r": 0.6787965633411726,
+         "confidence": 0.2544001977986029
+        },
+        "anchor": {
+         "given": 78774209,
+         "used": 78774209,
+         "first_half": 78828040,
+         "second_half": 78774231,
+         "chosen": "given",
+         "scores": {
+          "given": 0.435,
+          "first_half": 0.3576,
+          "second_half": 0.435
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         78687731,
+         78860532
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 27
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 338.844,
+        "true_position_recording_s": 458.844,
+        "true_length_s": 20,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 78774204,
+         "recording_start_ist": "2023-06-20 11:02:17",
+         "r": 0.722566243694706,
+         "confidence": 0.3478363626795954
+        },
+        "anchor": {
+         "given": 78774204,
+         "used": 78774211,
+         "first_half": 78774209,
+         "second_half": 78774211,
+         "chosen": "second_half",
+         "scores": {
+          "given": 0.4427,
+          "first_half": 0.4427,
+          "second_half": 0.4427
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3565,
+        "weighted_search": true,
+        "scope_positions": [
+         78687731,
+         78860532
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 22
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     },
+     {
+      "video_id": "S8xr4terOXE",
+      "trace_path": "traces/test/S8xr4terOXE.npz",
+      "release_timestamp": 1692070239,
+      "results_table": {
+       "full": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -13,
+        "confidence_ge_tau": true
+       },
+       "1d": {
+        "outcome": "no verdict",
+        "hit_30s": true,
+        "error_s": -13,
+        "confidence_ge_tau": true
+       }
+      },
+      "checks": {
+       "trace_sha256_equals_cache": true,
+       "matcher_sha256_equals_cache": true,
+       "release_timestamp_equals_cache": true,
+       "uncut_1d_search_reproduces_cache": true,
+       "uncut_lock_equals_full_scope_lock": true,
+       "cuts_equal_harvest_cut_plan": true
+      },
+      "uncut": {
+       "trace_key": "v2__x60",
+       "lock": {
+        "index": 83605507,
+        "recording_start_ist": "2023-08-15 09:04:00",
+        "r": 0.968557878724747,
+        "confidence": 0.7584633078082332
+       },
+       "anchor": {
+        "given": 83605507,
+        "used": 83578735,
+        "first_half": 83578735,
+        "second_half": 83659076,
+        "chosen": "first_half",
+        "scores": {
+         "given": 0.2571,
+         "first_half": 0.3945,
+         "second_half": 0.1826
+        }
+       },
+       "reported_edits": [],
+       "find_edits_ran": true,
+       "note": null,
+       "n_frames": 3585,
+       "weighted_search": true,
+       "scope_positions": [
+        83518906,
+        83691707
+       ],
+       "n_positions": 172801,
+       "false_alarms": 0
+      },
+      "cuts": [
+       {
+        "cut": 1,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 924.405,
+        "true_position_recording_s": 1044.405,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut1",
+        "lock": {
+         "index": 83605513,
+         "recording_start_ist": "2023-08-15 09:04:06",
+         "r": 0.9008392238853112,
+         "confidence": 0.13978164787373126
+        },
+        "anchor": {
+         "given": 83605513,
+         "used": 83578698,
+         "first_half": 83578698,
+         "second_half": 83659116,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.2093,
+          "first_half": 0.3954,
+          "second_half": 0.1879
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         83518906,
+         83691707
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 6
+       },
+       {
+        "cut": 2,
+        "SYNTHETIC": true,
+        "label": "SYNTHETIC cut (PROTOCOL M5)",
+        "true_position_s": 322.84,
+        "true_position_recording_s": 442.84,
+        "true_length_s": 40,
+        "detected": false,
+        "detecting_edit": null,
+        "reported_position_s": null,
+        "position_error_s": null,
+        "reported_jump_s": null,
+        "duration_error_s": null,
+        "either_kind_within_window": false,
+        "other_edits": 0,
+        "trace_key": "v2__cut2",
+        "lock": {
+         "index": 83605515,
+         "recording_start_ist": "2023-08-15 09:04:08",
+         "r": 0.8926835193295152,
+         "confidence": 0.14400831856906637
+        },
+        "anchor": {
+         "given": 83605515,
+         "used": 83578705,
+         "first_half": 83578705,
+         "second_half": 83659116,
+         "chosen": "first_half",
+         "scores": {
+          "given": 0.2092,
+          "first_half": 0.3955,
+          "second_half": 0.1832
+         }
+        },
+        "reported_edits": [],
+        "find_edits_ran": true,
+        "note": null,
+        "n_frames": 3545,
+        "weighted_search": true,
+        "scope_positions": [
+         83518906,
+         83691707
+        ],
+        "n_positions": 172801,
+        "lock_minus_uncut_lock_s": 8
+       }
+      ],
+      "cuts_listed_without_a_trace": []
+     }
+    ]
+   }
+  }
+ },
+ "timing": {
+  "wall_seconds": 37.6,
+  "processes": 1,
+  "find_edits_calls": 93
+ }
+}

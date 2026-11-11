@@ -326,6 +326,11 @@ Any change after Shrey approves this file goes here. Each entry gives the date a
   - M3 is recomputed on 11 Nov by the frozen `scripts/evaluate.py` with the frozen τ (run started 18:33 IST), now with 24 real and 20 SYNTHETIC report-half negatives.
   - The libhum baseline of section 12 has not been run. libhum was never installed, and the time went to the harvest problems recorded above. It is reported as "not run" with this reason. The naive 50 Hz extractor, extractor v1 and the analytic random guess remain as baselines.
 
+- **11 Nov 2026, 22:52 IST. Analyses written after the Test results were known (section 11).** These scripts were written on 11 Nov, after the frozen evaluation had scored the Test streams. None of them changes τ, L, a hit, a verdict or the gate.
+  - `scripts/m5_edits.py` computes M5 exactly as section 11 defines it. Its choices where the text is ambiguous are listed in its docstring and in `results/m5.md`. They were fixed before it was first run on Test traces.
+  - `scripts/make_figures.py` draws the M2 signed-error plots, the M3 reliability plot and the M4 reading at the measured noise level that section 11 promises. It also writes the confident-verdict breakdown from the pre-registered 30 s, 120 s and 600 s hit columns (section 9).
+  - Two analyses are EXPLORATORY (post hoc) and are labelled so wherever they appear: what distinguishes confident verdicts that are 30 to 600 s off (`results/exploratory_offset_verdicts.*`), and M5 over all gate locks rather than the confident hits of the primary cell.
+
 ## 20. How to check this file
 
 From the repo root:

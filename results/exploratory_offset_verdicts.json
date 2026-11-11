@@ -1,0 +1,1256 @@
+{
+ "what": "EXPLORATORY (post hoc, not pre-registered). Description of confident verdicts that are 30 to 600 s from T*, beside those within 30 s. Counts and medians only.",
+ "script": "scripts/make_figures.py",
+ "scoring_run_written_ist": "2026-11-11T19:16:31+05:30",
+ "inputs": {
+  "test_results": {
+   "path": "results/test_results.csv",
+   "sha256": "c94f326c9e12795c856ec70153713653438c3e00fc2803ac531d29cb458b8af6"
+  },
+  "splits": {
+   "path": "data/splits.csv",
+   "sha256": "94d13272de9f2cc3c7548d89daf02f7bdeb2fad0d55a049ae4e4eb08859af781"
+  }
+ },
+ "figure": "results/figures/exploratory_offset_verdicts_v2.png",
+ "label": "EXPLORATORY (post hoc, not pre-registered)",
+ "extractor": "v2",
+ "scope": "full",
+ "unit": "one confident verdict = one Test stream at one excerpt length (verdict match)",
+ "groups": {
+  "within_30": "top-1 within 30 s of T* (hit_30s)",
+  "offset_30_600": "more than 30 s and up to 600 s from T* (hit_600s and not hit_30s)",
+  "beyond_600": "more than 600 s from T* (not hit_600s)"
+ },
+ "categories": {
+  "ref_src_file": [
+   "freq_I.csv",
+   "freq_II.csv",
+   "freq_III.csv",
+   "freq_IV.csv",
+   "freq_V.csv"
+  ],
+  "venue_type": [
+   "conference",
+   "government event",
+   "lecture",
+   "legislature",
+   "religious"
+  ]
+ },
+ "primary_cell": {
+  "within_30": {
+   "n_verdicts": 14,
+   "n_streams": 14,
+   "abs_D_s": {
+    "n": 14,
+    "n_undefined": 0,
+    "min": 0.0,
+    "q1": 22.5,
+    "median": 60.5,
+    "q3": 86.25,
+    "max": 293.0
+   },
+   "abs_D_s_values": [
+    0.0,
+    3.0,
+    13.0,
+    13.0,
+    51.0,
+    55.0,
+    59.0,
+    62.0,
+    67.0,
+    81.0,
+    88.0,
+    114.0,
+    170.0,
+    293.0
+   ],
+   "label_stable": {
+    "True": 6,
+    "False": 8
+   },
+   "ref_src_file": {
+    "freq_I.csv": 1,
+    "freq_II.csv": 2,
+    "freq_III.csv": 3,
+    "freq_IV.csv": 3,
+    "freq_V.csv": 5
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 1,
+    "legislature": 10,
+    "religious": 3
+   },
+   "abs_error_s_median": 8.0,
+   "confidence_median": 0.860679
+  },
+  "offset_30_600": {
+   "n_verdicts": 7,
+   "n_streams": 7,
+   "abs_D_s": {
+    "n": 7,
+    "n_undefined": 0,
+    "min": 8.0,
+    "q1": 59.0,
+    "median": 67.0,
+    "q3": 98.0,
+    "max": 200.0
+   },
+   "abs_D_s_values": [
+    8.0,
+    51.0,
+    67.0,
+    67.0,
+    87.0,
+    109.0,
+    200.0
+   ],
+   "label_stable": {
+    "True": 2,
+    "False": 5
+   },
+   "ref_src_file": {
+    "freq_I.csv": 0,
+    "freq_II.csv": 1,
+    "freq_III.csv": 2,
+    "freq_IV.csv": 2,
+    "freq_V.csv": 2
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 2,
+    "legislature": 2,
+    "religious": 3
+   },
+   "abs_error_s_median": 44.0,
+   "confidence_median": 0.714637
+  },
+  "beyond_600": {
+   "n_verdicts": 2,
+   "n_streams": 2,
+   "abs_D_s": {
+    "n": 2,
+    "n_undefined": 0,
+    "min": 8.0,
+    "q1": 8.0,
+    "median": 8.0,
+    "q3": 8.0,
+    "max": 8.0
+   },
+   "abs_D_s_values": [
+    8.0,
+    8.0
+   ],
+   "label_stable": {
+    "True": 1,
+    "False": 1
+   },
+   "ref_src_file": {
+    "freq_I.csv": 0,
+    "freq_II.csv": 1,
+    "freq_III.csv": 0,
+    "freq_IV.csv": 0,
+    "freq_V.csv": 1
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 0,
+    "legislature": 1,
+    "religious": 1
+   },
+   "abs_error_s_median": 1440909.0,
+   "confidence_median": 0.205061
+  }
+ },
+ "by_length": {
+  "10": {
+   "within_30": {
+    "n_verdicts": 17,
+    "n_streams": 17,
+    "abs_D_s": {
+     "n": 17,
+     "n_undefined": 0,
+     "min": 4.0,
+     "q1": 13.0,
+     "median": 62.0,
+     "q3": 81.0,
+     "max": 293.0
+    },
+    "abs_D_s_values": [
+     4.0,
+     8.0,
+     8.0,
+     13.0,
+     13.0,
+     51.0,
+     55.0,
+     59.0,
+     62.0,
+     67.0,
+     67.0,
+     67.0,
+     81.0,
+     157.0,
+     212.0,
+     293.0,
+     293.0
+    ],
+    "label_stable": {
+     "True": 5,
+     "False": 12
+    },
+    "ref_src_file": {
+     "freq_I.csv": 1,
+     "freq_II.csv": 4,
+     "freq_III.csv": 4,
+     "freq_IV.csv": 3,
+     "freq_V.csv": 5
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 3,
+     "legislature": 10,
+     "religious": 4
+    },
+    "abs_error_s_median": 10.0,
+    "confidence_median": 0.864909
+   },
+   "offset_30_600": {
+    "n_verdicts": 2,
+    "n_streams": 2,
+    "abs_D_s": {
+     "n": 2,
+     "n_undefined": 0,
+     "min": 51.0,
+     "q1": 65.75,
+     "median": 80.5,
+     "q3": 95.25,
+     "max": 110.0
+    },
+    "abs_D_s_values": [
+     51.0,
+     110.0
+    ],
+    "label_stable": {
+     "True": 1,
+     "False": 1
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 1,
+     "freq_III.csv": 0,
+     "freq_IV.csv": 0,
+     "freq_V.csv": 1
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 1,
+     "legislature": 1,
+     "religious": 0
+    },
+    "abs_error_s_median": 316.0,
+    "confidence_median": 0.797067
+   },
+   "beyond_600": {
+    "n_verdicts": 0,
+    "n_streams": 0,
+    "abs_D_s": null,
+    "abs_D_s_values": [],
+    "label_stable": {
+     "True": 0,
+     "False": 0
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 0,
+     "freq_III.csv": 0,
+     "freq_IV.csv": 0,
+     "freq_V.csv": 0
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 0,
+     "legislature": 0,
+     "religious": 0
+    },
+    "abs_error_s_median": null,
+    "confidence_median": null
+   }
+  },
+  "20": {
+   "within_30": {
+    "n_verdicts": 19,
+    "n_streams": 19,
+    "abs_D_s": {
+     "n": 19,
+     "n_undefined": 0,
+     "min": 4.0,
+     "q1": 53.0,
+     "median": 67.0,
+     "q3": 100.5,
+     "max": 293.0
+    },
+    "abs_D_s_values": [
+     4.0,
+     7.0,
+     8.0,
+     13.0,
+     51.0,
+     55.0,
+     59.0,
+     62.0,
+     67.0,
+     67.0,
+     67.0,
+     67.0,
+     81.0,
+     87.0,
+     114.0,
+     157.0,
+     212.0,
+     293.0,
+     293.0
+    ],
+    "label_stable": {
+     "True": 3,
+     "False": 16
+    },
+    "ref_src_file": {
+     "freq_I.csv": 1,
+     "freq_II.csv": 4,
+     "freq_III.csv": 6,
+     "freq_IV.csv": 4,
+     "freq_V.csv": 4
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 4,
+     "legislature": 11,
+     "religious": 4
+    },
+    "abs_error_s_median": 10.0,
+    "confidence_median": 0.98317
+   },
+   "offset_30_600": {
+    "n_verdicts": 2,
+    "n_streams": 2,
+    "abs_D_s": {
+     "n": 2,
+     "n_undefined": 0,
+     "min": 8.0,
+     "q1": 18.75,
+     "median": 29.5,
+     "q3": 40.25,
+     "max": 51.0
+    },
+    "abs_D_s_values": [
+     8.0,
+     51.0
+    ],
+    "label_stable": {
+     "True": 2,
+     "False": 0
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 1,
+     "freq_III.csv": 0,
+     "freq_IV.csv": 0,
+     "freq_V.csv": 1
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 1,
+     "legislature": 0,
+     "religious": 1
+    },
+    "abs_error_s_median": 301.0,
+    "confidence_median": 0.967792
+   },
+   "beyond_600": {
+    "n_verdicts": 0,
+    "n_streams": 0,
+    "abs_D_s": null,
+    "abs_D_s_values": [],
+    "label_stable": {
+     "True": 0,
+     "False": 0
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 0,
+     "freq_III.csv": 0,
+     "freq_IV.csv": 0,
+     "freq_V.csv": 0
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 0,
+     "legislature": 0,
+     "religious": 0
+    },
+    "abs_error_s_median": null,
+    "confidence_median": null
+   }
+  },
+  "40": {
+   "within_30": {
+    "n_verdicts": 16,
+    "n_streams": 16,
+    "abs_D_s": {
+     "n": 16,
+     "n_undefined": 0,
+     "min": 0.0,
+     "q1": 13.0,
+     "median": 60.5,
+     "q3": 94.5,
+     "max": 293.0
+    },
+    "abs_D_s_values": [
+     0.0,
+     3.0,
+     7.0,
+     13.0,
+     13.0,
+     51.0,
+     55.0,
+     59.0,
+     62.0,
+     67.0,
+     67.0,
+     88.0,
+     114.0,
+     170.0,
+     212.0,
+     293.0
+    ],
+    "label_stable": {
+     "True": 6,
+     "False": 10
+    },
+    "ref_src_file": {
+     "freq_I.csv": 1,
+     "freq_II.csv": 3,
+     "freq_III.csv": 3,
+     "freq_IV.csv": 3,
+     "freq_V.csv": 6
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 4,
+     "legislature": 8,
+     "religious": 4
+    },
+    "abs_error_s_median": 8.5,
+    "confidence_median": 0.683238
+   },
+   "offset_30_600": {
+    "n_verdicts": 7,
+    "n_streams": 7,
+    "abs_D_s": {
+     "n": 7,
+     "n_undefined": 0,
+     "min": 8.0,
+     "q1": 29.5,
+     "median": 67.0,
+     "q3": 98.0,
+     "max": 200.0
+    },
+    "abs_D_s_values": [
+     8.0,
+     8.0,
+     51.0,
+     67.0,
+     87.0,
+     109.0,
+     200.0
+    ],
+    "label_stable": {
+     "True": 3,
+     "False": 4
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 1,
+     "freq_III.csv": 2,
+     "freq_IV.csv": 1,
+     "freq_V.csv": 3
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 2,
+     "legislature": 2,
+     "religious": 3
+    },
+    "abs_error_s_median": 32.0,
+    "confidence_median": 0.777403
+   },
+   "beyond_600": {
+    "n_verdicts": 1,
+    "n_streams": 1,
+    "abs_D_s": {
+     "n": 1,
+     "n_undefined": 0,
+     "min": 8.0,
+     "q1": 8.0,
+     "median": 8.0,
+     "q3": 8.0,
+     "max": 8.0
+    },
+    "abs_D_s_values": [
+     8.0
+    ],
+    "label_stable": {
+     "True": 0,
+     "False": 1
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 1,
+     "freq_III.csv": 0,
+     "freq_IV.csv": 0,
+     "freq_V.csv": 0
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 0,
+     "legislature": 1,
+     "religious": 0
+    },
+    "abs_error_s_median": 5299.0,
+    "confidence_median": 0.24515
+   }
+  },
+  "60": {
+   "within_30": {
+    "n_verdicts": 14,
+    "n_streams": 14,
+    "abs_D_s": {
+     "n": 14,
+     "n_undefined": 0,
+     "min": 0.0,
+     "q1": 22.5,
+     "median": 60.5,
+     "q3": 86.25,
+     "max": 293.0
+    },
+    "abs_D_s_values": [
+     0.0,
+     3.0,
+     13.0,
+     13.0,
+     51.0,
+     55.0,
+     59.0,
+     62.0,
+     67.0,
+     81.0,
+     88.0,
+     114.0,
+     170.0,
+     293.0
+    ],
+    "label_stable": {
+     "True": 6,
+     "False": 8
+    },
+    "ref_src_file": {
+     "freq_I.csv": 1,
+     "freq_II.csv": 2,
+     "freq_III.csv": 3,
+     "freq_IV.csv": 3,
+     "freq_V.csv": 5
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 1,
+     "legislature": 10,
+     "religious": 3
+    },
+    "abs_error_s_median": 8.0,
+    "confidence_median": 0.860679
+   },
+   "offset_30_600": {
+    "n_verdicts": 7,
+    "n_streams": 7,
+    "abs_D_s": {
+     "n": 7,
+     "n_undefined": 0,
+     "min": 8.0,
+     "q1": 59.0,
+     "median": 67.0,
+     "q3": 98.0,
+     "max": 200.0
+    },
+    "abs_D_s_values": [
+     8.0,
+     51.0,
+     67.0,
+     67.0,
+     87.0,
+     109.0,
+     200.0
+    ],
+    "label_stable": {
+     "True": 2,
+     "False": 5
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 1,
+     "freq_III.csv": 2,
+     "freq_IV.csv": 2,
+     "freq_V.csv": 2
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 2,
+     "legislature": 2,
+     "religious": 3
+    },
+    "abs_error_s_median": 44.0,
+    "confidence_median": 0.714637
+   },
+   "beyond_600": {
+    "n_verdicts": 2,
+    "n_streams": 2,
+    "abs_D_s": {
+     "n": 2,
+     "n_undefined": 0,
+     "min": 8.0,
+     "q1": 8.0,
+     "median": 8.0,
+     "q3": 8.0,
+     "max": 8.0
+    },
+    "abs_D_s_values": [
+     8.0,
+     8.0
+    ],
+    "label_stable": {
+     "True": 1,
+     "False": 1
+    },
+    "ref_src_file": {
+     "freq_I.csv": 0,
+     "freq_II.csv": 1,
+     "freq_III.csv": 0,
+     "freq_IV.csv": 0,
+     "freq_V.csv": 1
+    },
+    "venue_type": {
+     "conference": 0,
+     "government event": 0,
+     "lecture": 0,
+     "legislature": 1,
+     "religious": 1
+    },
+    "abs_error_s_median": 1440909.0,
+    "confidence_median": 0.205061
+   }
+  }
+ },
+ "all_lengths_pooled": {
+  "within_30": {
+   "n_verdicts": 66,
+   "n_streams": 28,
+   "abs_D_s": {
+    "n": 66,
+    "n_undefined": 0,
+    "min": 0.0,
+    "q1": 13.0,
+    "median": 62.0,
+    "q3": 88.0,
+    "max": 293.0
+   },
+   "abs_D_s_values": [
+    0.0,
+    0.0,
+    3.0,
+    3.0,
+    4.0,
+    4.0,
+    7.0,
+    7.0,
+    8.0,
+    8.0,
+    8.0,
+    13.0,
+    13.0,
+    13.0,
+    13.0,
+    13.0,
+    13.0,
+    13.0,
+    51.0,
+    51.0,
+    51.0,
+    51.0,
+    55.0,
+    55.0,
+    55.0,
+    55.0,
+    59.0,
+    59.0,
+    59.0,
+    59.0,
+    62.0,
+    62.0,
+    62.0,
+    62.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    67.0,
+    81.0,
+    81.0,
+    81.0,
+    87.0,
+    88.0,
+    88.0,
+    114.0,
+    114.0,
+    114.0,
+    157.0,
+    157.0,
+    170.0,
+    170.0,
+    212.0,
+    212.0,
+    212.0,
+    293.0,
+    293.0,
+    293.0,
+    293.0,
+    293.0,
+    293.0
+   ],
+   "label_stable": {
+    "True": 20,
+    "False": 46
+   },
+   "ref_src_file": {
+    "freq_I.csv": 4,
+    "freq_II.csv": 13,
+    "freq_III.csv": 16,
+    "freq_IV.csv": 13,
+    "freq_V.csv": 20
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 12,
+    "legislature": 39,
+    "religious": 15
+   },
+   "abs_error_s_median": 9.0,
+   "confidence_median": 0.895684
+  },
+  "offset_30_600": {
+   "n_verdicts": 18,
+   "n_streams": 10,
+   "abs_D_s": {
+    "n": 18,
+    "n_undefined": 0,
+    "min": 8.0,
+    "q1": 51.0,
+    "median": 67.0,
+    "q3": 103.5,
+    "max": 200.0
+   },
+   "abs_D_s_values": [
+    8.0,
+    8.0,
+    8.0,
+    8.0,
+    51.0,
+    51.0,
+    51.0,
+    51.0,
+    67.0,
+    67.0,
+    67.0,
+    87.0,
+    87.0,
+    109.0,
+    109.0,
+    110.0,
+    200.0,
+    200.0
+   ],
+   "label_stable": {
+    "True": 8,
+    "False": 10
+   },
+   "ref_src_file": {
+    "freq_I.csv": 0,
+    "freq_II.csv": 4,
+    "freq_III.csv": 4,
+    "freq_IV.csv": 3,
+    "freq_V.csv": 7
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 6,
+    "legislature": 5,
+    "religious": 7
+   },
+   "abs_error_s_median": 45.0,
+   "confidence_median": 0.754756
+  },
+  "beyond_600": {
+   "n_verdicts": 3,
+   "n_streams": 2,
+   "abs_D_s": {
+    "n": 3,
+    "n_undefined": 0,
+    "min": 8.0,
+    "q1": 8.0,
+    "median": 8.0,
+    "q3": 8.0,
+    "max": 8.0
+   },
+   "abs_D_s_values": [
+    8.0,
+    8.0,
+    8.0
+   ],
+   "label_stable": {
+    "True": 1,
+    "False": 2
+   },
+   "ref_src_file": {
+    "freq_I.csv": 0,
+    "freq_II.csv": 2,
+    "freq_III.csv": 0,
+    "freq_IV.csv": 0,
+    "freq_V.csv": 1
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 0,
+    "legislature": 2,
+    "religious": 1
+   },
+   "abs_error_s_median": 5299.0,
+   "confidence_median": 0.24515
+  }
+ },
+ "distinct_streams": {
+  "at_least_one_offset_30_600": {
+   "n_streams": 10,
+   "abs_D_s": {
+    "n": 10,
+    "n_undefined": 0,
+    "min": 8.0,
+    "q1": 55.0,
+    "median": 77.0,
+    "q3": 109.75,
+    "max": 200.0
+   },
+   "abs_D_s_values": [
+    8.0,
+    8.0,
+    51.0,
+    67.0,
+    67.0,
+    87.0,
+    109.0,
+    110.0,
+    200.0,
+    200.0
+   ],
+   "label_stable": {
+    "True": 3,
+    "False": 7
+   },
+   "ref_src_file": {
+    "freq_I.csv": 0,
+    "freq_II.csv": 1,
+    "freq_III.csv": 2,
+    "freq_IV.csv": 2,
+    "freq_V.csv": 5
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 2,
+    "legislature": 4,
+    "religious": 4
+   }
+  },
+  "every_confident_verdict_within_30": {
+   "n_streams": 23,
+   "abs_D_s": {
+    "n": 23,
+    "n_undefined": 0,
+    "min": 0.0,
+    "q1": 13.0,
+    "median": 62.0,
+    "q3": 101.0,
+    "max": 293.0
+   },
+   "abs_D_s_values": [
+    0.0,
+    3.0,
+    4.0,
+    7.0,
+    13.0,
+    13.0,
+    13.0,
+    51.0,
+    55.0,
+    59.0,
+    62.0,
+    62.0,
+    67.0,
+    67.0,
+    81.0,
+    81.0,
+    88.0,
+    114.0,
+    157.0,
+    170.0,
+    212.0,
+    293.0,
+    293.0
+   ],
+   "label_stable": {
+    "True": 7,
+    "False": 16
+   },
+   "ref_src_file": {
+    "freq_I.csv": 1,
+    "freq_II.csv": 4,
+    "freq_III.csv": 7,
+    "freq_IV.csv": 4,
+    "freq_V.csv": 7
+   },
+   "venue_type": {
+    "conference": 0,
+    "government event": 0,
+    "lecture": 5,
+    "legislature": 14,
+    "religious": 4
+   }
+  }
+ },
+ "offset_streams": [
+  {
+   "video_id": "3j8-qlHHnIE",
+   "venue_type": "religious",
+   "ref_src_file": "freq_IV.csv",
+   "label_drift_s": 67.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": 18,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "20": {
+     "error_s": 18,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "40": {
+     "error_s": 18,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "60": {
+     "error_s": 44,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "8gsXSa4UzaQ",
+   "venue_type": "legislature",
+   "ref_src_file": "freq_III.csv",
+   "label_drift_s": 87.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": 12538150,
+     "verdict": "no verdict",
+     "class": "beyond_600"
+    },
+    "20": {
+     "error_s": 26,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "40": {
+     "error_s": 31,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": 33,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "BsDB4Y5hLeU",
+   "venue_type": "lecture",
+   "ref_src_file": "freq_III.csv",
+   "label_drift_s": 109.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": -32,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    },
+    "20": {
+     "error_s": -32,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    },
+    "40": {
+     "error_s": -32,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": -32,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "FU27mso1GaE",
+   "venue_type": "religious",
+   "ref_src_file": "freq_V.csv",
+   "label_drift_s": -8.0,
+   "label_stable": true,
+   "by_length": {
+    "10": {
+     "error_s": -28,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "20": {
+     "error_s": -30,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "40": {
+     "error_s": -31,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": -32,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "HDfWJP4QYo0",
+   "venue_type": "religious",
+   "ref_src_file": "freq_V.csv",
+   "label_drift_s": -8.0,
+   "label_stable": true,
+   "by_length": {
+    "10": {
+     "error_s": -30,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "20": {
+     "error_s": -31,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "40": {
+     "error_s": -32,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": -2876519,
+     "verdict": "match",
+     "class": "beyond_600"
+    }
+   }
+  },
+  {
+   "video_id": "YoJlliek2Sg",
+   "venue_type": "religious",
+   "ref_src_file": "freq_IV.csv",
+   "label_drift_s": 67.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": 18,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "20": {
+     "error_s": 18,
+     "verdict": "match",
+     "class": "within_30"
+    },
+    "40": {
+     "error_s": 46,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": 46,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "fPDBSEhmgnk",
+   "venue_type": "legislature",
+   "ref_src_file": "freq_V.csv",
+   "label_drift_s": 200.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": -107,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    },
+    "20": {
+     "error_s": -105,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    },
+    "40": {
+     "error_s": -104,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": -104,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "oQc1M0eaXa4",
+   "venue_type": "lecture",
+   "ref_src_file": "freq_II.csv",
+   "label_drift_s": 51.0,
+   "label_stable": true,
+   "by_length": {
+    "10": {
+     "error_s": 572,
+     "verdict": "match",
+     "class": "from_120_to_600"
+    },
+    "20": {
+     "error_s": 571,
+     "verdict": "match",
+     "class": "from_120_to_600"
+    },
+    "40": {
+     "error_s": 571,
+     "verdict": "match",
+     "class": "from_120_to_600"
+    },
+    "60": {
+     "error_s": 571,
+     "verdict": "match",
+     "class": "from_120_to_600"
+    }
+   }
+  },
+  {
+   "video_id": "tqMHkxbSMLs",
+   "venue_type": "legislature",
+   "ref_src_file": "freq_V.csv",
+   "label_drift_s": 200.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": -60563752,
+     "verdict": "no verdict",
+     "class": "beyond_600"
+    },
+    "20": {
+     "error_s": -17784788,
+     "verdict": "no verdict",
+     "class": "beyond_600"
+    },
+    "40": {
+     "error_s": -104,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    },
+    "60": {
+     "error_s": -102,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    }
+   }
+  },
+  {
+   "video_id": "u4-kZVwUUAg",
+   "venue_type": "legislature",
+   "ref_src_file": "freq_V.csv",
+   "label_drift_s": 110.0,
+   "label_stable": false,
+   "by_length": {
+    "10": {
+     "error_s": -60,
+     "verdict": "match",
+     "class": "from_30_to_120"
+    },
+    "20": {
+     "error_s": -60,
+     "verdict": "no verdict",
+     "class": "from_30_to_120"
+    },
+    "40": {
+     "error_s": -69637823,
+     "verdict": "no verdict",
+     "class": "beyond_600"
+    },
+    "60": {
+     "error_s": -68802789,
+     "verdict": "no verdict",
+     "class": "beyond_600"
+    }
+   }
+  }
+ ],
+ "offset_streams_with_a_hit_at_another_length": 5
+}
