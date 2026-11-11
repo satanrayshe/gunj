@@ -1,6 +1,6 @@
 # Gunj build state (read this first after any restart)
 
-Last updated: 8 Nov 2026, 17:15 IST, by the coordinator session.
+Last updated: 11 Nov 2026, 18:38 IST, by the coordinator session.
 
 If the laptop was shut down or the session ended, a new coding session should:
 1. Open this file and `git log --oneline` in this folder.
@@ -53,6 +53,11 @@ un_stage3.ps1` as a detached process. It follows PROTOCOL section 14 step 3: SYN
 
 - 8 Nov 05:30: YouTube bot check ('Sign in to confirm you're not a bot') on vMIFXzQiZMA. The harvester stopped (exit 3) as PROTOCOL section 17 requires. 126 of 150 Test streams were harvested; the report-half real negatives were never reached. Do NOT run --clear-block or any further YouTube download without Shrey's explicit decision.
 - 8 Nov 07:31 to 17:03: the scoring loop stopped (the session ended); no run happened after 07:31. At 17:04 the frozen gate run: GATE NOT MET (condition 3, the bot check); conditions 1-2 met with 38 of 126 locks (9 with D = 0). Committed 0bd1215. Section 15 says switch to Wet Ground when the gate is not met: that decision is Shrey's.
+
+- 8 Nov 23:00: repo pushed by Shrey to https://github.com/satanrayshe/gunj (main 9fc4d60 + tag extractor-v2); Pages live at https://satanrayshe.github.io/gunj/. Later commits are local until Shrey pushes again.
+- 10 Nov 19:19 to 19:58: the single retry of the report-half real negatives (Shrey's decision): 24 of 25 harvested, no block. No further YouTube downloads.
+- 11 Nov 18:33: frozen evaluate.py re-run for M3 with the real negatives (log logs/evaluate_m3.err). 11 Nov 18:40: final-polish workflow started (M5, figures, README, site, video, report PDF, review). After it ends: check results, run pytest, commit, hand Shrey the push command; he records the narration or runs video/tts_narration.py, uploads the video unlisted, and submits on Unstop before 12 Nov 23:59.
+- Shrey's rule (10 Nov): no AI-use disclosure anywhere in the deliverables.
 
 ## Before any push (Shrey runs the push)
 - `git log --format=%B | grep -ci 'cl[a]ude'` and `git grep -i -l 'cl[a]ude'` must both come back empty, apart from one known false hit: a physicist's name in a lecture title in `data/meta_flat/theory_tifr.json` (YouTube metadata, not attribution). Commits carry no Co-Authored-By trailer.
