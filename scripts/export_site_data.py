@@ -2,19 +2,35 @@
 """Export compact JSON for the results explorer in site/.
 
 Reads only files that other scripts wrote (results/, traces/, data/,
-gunj/config.json, scripts/evaluate.py for the decision time) and the
-one-second reference (memory-mapped, never loaded whole). Writes:
+gunj/config.json, PROTOCOL.md, scripts/evaluate.py for the decision time) and
+the one-second reference (memory-mapped, never loaded whole). Writes:
 
   site/data/overview.json                 reference ribbon, label drift, uniqueness
                                           (SYNTHETIC noise simulation), latency L,
                                           tau, Calibration and Dev summaries, the
-                                          hero lock, Test headline numbers or null
+                                          hero lock, and the Test results
   site/data/clips.json                    one summary row per clip
   site/data/clips/<split>/<video_id>.json one page per clip
 
-Every file is written to <name>.tmp and then renamed. Re-run after the gate
-with the same command; Test clips and Test numbers appear once
-results/test_results.csv and results/evaluation.json exist.
+Test results in overview.json, each copied from the file named beside it:
+  test          M2, M3 and the gate from results/evaluation.json and
+                results/gate_frozen.json; M1 counted from results/test_results.csv
+  breakdown     confident verdicts by distance from T* (results/error_breakdown.json),
+                recounted here from results/test_results.csv before it is copied
+  m5            edit detection on SYNTHETIC cuts (results/m5.json)
+  m4_measured   the uniqueness table read at the measured noise level
+                (results/m4_measured.json)
+  figures       the numbers of the M2 signed-error plot and the M3 reliability
+                plot (results/figures/figures.json), which the site draws itself
+  libhum        "not run", with the sentence of PROTOCOL.md section 19 that says why
+
+The four later files record the SHA-256 of the scoring outputs they were
+computed from. If one of them no longer matches results/test_results.csv,
+results/evaluation.json, results/false_matches.json or results/gate_frozen.json,
+the export stops with exit status 2 and names the script to re-run. A block
+whose file does not exist is written as null, and the site says "not computed".
+
+Every file is written to <name>.tmp and then renamed.
 
 Searches run here (all with the frozen matcher, gunj/match_v2.wncc_search,
 single thread, small FFT blocks):
@@ -71,8 +87,20 @@ SITE_BUDGET_BYTES = 8 * 1024 * 1024
 ABS_PATH_RE = re.compile(r"([A-Za-z]:[\\/]+(Users|Documents|Program)|Users[\\/]+Shrey|AppData)", re.I)
 SCOPE_LABEL = {"full": "full 32 months", "90d": "±90 days", "1d": "±1 day"}
 SPLIT_LABEL = {"dev": "Dev", "calibration": "Calibration", "test": "Test", "practice": "PRACTICE"}
+REPO_URL = "https://github.com/satanrayshe/gunj"
+PRIMARY = "v2"            # PROTOCOL section 7
+PRIMARY_LENGTH_MIN = 60   # PROTOCOL section 13: the primary endpoint is 60 min in the full scope
+LENGTHS = (10, 20, 40, 60)
+SCOPES = ("full", "90d", "1d")
+EXTRACTORS = ("v2", "v1", "naive")
+Z95 = 1.959964            # PROTOCOL section 13
+CLASS_KEYS = ("within_30", "from_30_to_120", "from_120_to_600", "beyond_600", "no_candidate")
 
 SOURCES: dict = {}        # repo-relative path -> sha256, for every input file read
+
+
+class StaleInput(Exception):
+    """A later result file was computed from another version of the scoring outputs."""
 
 
 # --------------------------------------------------------------------- helpers
@@ -201,6 +229,60 @@ def rate(d) -> dict | None:
     if not isinstance(d, dict):
         return None
     return {"k": d.get("k"), "n": d.get("n"), "rate": d.get("rate"), "wilson95": d.get("wilson95")}
+
+
+def wilson(k: int, n: int, z: float = Z95):
+    """Wilson 95% interval, the formula of PROTOCOL section 13 (the same as scripts/eval_common.py)."""
+    if n <= 0:
+        return None
+    p = k / n
+    den = 1.0 + z * z / n
+    centre = (p + z * z / (2 * n)) / den
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / den
+    return [max(0.0, centre - half), min(1.0, centre + half)]
+
+
+def rate_kn(k: int, n: int) -> dict:
+    """A rate counted here, in the shape scripts/evaluate.py writes."""
+    return {"k": int(k), "n": int(n), "rate": None if n <= 0 else k / n, "wilson95": wilson(k, n)}
+
+
+def sha256_of(p: Path) -> str:
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def need_same(what: str, recorded, path: Path, rerun: str) -> None:
+    """Stop if `what` was computed from another version of the file at `path`."""
+    if not recorded:
+        raise StaleInput(f"{what} does not record the SHA-256 of {rel(path)}; re-run {rerun}")
+    if not Path(path).exists() or sha256_of(path) != recorded:
+        raise StaleInput(f"{what} was computed from another version of {rel(path)}; re-run {rerun}")
+
+
+def dur_text(s: float) -> str:
+    """A length of time in words, with the rule scripts/fill_results.py uses for the README:
+    under 2 min in seconds, under 2 h in minutes, under 2 days in hours, otherwise in days."""
+    s = abs(float(s))
+    if s < 120:
+        return f"{int(s)} s" if s == int(s) else f"{s:g} s"
+    if s < 2 * 3600:
+        return f"{round(s / 60)} minutes"
+    if s < 2 * 86400:
+        return f"{s / 3600:.1f} hours"
+    return f"{s / 86400:.1f} days"
+
+
+def utc_to_ist(s: str | None) -> str | None:
+    """'2026-11-08T00:00:42+00:00' -> '2026-11-08T05:30:42+05:30'; None if it cannot be read."""
+    if not s:
+        return None
+    try:
+        t = dt.datetime.fromisoformat(s)
+    except ValueError:
+        return None
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=dt.timezone.utc)
+    return t.astimezone(IST).isoformat(timespec="seconds")
 
 
 def git_head() -> str | None:

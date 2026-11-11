@@ -1,12 +1,26 @@
 # Gunj
 
+Gunj dates Indian recordings from mains hum. It extracts the hum's frequency once per second and searches a public one-second log of India's grid frequency for the moment that trace fits.
+
+<!-- headline:start -->
+- **Blind, pre-registered test.** The plan was committed on 7 Nov 2026, before any Test audio existed. 126 of the 150 selected public Indian livestreams were harvested before a YouTube bot check stopped the downloads, and every one of them is reported.
+- **Primary endpoint** (extractor v2, 60-min excerpts, search over the whole 32-month log): the top candidate starts within 30 s of the expected time for 25 of 90 streams (27.8%, 95% CI 19.6 to 37.8%).
+- **Where hum is present** (50 of 126 streams, 39.7%), the same endpoint is 16 of the 37 such streams with a 60-min excerpt (43.2%, 95% CI 28.7 to 59.1%).
+- **Label-drift correction.** The grid log's own time labels run late by up to 319 s. Without Gunj's per-stream correction the primary endpoint falls to 5 of 90 (5.6%, 95% CI 2.4 to 12.4%), and the streams that lock blind at the gate fall from 38 to 9 of 126.
+- **Confident verdicts.** Gunj gives a verdict for 23 of the 90 and none for the other 67. Of the 23, 14 are within 30 s, 6 are 30 to 120 s off, 1 is 120 to 600 s off, and 2 are wrong by more than 10 minutes (88 minutes and 33.3 days).
+- **False matches.** Searched the same way, 1 of 16 real foreign 50 Hz recordings reaches the threshold (6.2%, 95% CI 1.1 to 28.3%), and 0 of 20 SYNTHETIC negatives. The pre-registered target of at most 1% is not met.
+- **Chance and baselines.** A random guess lands within 30 s with probability 7.258 × 10^-7 per stream (1 in 1,377,750). On the same 90 streams the frozen v1 extractor puts 15 within 30 s and a naive single-bin 50 Hz extractor 12.
+
+Each number above is written by `scripts/fill_results.py`; Results names the file behind it.
+<!-- headline:end -->
+
+Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecurity track. Explorer: https://satanrayshe.github.io/gunj/. Video: [pending: video link]. The pre-registered plan and its deviations are in [PROTOCOL.md](PROTOCOL.md).
+
+Sections: [Results](#results), [How it works](#how-it-works), [Setup](#setup), [Method](#method), [Data, licences and attributions](#data-licences-and-attributions), [Limitations](#limitations), [Ethics and exclusions](#ethics-and-exclusions), [Related work](#related-work), [Deviations](#deviations-from-the-pre-registered-plan).
+
 ![The Gunj explorer: a recording's hum trace in amber, laid over the matched stretch of India's grid frequency log in grey, with the lock card on the right](docs/screens/overview-1440x900.png)
 
 The stream in this screenshot is from the Calibration split, which was used to set the start latency L, so its lock is not a blind Test result.
-
-Gunj dates Indian recordings from mains hum. It extracts the hum's frequency once per second and searches a public one-second log of India's grid frequency for the moment that trace fits.
-
-Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecurity track. Explorer: https://satanrayshe.github.io/gunj/. Video: [pending: video link].
 
 > [!IMPORTANT]
 > **What Gunj does**
@@ -18,15 +32,19 @@ Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecur
 > - It does not locate a recording. India runs one synchronous grid, so the hum's frequency is the same across the country at any moment. Gunj reports time and grid only.
 > - It cannot date a recording made after the reference ends (<!-- span-end:start -->20 Aug 2023<!-- span-end:end -->) or on another country's grid.
 > - It does not prove that a recording is genuine. A match is evidence of when the hum was recorded. A missing hum is evidence of nothing. Someone with the grid log could add a matching hum.
+> - It does not give certain verdicts. The blind test below has confident verdicts that are wrong and a false match on a foreign recording.
 > - It does not publish audio. The repo keeps only video IDs, file hashes and derived 1-Hz traces, and downloaded audio is deleted after extraction (Ethics lists the one exception).
 
 ## Results
 
-Every number in this section is written by `scripts/fill_results.py` from the file named beside it. Re-run it after `scripts/evaluate.py` and the numbers update.
+Every number in this section is written by `scripts/fill_results.py` from the file named beside it. Re-run it after `scripts/evaluate.py`, `scripts/m5_edits.py` and `scripts/make_figures.py`, and the numbers update.
+
+Terms used below. T* is the expected start of a recording on the reference's own time labels: YouTube's release time plus the latency L plus the stream's label-drift correction D (Method). A hit is a top candidate within 30 s of T*. A confident verdict, or "match", needs the hum flag and a confidence at or above the threshold tau of its cell. The primary cell is extractor v2 with 60-min excerpts searched over the full span.
 
 <!-- status:start -->
 - Gate (PROTOCOL section 15, decision time 8 Nov 2026 14:00 IST): **not met**, frozen 8 Nov 2026, 17:04 IST (`results/gate_frozen.json`).
-- Test numbers are from `results/evaluation.json` and `results/test_results.csv`, written by `scripts/evaluate.py` at 8 Nov 2026, 17:04 IST: 126 of 150 selected streams had a trace then. The harvest can still add streams; `scripts/fill_results.py` re-reads the files each time it runs.
+- Test numbers are from `results/evaluation.json` and `results/test_results.csv`, last written by `scripts/evaluate.py` at 11 Nov 2026, 19:16 IST: 126 of 150 selected streams have a trace. That run took 126 Test streams from the search cache and searched none of them again, and it searched 24 negative streams (`timing` in the same file). No further download is planned (PROTOCOL section 19), so these numbers are final.
+- M5 (on SYNTHETIC cuts), the confident-verdict breakdown, M4 at the measured noise level and the figures were computed after the Test results were known, by `scripts/m5_edits.py` (run of 11 Nov 2026, 18:59 IST) and `scripts/make_figures.py`. They read the scoring outputs and change none of them. Anything PROTOCOL.md did not pre-register is labelled EXPLORATORY (post hoc).
 - The reference, label-drift, latency, threshold, Dev and uniqueness results were measured before any Test search and do not change.
 <!-- status:end -->
 
@@ -36,8 +54,9 @@ Every number in this section is written by `scripts/fill_results.py` from the fi
 - **Gate not met** (frozen 8 Nov 2026, 17:04 IST, `results/gate_frozen.json`).
 - Conditions 1 and 2: 38 of N = 126 Test streams harvested by the decision time locked blind (5 needed): extractor v2, top candidate in the full span or ±90 days within 30 s of T* for at least one excerpt length, with confidence at or above tau of that cell. Met.
 - The same count without the label-drift correction (S1, D = 0): 9.
-- Condition 3, harvest health: not met. tau and L committed by the decision time: yes.
+- Condition 3, harvest health: not met. YouTube answered 1 stream (vMIFXzQiZMA) with a bot check on 8 Nov 2026, 05:30 IST, and the harvester stopped as PROTOCOL section 17 requires. tau and L committed by the decision time: yes.
 - Locks with the baselines on the same streams (description only): v1 19; naive 13.
+- PROTOCOL section 15 says to switch projects when the gate is not met. Shrey decided to stay with Gunj; PROTOCOL section 19 (8 Nov 2026) and Deviations below give the reasons.
 - `results/gate.md` lists every processed stream, hits and misses.
 
 ### Test split, pre-registered and blind
@@ -51,13 +70,14 @@ Every number in this section is written by `scripts/fill_results.py` from the fi
 | Same cell: no verdict | 67/90 (74.4%, 95% CI 64.6 to 82.3%) | `results/evaluation.json` |
 | Same cell, M1 hum-present streams only: top-1 within 30 s | 16/37 (43.2%, 95% CI 28.7 to 59.1%) | `results/evaluation.json` |
 | v2, 60 min, ±90 days: top-1 within 30 s | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | `results/evaluation.json` |
-| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real foreign 50 Hz streams | n/a (N = 0) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
+| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real foreign 50 Hz streams | 1/16 (6.2%, 95% CI 1.1 to 28.3%) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
 | M3 false matches at tau, report-half negatives, v2, 60 min, full span: SYNTHETIC noise and hum | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
-| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real and SYNTHETIC together | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
-| M5 edit detection on SYNTHETIC cuts | [pending: M5 not computed yet; the SYNTHETIC cut traces exist] | PROTOCOL section 11 |
+| M3 false matches at tau, report-half negatives, v2, 60 min, full span: real and SYNTHETIC together | 1/36 (2.8%, 95% CI 0.5 to 14.2%) | `results/evaluation.json` (`m3`; also `results/false_matches.md`) |
+| M5 edit detection on SYNTHETIC cuts of 10 to 120 s: detected within 30 s of the true position | 14/28 (50.0%, 95% CI 32.6 to 67.4%) | `results/m5.json` |
+| M5 false alarms (the cuts are SYNTHETIC): uncut excerpts of the same streams with an edit reported | 2/14 (14.3%, 95% CI 4.0 to 39.9%) | `results/m5.json` |
 | M6 live station (optional) | not run | PROTOCOL section 11 |
 
-M3 used 0 of 25 real and 20 of 20 SYNTHETIC report-half negatives (`results/evaluation.json`, `m3_counts`). Every cell, with and without the hum-flag condition, is in `results/false_matches.md`.
+M3 used 24 of 25 real and 20 of 20 SYNTHETIC report-half negatives (`results/evaluation.json`, `m3_counts`). Every cell is in the M3 subsection below.
 
 ### M2 top-1 within 30 s, extractor v2 (Wilson 95%; `results/evaluation.json`)
 
@@ -77,6 +97,52 @@ Confident wrong (verdict match, more than 30 s off), same cells:
 | 40 min | 8/104 (7.7%, 95% CI 3.9 to 14.4%) | 9/104 (8.7%, 95% CI 4.6 to 15.6%) | 7/104 (6.7%, 95% CI 3.3 to 13.2%) |
 | 60 min | 9/90 (10.0%, 95% CI 5.4 to 17.9%) | 8/90 (8.9%, 95% CI 4.6 to 16.6%) | 7/90 (7.8%, 95% CI 3.8 to 15.2%) |
 
+![Signed error of the top candidate for every excerpt length and scope, extractor v2](results/figures/m2_signed_error_v2.png)
+
+Figure: look at the bottom-left panel, the primary cell (60 min, full span): the green bars inside the ±30 s band are its 25 hits, and 54 of the other top candidates are more than a day from T* (`results/test_results.csv`, `error_s`).
+
+<details>
+<summary>The same plot for the two baseline extractors</summary>
+
+![Signed error of the top candidate, the frozen extractor v1](results/figures/m2_signed_error_v1.png)
+
+Figure: look at the same bottom-left panel for the frozen extractor v1: 15 of 90 top candidates fall in the green ±30 s band.
+
+![Signed error of the top candidate, the naive single-bin 50 Hz extractor](results/figures/m2_signed_error_naive.png)
+
+Figure: look at the same bottom-left panel for the naive single-bin 50 Hz extractor: 12 of 90 top candidates fall in the green ±30 s band.
+
+</details>
+
+### How far off the top candidate is (coarse hits, PROTOCOL section 9)
+
+A hit is a top candidate within 30 s of T*, and nothing wider is ever counted as a hit. PROTOCOL section 9 also pre-registered two coarser distances, 120 s and 600 s, to describe the label problem. The table splits the primary cell (v2, 60 min, full span) by them. Source: `results/error_breakdown.json`, written by `scripts/make_figures.py` from `results/test_results.csv`; this script recounts every cell from the CSV before it copies a number.
+
+| excerpts | n | within 30 s (hit) | 30 to 120 s | 120 to 600 s | beyond 600 s | no candidate |
+|---|---|---|---|---|---|---|
+| verdict "match" (confident) | 23 | 14 | 6 | 1 | 2 | 0 |
+| all, whatever the verdict | 90 | 25 | 7 | 2 | 55 | 1 |
+
+- Confident verdicts, cumulative: within 30 s 14/23 (60.9%, 95% CI 40.8 to 77.8%); within 120 s 20/23 (87.0%, 95% CI 67.9 to 95.5%); within 600 s 21/23 (91.3%, 95% CI 73.2 to 97.6%).
+- The 2 confident verdicts beyond 600 s are off by 5,299 s (88 minutes, stream juw1pt_s2lM) and 2,876,519 s (33.3 days, stream HDfWJP4QYo0) (`results/test_results.csv`, `error_s`).
+- Every confident verdict more than 30 s from T* counts as confident wrong, whatever its class: 9 of the 23.
+- All top candidates, cumulative: within 30 s 25/90 (27.8%, 95% CI 19.6 to 37.8%); within 120 s 32/90 (35.6%, 95% CI 26.4 to 45.8%); within 600 s 34/90 (37.8%, 95% CI 28.5 to 48.1%). "No candidate" means the search could not run (a constant trace); such an excerpt stays in the denominator.
+
+Confident verdicts by excerpt length over the full span. tau differs by cell (PROTOCOL section 10), so a longer excerpt is also judged against another threshold.
+
+| excerpt | tau | confident verdicts | within 30 s | 30 to 120 s | 120 to 600 s | beyond 600 s |
+|---|---|---|---|---|---|---|
+| 10 min | 0.1645 | 19 | 17 | 1 | 1 | 0 |
+| 20 min | 0.2233 | 21 | 19 | 1 | 1 | 0 |
+| 40 min | 0.0622 | 24 | 16 | 6 | 1 | 1 |
+| 60 min | 0.0834 | 23 | 14 | 6 | 1 | 2 |
+
+Every cell of every extractor is in `results/error_breakdown.md`.
+
+![Confident verdicts and all top candidates by distance from T*, extractor v2](results/figures/confident_verdict_breakdown_v2.png)
+
+Figure: look at the 60-min, full-span bar of the top panel: of its 23 confident verdicts 14 are green (within 30 s), 6 are 30 to 120 s off, 1 is 120 to 600 s off and 2 are beyond 600 s.
+
 ### Baselines on the same streams, 60 min, full span
 
 | method | top-1 within 30 s | confident hit | confident wrong | paired with v2 on the same streams (both hit / v2 only / baseline only / neither) |
@@ -84,10 +150,10 @@ Confident wrong (verdict match, more than 30 s off), same cells:
 | v2 (primary) | 25/90 (27.8%, 95% CI 19.6 to 37.8%) | 14/90 (15.6%, 95% CI 9.5 to 24.4%) | 9/90 (10.0%, 95% CI 5.4 to 17.9%) |  |
 | v1 (frozen extractor) | 15/90 (16.7%, 95% CI 10.4 to 25.7%) | 11/90 (12.2%, 95% CI 7.0 to 20.6%) | 4/90 (4.4%, 95% CI 1.7 to 10.9%) | 15 / 10 / 0 / 65 (n = 90) |
 | naive single-bin 50 Hz | 12/90 (13.3%, 95% CI 7.8 to 21.9%) | 8/90 (8.9%, 95% CI 4.6 to 16.6%) | 2/90 (2.2%, 95% CI 0.6 to 7.7%) | 12 / 13 / 0 / 65 (n = 90) |
-| libhum | [pending: libhum baseline not run yet; PROTOCOL section 12] | | | |
+| libhum | not run: libhum was never installed, and the time went to the harvest problems (PROTOCOL section 19, 11 Nov 2026) | | | |
 | random guess (analytic) | p = 7.258 × 10^-7 per stream; expected chance hits over these 90 streams: 6.5 × 10^-5 | | | |
 
-Sources: `results/evaluation.json` (rates), `results/test_results.csv` (pairs), `results/splits_summary.json` (random guess).
+Sources: `results/evaluation.json` (rates), `results/test_results.csv` (pairs), `results/splits_summary.json` (random guess). No significance test is run (PROTOCOL section 13).
 
 ### Sensitivity analyses (PROTOCOL section 13), v2, 60 min, full span
 
@@ -109,6 +175,73 @@ Sources: `results/evaluation.json` (rates), `results/test_results.csv` (pairs), 
 | legislature | 28/52 (53.8%, 95% CI 40.5 to 66.7%) |
 | religious | 11/19 (57.9%, 95% CI 36.3 to 76.9%) |
 | all | 50/126 (39.7%, 95% CI 31.6 to 48.4%) |
+
+### M3: false matches on the report-half negatives (PROTOCOL section 11)
+
+A false match is a report-half negative excerpt whose confidence reaches tau for its cell. 24 of the 25 real foreign 50 Hz streams and 20 of the 20 SYNTHETIC items were searched (`results/evaluation.json`, `m3_counts`). A negative has an excerpt in a cell only if its stream is long enough. tau was set on the threshold half, which shares no stream with the report half. Extractor v2, Wilson 95% (`results/evaluation.json`, `m3`):
+
+| excerpt | scope | tau | real foreign 50 Hz streams | SYNTHETIC noise and hum | real and SYNTHETIC together |
+|---|---|---|---|---|---|
+| 10 min | full span | 0.1645 | 1/24 (4.2%, 95% CI 0.7 to 20.2%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 1/44 (2.3%, 95% CI 0.4 to 11.8%) |
+| 10 min | ±90 days | 0.1645 | 1/24 (4.2%, 95% CI 0.7 to 20.2%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 1/44 (2.3%, 95% CI 0.4 to 11.8%) |
+| 10 min | ±1 day | 0.4292 | 0/24 (0.0%, 95% CI 0.0 to 13.8%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 0/44 (0.0%, 95% CI 0.0 to 8.0%) |
+| 20 min | full span | 0.2233 | 0/24 (0.0%, 95% CI 0.0 to 13.8%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 0/44 (0.0%, 95% CI 0.0 to 8.0%) |
+| 20 min | ±90 days | 0.2233 | 0/24 (0.0%, 95% CI 0.0 to 13.8%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 0/44 (0.0%, 95% CI 0.0 to 8.0%) |
+| 20 min | ±1 day | 0.3279 | 0/24 (0.0%, 95% CI 0.0 to 13.8%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 0/44 (0.0%, 95% CI 0.0 to 8.0%) |
+| 40 min | full span | 0.0622 | 1/18 (5.6%, 95% CI 1.0 to 25.8%) | 2/20 (10.0%, 95% CI 2.8 to 30.1%) | 3/38 (7.9%, 95% CI 2.7 to 20.8%) |
+| 40 min | ±90 days | 0.0637 | 0/18 (0.0%, 95% CI 0.0 to 17.6%) | 1/20 (5.0%, 95% CI 0.9 to 23.6%) | 1/38 (2.6%, 95% CI 0.5 to 13.5%) |
+| 40 min | ±1 day | 0.3763 | 0/18 (0.0%, 95% CI 0.0 to 17.6%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 0/38 (0.0%, 95% CI 0.0 to 9.2%) |
+| 60 min | full span | 0.0834 | 1/16 (6.2%, 95% CI 1.1 to 28.3%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 1/36 (2.8%, 95% CI 0.5 to 14.2%) |
+| 60 min | ±90 days | 0.1412 | 0/16 (0.0%, 95% CI 0.0 to 19.4%) | 0/20 (0.0%, 95% CI 0.0 to 16.1%) | 0/36 (0.0%, 95% CI 0.0 to 9.6%) |
+| 60 min | ±1 day | 0.2334 | 0/16 (0.0%, 95% CI 0.0 to 19.4%) | 1/20 (5.0%, 95% CI 0.9 to 23.6%) | 1/36 (2.8%, 95% CI 0.5 to 14.2%) |
+
+- Target: at most 1% (PROTOCOL section 11). In the primary cell it is not met: 1/16 (6.2%, 95% CI 1.1 to 28.3%) real negatives at or above tau. No cell has enough negatives to show a rate below 1%: the smallest Wilson upper bound, real and SYNTHETIC together, is 8.0%.
+- Real negatives at or above tau in some v2 cell: zRAR5_1lvIc (10 min full span, 10 min ±90 days); 1d-v89-whQE (40 min full span); HNBb4ltVQug (60 min full span).
+- SYNTHETIC negatives at or above tau in some v2 cell: SYN-WALK-16 (40 min full span, 40 min ±90 days); SYN-WALK-08 (40 min full span); SYN-WALK-20 (60 min ±1 day).
+- With the hum-flag condition added, the v2 counts are the same in every cell. v1 and the naive extractor are in `results/false_matches.md`.
+
+Reliability of the confidence score in the primary cell: Test top-1 hit rate by the pre-registered confidence bins (`results/figures/figures.json`, written by `scripts/make_figures.py`).
+
+| confidence bin | Test excerpts | top-1 within 30 s |
+|---|---|---|
+| [0, 0.025) | 46 | 0/46 (0.0%, 95% CI 0.0 to 7.7%) |
+| [0.025, 0.05) | 9 | 1/9 (11.1%, 95% CI 2.0 to 43.5%) |
+| [0.05, 0.1) | 4 | 2/4 (50.0%, 95% CI 15.0 to 85.0%) |
+| [0.1, 0.2) | 8 | 7/8 (87.5%, 95% CI 52.9 to 97.8%) |
+| [0.2, 0.4) | 4 | 3/4 (75.0%, 95% CI 30.1 to 95.4%) |
+| [0.4, inf) | 18 | 12/18 (66.7%, 95% CI 43.7 to 83.7%) |
+
+1 of the 90 excerpts has no confidence because the search could not run. In this cell the largest confidence of a real negative is 0.1339 and of a SYNTHETIC negative 0.0394; tau is 0.0834.
+
+![M3 reliability plot: Test top-1 hit rate by confidence bin, with the negatives on the same axis](results/figures/m3_reliability_v2_60min_full.png)
+
+Figure: look at the dashed line at tau: Test excerpts with confidence below 0.025 hit in 0 of 46 cases, those at 0.1 or above hit in 22 of 30, and 1 of the 16 real negatives (filled grey dots) lies to the right of it.
+
+<details>
+<summary>The reliability plot for all 12 cells of v2</summary>
+
+![M3 reliability plot for every cell of extractor v2](results/figures/m3_reliability_v2_all_cells.png)
+
+Figure: look at the grey dots under each panel against the dashed tau line: a real negative (filled) reaches tau in 4 of the 12 cells and a SYNTHETIC negative (open) in 3.
+
+</details>
+
+### M5: edit detection on SYNTHETIC cuts (PROTOCOL section 11)
+
+Every cut is SYNTHETIC. At harvest time a stretch of 10 to 120 s was removed from the 60-min excerpt audio, the cut audio was extracted with v2, and the audio was deleted. No recording with a real edit was tested. M5 uses the 14 Test streams whose uncut 60-min excerpt is a confident hit over the full span, 2 SYNTHETIC cuts each. Each SYNTHETIC cut trace is located in the ±1-day scope and passed to `find_edits` with its frozen defaults. A detection is a reported cut within 30 s of the true position of the SYNTHETIC cut. Source: `results/m5.json`, written by `scripts/m5_edits.py` at 11 Nov 2026, 18:59 IST.
+
+| SYNTHETIC cut length | SYNTHETIC cuts | detected | duration error of the detected SYNTHETIC cuts, median / max |
+|---|---|---|---|
+| SYNTHETIC, 10 s | 3 | 0/3 (0.0%, 95% CI 0.0 to 56.1%) | n/a (none detected) |
+| SYNTHETIC, 20 s | 5 | 2/5 (40.0%, 95% CI 11.8 to 76.9%) | 0.5 s / 1 s |
+| SYNTHETIC, 40 s | 6 | 3/6 (50.0%, 95% CI 18.8 to 81.2%) | 2 s / 4 s |
+| SYNTHETIC, 60 s | 5 | 3/5 (60.0%, 95% CI 23.1 to 88.2%) | 1 s / 3 s |
+| SYNTHETIC, 90 s | 1 | 1/1 (100.0%, 95% CI 20.7 to 100.0%) | 2 s / 2 s |
+| SYNTHETIC, 120 s | 8 | 5/8 (62.5%, 95% CI 30.6 to 86.3%) | 2 s / 5 s |
+| all SYNTHETIC cuts | 28 | 14/28 (50.0%, 95% CI 32.6 to 67.4%) | 1.5 s / 5 s |
+
+- False alarms (SYNTHETIC test): `find_edits` reported an edit on 2/14 (14.3%, 95% CI 4.0 to 39.9%) of the uncut excerpts of the same streams, 2 edits in all.
+- Every SYNTHETIC cut with its reported position and jump, and the readings chosen where PROTOCOL section 11 leaves room, are in `results/m5.md`.
 
 ### Flow, Test streams (`results/evaluation.json`; drop reasons in `results/flow_table.md`)
 
@@ -134,7 +267,7 @@ Sources: `results/evaluation.json` (rates), `results/test_results.csv` (pairs), 
 
 ### M4: how much audio a unique lock needs (reference only, SYNTHETIC noise)
 
-Excerpts of the real reference, with SYNTHETIC noise added and no audio, searched like a recording. Noise level 40 mHz, the tested level nearest the 5 Nov probe's median equivalent trace noise of 38.6 mHz (`results/probe_noise.json`). `white` is independent each second; `hann16` is smoothed over 16 s like real extractor error, so it is the closer stand-in. Source: `results/uniqueness_table.csv`.
+Excerpts of the real reference, with SYNTHETIC noise added and no audio, searched like a recording. The table below was read before any Test search, at 40 mHz, the tested level nearest the 5 Nov probe's median equivalent trace noise of 38.6 mHz (`results/probe_noise.json`). `white` is independent each second; `hann16` is smoothed over 16 s like real extractor error, so it is the closer stand-in. Source: `results/uniqueness_table.csv`; all levels are plotted in `results/uniqueness_curve.png`.
 
 | scope | SYNTHETIC noise | shortest tested length with at least 90% unique locks | hit rate there | hits at 5, 10, 20, 40 and 60 min |
 |---|---|---|---|---|
@@ -144,9 +277,33 @@ Excerpts of the real reference, with SYNTHETIC noise added and no audio, searche
 | ±90 days | hann16 | 40 min | 776/800 (97.0%, 95% CI 95.6 to 98.0%) | 0, 6, 325, 776, 799 of 800 |
 | ±1 day | white | 10 min | 1934/2000 (96.7%, 95% CI 95.8 to 97.4%) | 759, 1934, 2000, 2000, 2000 of 2000 |
 | ±1 day | hann16 | 40 min | 1986/2000 (99.3%, 95% CI 98.8 to 99.6%) | 12, 362, 1627, 1986, 1999 of 2000 |
+
+**M4 at the measured noise level.** PROTOCOL section 11 reads the curve at the equivalent trace noise of the Test streams that lock, computed as in `scripts/probe_noise.py`. For the 38 streams the gate counts as locks (88 locking excerpts, one median per stream) the noise depends on which correlation r is used. The protocol does not say which, and the simulation's matcher is unweighted, so both readings are reported and neither is preferred. Source: `results/m4_measured.json` (`scripts/make_figures.py`); SYNTHETIC `hann16` noise, rates interpolated linearly between the tested noise levels.
+
+| reading | median noise over streams (Q1 to Q3) | full span | ±90 days | ±1 day |
+|---|---|---|---|---|
+| A: r as scored (v2's weighted correlation) | 9.4 mHz (4.1 to 16.8) | 10 min (91.2%) | 10 min (96.1%) | 10 min (99.6%) |
+| B: unweighted r of the same traces | 37.4 mHz (12.9 to 71.2) | 40 min (94.6%) | 40 min (97.4%) | 40 min (99.4%) |
+
+Each entry is the shortest tested length (5, 10, 20, 40, 60 min) whose interpolated share of unique locks is at least 90%, with that share. The readings at the quartiles and for other definitions of "streams that lock" are in `results/m4_measured.md`.
+
+![Equivalent trace noise of the Test streams that lock, and the uniqueness table read at the two medians](results/figures/m4_measured_noise.png)
+
+Figure: look at the two medians in the top panel, 9.4 mHz with r as scored and 37.4 mHz with the unweighted r: in the bottom-left panel (full span) their curves are first at or above the 90% line at 10 min and at 40 min.
+
+### EXPLORATORY (post hoc) analyses
+
+Nothing in this subsection is in PROTOCOL.md. Both analyses were run after the Test results were known. They describe the pre-registered results and change none of them.
+
+- **EXPLORATORY (post hoc): the confident verdicts 30 to 600 s from T*** (`results/exploratory_offset_verdicts.md`). In the primary cell the 14 confident verdicts within 30 s have a median |D| of 60.5 s, and 6 of them are on label-stable streams. The 7 verdicts 30 to 600 s off have a median |D| of 67 s, and 2 are on label-stable streams. Over the full span, 10 streams have such an offset verdict at some excerpt length, and 5 of them have a top candidate within 30 s at another length. These are counts and medians, with no test and no new threshold. T* rests on YouTube's start time, L and D, so the table cannot say which of them an offset comes from.
+- **EXPLORATORY (post hoc): M5 on every gate lock that has SYNTHETIC cut traces** (`results/m5.md`). Of the 38 gate locks, 31 have SYNTHETIC cut traces: the pre-registered streams and 17 more. Over all of them 16/62 (25.8%, 95% CI 16.6 to 37.9%) SYNTHETIC cuts were detected, and on the 17 additional streams alone 2/34 (5.9%, 95% CI 1.6 to 19.1%). The additional streams are gate locks through another excerpt length or scope; the 60-min excerpt of 5 is "confident wrong" and of 12 is "no verdict" over the full span.
+
+![EXPLORATORY (post hoc): confident verdicts within 30 s of T* beside those 30 to 600 s from it](results/figures/exploratory_offset_verdicts_v2.png)
+
+Figure: EXPLORATORY (post hoc): look at panel (a), where the drift corrections |D| of the 14 confident verdicts within 30 s (median 60.5 s, from 0 s to 293 s) and of the 7 verdicts 30 to 600 s off (median 67 s, from 8 s to 200 s) overlap.
 <!-- results:end -->
 
-Plots: `results/reference_coverage.png` (reference coverage by month), `results/time_axis_check.png` (label drift per file), `results/uniqueness_curve.png` (M4).
+Other plots: `results/reference_coverage.png` (reference coverage by month) and `results/uniqueness_curve.png` (M4 at every tested noise level). `results/figures/README.md` has a longer caption for each figure above, and `results/figures/figures.json` has every number they draw.
 
 ## How it works
 
@@ -174,7 +331,9 @@ flowchart TD
     NV --> EV
     L --> EV
     D --> EV
+    EV --> POST["scripts/m5_edits.py and scripts/make_figures.py<br/>SYNTHETIC cuts, plots, secondary tables"]
     EV --> R["results/ and scripts/fill_results.py"]
+    POST --> R
 ```
 
 ## Setup
@@ -219,12 +378,18 @@ The first command writes the one-second series, its validity mask and its source
 ```
 .venv\Scripts\python.exe scripts\make_splits.py --derived-dir ..\data\derived --verify-protocol PROTOCOL.md
 .venv\Scripts\python.exe scripts\evaluate.py --workers 2
+.venv\Scripts\python.exe scripts\m5_edits.py
+.venv\Scripts\python.exe scripts\make_figures.py
 .venv\Scripts\python.exe scripts\fill_results.py
 ```
 
-`make_splits.py --verify-protocol` re-draws the splits from the same inputs and seed and checks the SHA-256 values quoted in `PROTOCOL.md`. `evaluate.py` refuses to touch any Test trace unless `results/threshold.json`, `results/latency.json` and the code it runs are committed and unchanged. It re-searches only streams whose trace changed. `fill_results.py` rewrites the marked results blocks in this README and in `submission/UNSTOP-ANSWERS.md`.
+- `make_splits.py --verify-protocol` re-draws the splits from the same inputs and seed and checks the SHA-256 values quoted in `PROTOCOL.md`.
+- `evaluate.py` refuses to touch any Test trace unless `results/threshold.json`, `results/latency.json` and the code it runs are committed and unchanged. It re-searches only streams whose trace changed.
+- `m5_edits.py` scores M5 on the SYNTHETIC cut traces and writes `results/m5.json` and `results/m5.md`. It needs the built reference, and it stops without writing if a trace or the matcher code differs from what the evaluation searched.
+- `make_figures.py` writes the plots in `results/figures`, the confident-verdict breakdown (`results/error_breakdown.json` and `.md`), M4 at the measured noise level (`results/m4_measured.json` and `.md`) and the EXPLORATORY offset table. Only the M4 step needs the built reference; `--skip-m4-measure` reuses the existing `results/m4_measured.json`.
+- `fill_results.py` rewrites the marked blocks in this README, in `submission/UNSTOP-ANSWERS.md`, in `video/NARRATION.md` and in `video/SCRIPT.md`. Before it copies a number from the later result files it recounts them against `results/test_results.csv`, and it stops if they disagree or if a spoken number in the narration differs from its source. `--check` writes nothing and exits 1 if a file is out of date.
 
-The other scripts, in the order they ran: `harvest_metadata.py` (YouTube metadata only, no media), `make_splits.py`, `uniqueness.py` (M4, reference only), `harvest.py` through `run_stage3.ps1` (audio download, extraction, deletion), `tune_v2.py` (needs the Dev audio, which is not published, so it cannot be re-run from the repo), `set_threshold.py`, `calibrate_latency.py`, `evaluate.py`. Checks and one-offs: `bench_search.py`, `cli_smoke_real_ref.py`, `synthetic_checks.py` (all SYNTHETIC), `probe_noise.py`, `mem_import_check.py`, `repair_outage_attempts.py`. Re-running the harvest downloads audio from YouTube, whose terms restrict downloading; those scripts are published so the method can be read and checked.
+The other scripts, in the order they ran: `harvest_metadata.py` (YouTube metadata only, no media), `make_splits.py`, `uniqueness.py` (M4, reference only), `harvest.py` through `run_stage3.ps1` (audio download, extraction, deletion), `tune_v2.py` (needs the Dev audio, which is not published, so it cannot be re-run from the repo), `set_threshold.py`, `calibrate_latency.py`, `evaluate.py`, `m5_edits.py`, `make_figures.py`, and `export_site_data.py` (the explorer's data files in `site/data`). Checks and one-offs: `bench_search.py`, `cli_smoke_real_ref.py`, `synthetic_checks.py` (all SYNTHETIC), `probe_noise.py`, `mem_import_check.py`, `repair_outage_attempts.py`. Re-running the harvest downloads audio from YouTube, whose terms restrict downloading; those scripts are published so the method can be read and checked.
 
 ## Method
 
@@ -236,11 +401,16 @@ The full pre-registered plan is in [PROTOCOL.md](PROTOCOL.md). It was approved a
 - **Extractor.** v1 (`gunj/extract.py`): 16 s Hann windows with a 1 s hop, peaks of harmonics 1 to 6 of 50 Hz refined by quadratic interpolation, harmonics weighted by their peak-to-floor ratio, a 5-point running median. v2 (`gunj/extract_v2.py`, `gunj/match_v2.py`) adds per-frame SNR weights to the trace and the correlation. v2 was tuned on the 5 Dev streams only and frozen (git tag `extractor-v2`) before any Calibration, Test or negative audio was extracted, so it is the primary extractor (PROTOCOL sections 7 and 19).
 - **Matcher.** Normalised cross-correlation computed with FFTs over every position in the scope; windows with less than 90% valid reference seconds are skipped. Confidence = atanh(r1) - atanh(r2), where r2 is the best candidate at least 60 s from the top one.
 - **Threshold.** One tau per extractor, excerpt length and scope, set on the threshold half of the negatives so that at most 1% of them reach it; with fewer than 100 negatives per cell, tau sits just above the largest negative confidence (PROTOCOL section 10). A verdict "match" needs the hum flag (any harmonic's median peak-to-floor ratio at least 3) and confidence at or above tau.
-- **Ground truth.** T* = YouTube's release time in IST + L + D. L is one constant start latency, estimated on the Calibration split only. D is each stream's estimated label drift of the reference at that date (next section). A hit is a top candidate within 30 s of T* (PROTOCOL sections 6 and 9).
-- **Metrics.** M1 hum presence, M2 dating accuracy (primary endpoint: top-1 hit rate of v2 for 60-min excerpts over the full span), M3 false matches on the report half of the negatives, M4 the audio length needed for unique locks (SYNTHETIC noise on real reference excerpts), M5 edit detection on SYNTHETIC cuts, M6 an optional live station. Every rate has a Wilson 95% interval. Baselines: a naive single-bin 50 Hz extractor, v1, libhum, and the analytic random guess (PROTOCOL sections 11 to 13).
-- **Blinding.** tau, L and `scripts/evaluate.py` were committed before any Test search ran (commits beadde1, 84ac47d and 6d010bb), and `evaluate.py` checks this with git before it reads a Test trace (PROTOCOL section 14).
+- **Ground truth.** T* = YouTube's release time in IST + L + D. L is one constant start latency, estimated on the Calibration split only. D is each stream's estimated label drift of the reference at that date (next paragraph). A hit is a top candidate within 30 s of T* (PROTOCOL sections 6 and 9).
+- **Edits.** `find_edits` in `gunj/match.py` splits a locked trace wherever the two sides fit the reference at offsets at least 5 s apart. A positive jump means missing audio, which is a cut. It cannot find an edit within 180 s of either end of a clip.
+- **Metrics.** M1 hum presence, M2 dating accuracy (primary endpoint: top-1 hit rate of v2 for 60-min excerpts over the full span), M3 false matches on the report half of the negatives, M4 the audio length needed for unique locks (SYNTHETIC noise on real reference excerpts), M5 edit detection on SYNTHETIC cuts, M6 an optional live station. Every rate has a Wilson 95% interval, and no significance test is run. Baselines: a naive single-bin 50 Hz extractor, v1 and the analytic random guess. The planned libhum baseline was not run (PROTOCOL sections 11 to 13 and 19).
+- **Blinding.** tau, L and `scripts/evaluate.py` were committed before any Test search ran (commits beadde1, 84ac47d and 6d010bb), and `evaluate.py` checks this with git before it reads a Test trace (PROTOCOL section 14). M5 on the SYNTHETIC cuts, the plots and the M4 reading at the measured noise level were computed afterwards, with the Test results known (Deviations).
 
 **Label drift, a finding about the reference.** The dataset's time labels are not consistent. Where two files overlap they hold the same values shifted by minutes, and inside each file the labels drift late in steps, by up to <!-- drift-max:start -->319 s<!-- drift-max:end --> by the end of a file. Gunj measures this drift against the grid's own 15-minute scheduling clock: frequency changes faster just after each 15-minute block boundary, so folding the second-to-second change on time mod 900 s gives a peak whose phase moves when the labels drift (`scripts/check_time_axis.py`). Each stream's D comes from this check at the stream's start, smoothed over three weekly windows, and was frozen in `data/splits.csv` before any audio existed. The 5 Nov probe had read most of this drift as a start latency of +189 s; on corrected labels its lock sits 9 s before YouTube's start time (`results/reference_summary.md`).
+
+![Label drift of each reference file, measured weekly against the grid's 15-minute scheduling clock](results/time_axis_check.png)
+
+Figure: each line is one of the five source files; look at how its labels slide late in steps towards the end of the file, which is the drift that D corrects (`results/time_axis_check.json`).
 
 ## Data, licences and attributions
 
@@ -252,7 +422,7 @@ The full pre-registered plan is in [PROTOCOL.md](PROTOCOL.md). It was approved a
 
 **Stream metadata and traces.** Public YouTube pages, read with yt-dlp (no sign-in, no cookies). The repo holds video IDs, titles and other public metadata (`data/`), SHA-256 hashes of the downloaded audio, and 1-Hz traces derived from it (`traces/`). No audio or video is included. <!-- test-licences:start -->Of the 150 Test streams, 3 carry a Creative Commons BY licence and 147 the standard YouTube licence<!-- test-licences:end --> (`results/splits_summary.json`).
 
-**Software.** Every third-party library imported by `gunj/` and `scripts/`, plus the tools they call:
+**Software and services.** Every third-party library imported by `gunj/`, `scripts/` and `video/`, plus the tools and services they call:
 
 | software | used for | licence |
 |---|---|---|
@@ -262,34 +432,40 @@ The full pre-registered plan is in [PROTOCOL.md](PROTOCOL.md). It was approved a
 | matplotlib | result plots | Matplotlib licence (PSF-based, BSD-compatible) |
 | soundfile (python-soundfile, using libsndfile) | reading audio | BSD-3-Clause; libsndfile LGPL-2.1 |
 | yt-dlp | metadata and audio download (harvest only) | Unlicense |
-| FFmpeg | decoding and conversion to 1 kHz mono (harvest, and `gunj/audio.py` for formats soundfile cannot read) | LGPL-2.1 or later; some builds GPL |
+| FFmpeg | decoding and conversion to 1 kHz mono (harvest, and `gunj/audio.py` for formats soundfile cannot read); encoding the demo video | LGPL-2.1 or later; some builds GPL |
 | pytest | tests | MIT |
 | setuptools | build backend for `pip install -e .` | MIT |
 | Git | blinding check in `scripts/eval_common.py` and the frozen-extractor check in `scripts/harvest.py` (both call `git`) | GPL-2.0 |
 | Python standard library | everything else | PSF licence |
-| IBM Plex Sans, IBM Plex Mono | explorer site fonts, loaded from Google Fonts | SIL Open Font License 1.1 |
-| Playwright | screenshots of the explorer in `docs/screens` (not part of the pipeline) | Apache-2.0 |
+| IBM Plex Sans, IBM Plex Mono | explorer site fonts and video captions, loaded from Google Fonts | SIL Open Font License 1.1 |
+| Playwright, with its Chromium build | screenshots of the explorer in `docs/screens` and the frames of the demo video (`video/make_video.py`; not part of the pipeline) | Apache-2.0 |
+| Pillow | crossfades between frames of the demo video (`video/make_video.py`) | MIT-CMU |
+| edge-tts, run with uvx and calling Microsoft Edge's online text-to-speech | the synthetic narration voice of the demo video (`video/tts_narration.py`) | edge-tts LGPL-3.0; the voice is a Microsoft online service |
+| GitHub Pages, deployed by `.github/workflows/pages.yml` | hosting the explorer | hosted service under GitHub's terms |
 
 ## Limitations
 
 - **The open reference ends on <!-- span-end:start -->20 Aug 2023<!-- span-end:end -->.** Gunj cannot check a recording made after that. Grid-India records the frequency every second; publishing that record would let recordings since 2023 be checked the same way.
-- **Most streams carry little usable hum,** and a missing hum says nothing about a recording. On the Calibration split the hum flag was set for under half of the streams (`results/calibration.json`); M1 gives the Test figure.
-- **Margins are slim.** Foreign recordings can correlate strongly with some stretch of the Indian log (see the threshold row above), so short excerpts rarely give a confident lock. M4 says how much audio a unique lock needs, but its noise is SYNTHETIC and its noise level comes from one probe stream.
+- **Most streams carry little usable hum,** and a missing hum says nothing about a recording. The M1 hum flag was set for <!-- lim-hum:start -->50/126 (39.7%, 95% CI 31.6 to 48.4%)<!-- lim-hum:end --> of the Test streams with audio, and the share differs by venue type (Results, M1).
+- **A confident verdict can be wrong.** <!-- lim-confident:start -->In the primary cell 9 of the 23 confident verdicts are more than 30 s from T*, which is 10.0% of the 90 excerpts (95% CI 5.4 to 17.9%): 6 by 30 to 120 s, 1 by 120 to 600 s and 2 by more than 600 s<!-- lim-confident:end -->. An offset of tens of seconds can come from YouTube's start time, the latency L, the drift estimate D or the lock itself, and this evaluation cannot tell them apart. A verdict should be read together with its candidate list and its margin.
+- **False matches happen, and the negatives are few.** <!-- lim-false-match:start -->In the primary cell 1 of the 16 real foreign 60-min excerpts reached tau (6.2%, 95% CI 1.1 to 28.3%), above the 1% target; with the 20 SYNTHETIC ones added the count is 1/36 (2.8%, 95% CI 0.5 to 14.2%)<!-- lim-false-match:end -->. tau sits just above the largest confidence among the threshold-half negatives of each cell, so it rests on those recordings alone, and foreign recordings can correlate strongly with some stretch of the Indian log (Results, threshold tau).
 - **The drift correction D is itself an estimate,** from a statistical clock with unknown error. Results without D (S1) and on label-stable streams only (S2) are reported beside the main ones.
 - **The ground truth is YouTube's public start time** plus a latency L estimated from a handful of Calibration streams. Archives that may not start at that time (12-hour archive caps) were excluded in advance.
-- **Few negatives.** Even with no false matches, the Wilson 95% upper bound on the false-match rate is <!-- fm-bound:start -->18.4% with the 17 real report-half negatives at 60 min, and 9.4% with the SYNTHETIC ones added (n = 37)<!-- fm-bound:end --> (`results/splits_summary.json`). The 1% target can be aimed at but not demonstrated.
-- **The Test harvest is partial.** Downloads were slower than planned, so the gate sees only the Test streams downloaded by 8 Nov 14:00. They were attempted in a seeded random order (PROTOCOL section 19), so the streams attempted by then are a random sample of the Test split, and N is smaller than planned. Downloads that failed are not random in the same way (they may cluster by channel or stream format); they are listed with their reasons in `results/flow_table.md`.
+- **The Test harvest is partial, and it ended on a bot check.** <!-- harvest-count:start -->126 of the 150<!-- harvest-count:end --> selected Test streams were harvested. <!-- harvest-losses:start -->Of the other 24, 10 were no longer available on YouTube, 8 failed in download or conversion and could still have been retried when the harvest stopped (`data/harvest_manifest.csv`), 5 had not been attempted and 1 met the bot check (`results/flow_table.md`)<!-- harvest-losses:end -->. The harvest met <!-- bot-check:start -->1 bot check (8 Nov 2026, 05:30 IST)<!-- bot-check:end --> and stopped there, as PROTOCOL section 17 requires, which is why the harvest-health condition of the gate failed (Deviations). Streams were attempted in a seeded random order, so those attempted are a random sample of the Test split. Failures are not random in the same way: they may cluster by channel or stream format.
 - **One measurement point.** The reference is a single PMU, which the dataset page places at NERLDC in Meghalaya (the files name substation BALIP_PG). India's grid is synchronous, but local events at that substation could differ from what a recorder elsewhere sees.
-- **Not done yet:** M5 edit detection has SYNTHETIC cut traces but no scoring script; the libhum baseline has not been run; the M6 station did not run.
+- **Edit detection was tested on SYNTHETIC cuts only.** <!-- lim-m5:start -->14/28 (50.0%, 95% CI 32.6 to 67.4%) of the SYNTHETIC cuts were detected, and none of the 3 SYNTHETIC cuts of 10 s<!-- lim-m5:end --> were found. No recording with a real edit was tested.
+- **M4 is a simulation, and its answer depends on how the noise is read.** Its noise is SYNTHETIC. Read at the noise measured on the Test streams that lock, the shortest tested length for 90% unique locks over the full span is <!-- lim-m4:start -->10 min at 9.4 mHz (the correlation as scored) and 40 min at 37.4 mHz (the unweighted correlation)<!-- lim-m4:end -->. That noise is measured only on streams that lock, so it describes recordings with usable hum.
+- **Not run:** the libhum baseline (libhum was never installed; PROTOCOL section 19) and the optional M6 station.
+- **Some work came after the Test results.** The scoring of M5 on SYNTHETIC cuts, the plots and the M4 reading were computed with the Test results known, and two analyses are EXPLORATORY (Deviations).
 - `gunj date` differs from the evaluated pipeline (Setup, step 3). Everything was run on one Windows laptop.
 
 ## Ethics and exclusions
 
 - **Courts are excluded.** The Gujarat High Court Live Streaming Rules 2021 bar copying and derivative use of its feeds, so court channels and court proceedings are left out, and `scripts/make_splits.py` also screens titles for court words in English and Hindi (PROTOCOL section 4). The 5 Nov feasibility probe used a lecture on the Gujarat High Court's channel before this rule was written. That clip is excluded from every split, its audio is not on disk, and only the probe's printed outputs are in `docs/probe`.
 - **Time and grid only.** Gunj never reports a location within India.
-- **Audio is deleted after extraction.** The harvester downloads only the first 65 min of audio at the lowest bitrate, without sign-in, cookies or proxies, with sleeps between requests, and stops at the first bot check, CAPTCHA, sign-in wall or HTTP 429. Each file is deleted once its traces are extracted. The exception is the 1 kHz audio of the 5 Dev streams, kept on the laptop for tuning; it is never committed or uploaded and is deleted when the project ends (PROTOCOL section 17).
+- **Audio is deleted after extraction.** The harvester downloads only the first 65 min of audio at the lowest bitrate, without sign-in, cookies or proxies, with sleeps between requests, and stops at the first bot check, CAPTCHA, sign-in wall or HTTP 429. It met <!-- bot-check:start -->1 bot check (8 Nov 2026, 05:30 IST)<!-- bot-check:end --> and stopped. The blocked stream was never retried, and no sign-in, cookies or proxies were used afterwards (Deviations describes the one later retry of the negatives). Each file is deleted once its traces are extracted. The exception is the 1 kHz audio of the 5 Dev streams, kept on the laptop for tuning; it is never committed or uploaded and is deleted when the project ends (PROTOCOL section 17).
 - **No re-hosting.** No audio or video is in the repo, the explorer or the video. The v1 video uses no stream audio at all. Its narration is a synthetic voice (Microsoft Edge text-to-speech, en-IN-NeerjaNeural, made with `video/tts_narration.py` from `video/NARRATION.md`).
-- **YouTube's terms restrict downloading.** Audio was downloaded only with Shrey's approval (7 Nov 2026, 01:20 IST), only from public institutional streams, and only to measure the method.
+- **YouTube's terms restrict downloading.** Audio was downloaded only with Shrey's approval (7 Nov 2026, 01:20 IST, and 10 Nov 2026 for the one retry of the report-half negatives), only from public institutional streams, and only to measure the method.
 - **Dual use.** Dating a recording can reveal when someone was present at an event. Gunj is meant for checking claims about public recordings, and the explorer shows only public institutional streams.
 
 ## Related work
@@ -304,7 +480,8 @@ How Gunj differs:
 - **A pre-registered evaluation.** Splits, seeds, metrics, the threshold rule and the hit rule were committed before any Test audio existed. Every later change is listed in PROTOCOL section 19, and every Test stream is reported, including failed downloads, streams without hum and wrong locks.
 - **Label-drift correction.** The reference's own time labels drift by minutes. Gunj measures the drift against the grid's 15-minute scheduling clock and corrects each stream. We have not seen this problem described for this dataset.
 - **No verdict by design.** The confidence is a margin over the best wrong candidate, with a threshold fixed on held-out foreign 50 Hz recordings and SYNTHETIC noise. Without hum, or below the threshold, Gunj says "no verdict".
-- **A libhum comparison on the same traces** is planned in PROTOCOL section 12 and has not been run yet.
+
+What Gunj does not show: how it compares with another ENF tool. The libhum comparison on the same traces, planned in PROTOCOL section 12, was not run (PROTOCOL section 19), so the only comparisons are with Gunj's own v1 extractor, a naive single-bin extractor and chance.
 
 References:
 
@@ -321,13 +498,18 @@ References:
 
 ## Deviations from the pre-registered plan
 
-PROTOCOL section 19 records every change made after the plan, with the time, the reason, and whether any Test result had been seen. None had been seen at any of them. In short:
+PROTOCOL section 19 records every change made after the plan, with the time, the reason, and whether any Test result had been seen. The entries of 7 Nov were all made before any Test search had run. The entries of 8, 10 and 11 Nov came after the gate result was known; they change no Test result, and they leave tau, L and the hit rule as they were. In short:
 
-- **7 Nov, before approval.** Dev and Calibration audio were harvested before the plan was approved, under Shrey's 01:20 IST go-ahead for audio downloads. v2 was tuned on Dev only and frozen at 05:55 IST. Calibration traces were searched before tau existed; L was set only once tau was committed. The four local commits were rewritten at about 08:50 IST to remove tool attribution lines and absolute local paths; no code changed. The fixed harvest order of PROTOCOL section 14 step 3 was added at the same time, because downloads were slower than planned.
+- **7 Nov, 08:30 IST, before approval.** Dev and Calibration audio were harvested before the plan was approved, under Shrey's 01:20 IST go-ahead for audio downloads. v2 was tuned on Dev only and frozen at 05:55 IST. Calibration traces were searched before tau existed; L was set only once tau was committed. The four local commits were rewritten at about 08:50 IST to remove tool attribution lines and absolute local paths; no code changed. The fixed harvest order of PROTOCOL section 14 step 3 was added at the same time, because downloads were slower than planned.
 - **7 Nov, 10:00 IST. Test harvest order.** `data/splits.csv` is sorted by date, so harvesting it in row order would have taken the oldest streams first. The Test harvest uses a seeded order (SHA-256 of the split seed and the video ID), so the streams finished by the gate are a random sample.
 - **7 Nov, 11:50 IST. Network outage.** The laptop lost its connection from 10:18 to 11:38 IST. A tau written from 1 real and 20 SYNTHETIC negatives during the outage was deleted before it was committed or used. Network loss no longer counts as a failed download.
 - **7 Nov, 12:15 and 12:30 IST. Fixes from a code review** of the harvester (YouTube's rate-limit wording, private videos, ffmpeg skipping a failed segment, network checks, a stop after 4 unexplained failures) and of the evaluation script (path redaction, network-down rows, judging harvest health from the append-only logs, freezing the gate once). The download attempts charged during the outage were given back to 182 manifest rows (`scripts/repair_outage_attempts.py`, `data/attempt_repair_20261107.json`). The rules for tau, L, hits and the gate did not change.
 - **7 Nov, 22:40 IST. The gate moved from Saturday 7 Nov 22:00 IST to Sunday 8 Nov 14:00 IST.** The harvest ran far slower than planned: the outage, then an unstable mobile hotspot, then a self-stop of the harvester at 14:57 after 4 failures in a row (the logs show dropped connections, no block; restarted at 16:36). tau was computed at 17:44 but committed only at 22:35, with L, because the coordinating session's background check had been stopped for low memory and did not see tau arrive. By the text of section 15, the 22:00 gate was therefore not met, and the only reason was that tau and L were not committed in time. Shrey agreed at about 22:30 IST to move the decision time. Everything else in section 15 is unchanged, and no Test search had been run. The heading of `results/gate.md` still names 7 Nov 22:00, because the script's heading text was frozen with it; the decision time it applies (8 Nov 14:00) is printed in the paragraph below the heading.
+- **8 Nov, 17:10 IST. The gate result, and the decision to stay with Gunj.** The frozen gate run found <!-- gate-count:start -->38 of N = 126 Test streams locking blind (9 with D = 0)<!-- gate-count:end -->, so conditions 1 and 2 were met. Condition 3, that harvesting still works, was not met: at 05:30 IST YouTube answered a Test stream with "Sign in to confirm you're not a bot", and the harvester stopped as section 17 requires. By section 15 the gate is therefore not met, and the plan was to switch to the fallback project. Shrey decided at about 17:08 IST to stay with Gunj, because <!-- harvest-count:start -->126 of the 150<!-- harvest-count:end --> Test streams were already harvested and the evaluation needed no further download. No sign-in or cookies were used at any point. At that time no report-half real negative had been harvested, so M3 rested on SYNTHETIC negatives alone. The scoring loop had stopped at 07:31 IST, when the coordinating session ended, so the gate run took place at 17:04, later than the planned 14:10. The harvest had stopped at 05:30, so a run at either time counts the same streams.
+- **10 Nov, 19:18 IST. One retry of the report-half real negatives.** Shrey decided to retry those streams once, about 62 hours after the bot check, with the same harvester and rules: signed out, no cookies or proxies, the same sleeps, and a stop for good at the first block. The blocked Test stream was not retried, and no Test stream was touched.
+- **11 Nov, 18:36 IST. Outcome of the retry, and the libhum baseline.** The retry ran on 10 Nov from 19:19 to 19:58 IST and harvested <!-- neg-retry:start -->24 of the 25<!-- neg-retry:end --> streams. The remaining video was no longer available, and no block was met. M3 was then recomputed by the frozen `scripts/evaluate.py` with the frozen tau. The libhum baseline of section 12 was not run: libhum was never installed, and the time went to the harvest problems above. It is reported as "not run".
+
+Section 19 has no entry for the analysis scripts written after the Test results were known. `scripts/m5_edits.py` and `scripts/make_figures.py` were written on 11 Nov 2026. They compute M5 on the SYNTHETIC cuts, the M2 and M3 plots and the M4 reading at the measured noise level, all of which section 11 pre-registered, from the frozen scoring outputs. Where section 11 leaves room for more than one reading, the reading chosen is stated in the script's docstring and in `results/m5.md` or `results/m4_measured.md`, and for M4 both readings are reported. The two analyses that section 11 does not contain are labelled EXPLORATORY (post hoc) wherever they appear.
 
 ## Disclosure
 
@@ -337,9 +519,11 @@ Gunj was built from 6 to 12 Nov 2026 by Shrey Sati, who chose the project, appro
 
 - `gunj/`: the package (audio loading, extractors, matchers, reference access, SYNTHETIC generators, the `gunj` command).
 - `scripts/`: every analysis and harvest script named above.
+- `tests/`: the pytest suite.
 - `data/`: candidate lists, `splits.csv` and the harvest manifest (metadata only).
-- `traces/`: 1-Hz traces per split and stream.
-- `results/`: every result file, written by the scripts.
-- `docs/probe/`: the 5 Nov feasibility probe.
+- `traces/`: 1-Hz traces per split and stream. The Test files also hold the SYNTHETIC cut traces that M5 scores.
+- `results/`: every result file, written by the scripts. `results/figures/` holds the plots, their captions and the numbers they draw; `results/search_cache/` holds the raw search outputs.
+- `site/`: the static explorer, published to GitHub Pages by `.github/workflows/pages.yml`.
+- `docs/probe/`: the 5 Nov feasibility probe. `docs/screens/`: screenshots of the explorer.
 - `PROTOCOL.md`: the pre-registered plan and its deviations. `STATE.md`: the build log used to resume work after a restart.
-- `submission/`, `video/`: the Unstop form text and the demo video script.
+- `submission/`: the Unstop form text. `video/`: the narration, the shot list and the scripts that build the demo video.
