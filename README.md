@@ -14,7 +14,7 @@ Gunj dates Indian recordings from mains hum. It extracts the hum's frequency onc
 Each number above is written by `scripts/fill_results.py`; Results names the file behind it.
 <!-- headline:end -->
 
-Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecurity track. Report (PDF, method and results in paper form): [docs/gunj-report.pdf](docs/gunj-report.pdf). Explorer: https://satanrayshe.github.io/gunj/. Demo video: linked from the Unstop submission. The pre-registered plan and its deviations are in [PROTOCOL.md](PROTOCOL.md).
+Solo entry by Shrey Sati (GitHub satanrayshe) to Threws Odyssey 2026, Cybersecurity track. Report (PDF, method and results in paper form): [docs/gunj-report.pdf](docs/gunj-report.pdf). Explorer: https://satanrayshe.github.io/gunj/. Demo video (1:54): https://youtu.be/V79I-CRX_P4. The pre-registered plan and its deviations are in [PROTOCOL.md](PROTOCOL.md).
 
 Sections: [Results](#results), [How it works](#how-it-works), [Setup](#setup), [Method](#method), [Data, licences and attributions](#data-licences-and-attributions), [Limitations](#limitations), [Ethics and exclusions](#ethics-and-exclusions), [Related work](#related-work), [Deviations](#deviations-from-the-pre-registered-plan).
 
