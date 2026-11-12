@@ -11,8 +11,10 @@ serves site/ itself on a free local port. Everything the recording changes on th
 injected from here, and no site file is edited: channel names are hidden, the drift section is
 moved above the uniqueness section to follow the narration, and a highlight box is drawn. Every
 number on screen is the explorer's own, read from site/data. Line start times come from
-video/NARRATION.md, so the pictures, the captions and the narration share one timeline. Work
-files go to a folder in the system temp directory.
+video/NARRATION.md, so the pictures, the captions and the narration share one timeline. Inside a
+line, a caption starts when its first word is spoken in the recorded narration, as measured in
+video/caption_onsets.json; without that file, captions are timed by word count. Work files go to
+a folder in the system temp directory.
 """
 import functools
 import json
@@ -33,6 +35,7 @@ SITE = REPO / "site"
 VIDEO = REPO / "video"
 SCREENS = REPO / "docs" / "screens"
 NARRATION = VIDEO / "NARRATION.md"
+ONSETS = VIDEO / "caption_onsets.json"
 SILENT = VIDEO / "gunj-v1-silent.mp4"
 WORK = Path(tempfile.gettempdir()) / "gunj-v1-video-build"
 
@@ -67,9 +70,24 @@ def _split_long(s, maxc=100):
     return [s]
 
 
+def measured_onsets():
+    """{(line, chunk): (start s, text)} from video/caption_onsets.json, or {} if there is none.
+
+    The file records when the first word of each caption after a line's first is spoken in the
+    recorded narration. Captions then follow the voice instead of an even word-count pace."""
+    if not ONSETS.exists():
+        return {}
+    data = json.loads(ONSETS.read_text(encoding="utf-8"))
+    lead = float(data.get("lead_in_s", 0.0))
+    return {(c["line"], c["chunk"]): (float(c["voice_s"]) - lead, c["text"]) for c in data["chunks"]}
+
+
 def caption_chunks():
-    """Per narration line, a list of (start s, end s, text), split at sentences, timed by word count."""
+    """Per narration line, a list of (start s, end s, text), split at sentences.
+
+    Timed by word count, except where video/caption_onsets.json gives the measured start of a caption."""
     lines, end = parse_narration()
+    onsets = measured_onsets()
     out = []
     for i, (t0, txt) in enumerate(lines):
         t1 = (lines[i + 1][0] if i + 1 < len(lines) else end) - 0.25
@@ -83,12 +101,22 @@ def caption_chunks():
             else:
                 merged.append(p)
         words = [len(p.split()) for p in merged]
-        t, cs = t0, []
-        for p, w in zip(merged, words):
-            d = (t1 - t0) * w / sum(words)
-            cs.append((t, t + d, p))
-            t += d
-        out.append(cs)
+        starts, t = [], t0
+        for w in words:
+            starts.append(t)
+            t += (t1 - t0) * w / sum(words)
+        for k in range(1, len(merged)):
+            got = onsets.get((i + 1, k + 1))
+            if got is None:
+                continue
+            if got[1] != merged[k]:
+                raise SystemExit(f"{ONSETS.name}: line {i + 1} caption {k + 1} text differs from NARRATION.md; "
+                                 "measure the onsets again or delete the file")
+            starts[k] = got[0]
+        for k in range(1, len(starts)):
+            if not starts[k - 1] + 0.6 <= starts[k] <= t1 - 0.6:
+                raise SystemExit(f"line {i + 1} caption {k + 1}: start {starts[k]:.2f} s is out of order")
+        out.append([(s, (starts[k + 1] if k + 1 < len(starts) else t1), p) for k, (s, p) in enumerate(zip(starts, merged))])
     return out, end
 
 
@@ -401,13 +429,13 @@ def step_frames():
             R.jump(R.top({"css": ".verdict-line"}, 20))
             R.snap(1)
             R.spot_to(R.rect([{"css": ".verdict-line > *", "all": True}]))
-            R.hold_until(ch(10, 2) - 0.5)
+            R.hold_until(ch(10, 2) - 1.0)
             R.unspot()
             hum = {"css": "h3", "text": "Hum", "closest": ".panel"}
             R.scroll_to(R.js("(p) => __docTop(p)", hum) - 330, 1.2)
             R.spot_to(R.rect([{"css": "h3", "text": "Hum", "closest": ".panel-h"},
                               {"css": 'svg[aria-label^="Hum, this excerpt"]'}], 8))
-            R.hold_until(ch(10, 3))
+            R.hold_until(ch(10, 3) + 0.4)  # the crossfade needs a shot of at least 12 frames before it
             R.xfade(12)
             R.goto("#/", "#m3-panel table.fm-tbl")
             R.jump(R.top({"css": "#m3-panel"}))

@@ -6,7 +6,7 @@ The voiceover text after each "VO" below is copied from `video/NARRATION.md` by 
 
 ## Production
 
-- Frames: screenshots of the explorer at 1920 by 1080, taken with one browser at a time (`python video/make_video.py frames`). Crossfades, captions and encoding follow (`python video/make_video.py assemble`) and write `video/gunj-v1-silent.mp4`.
+- Frames: screenshots of the explorer at 1920 by 1080, taken with one browser at a time (`python video/make_video.py frames`). Crossfades, captions and encoding follow (`python video/make_video.py assemble`) and write `video/gunj-v1-silent.mp4`. Inside a narration line, each caption starts when its first word is spoken in the recording (`video/caption_onsets.json`).
 - Narration: `video/tts_narration.py` speaks the lines of `video/NARRATION.md` with a synthetic voice at their start times, or Shrey records them in one take or one line at a time (`video/RECORDING.md`; `video/place_voice.py` places separately recorded lines at their start times). `video/mux.ps1` puts the track under the picture and writes `video/gunj-v1.mp4`. It refuses a narration file older than `video/NARRATION.md`, which would speak earlier lines under the current captions; `python video/make_video.py check` names any such file or narrated cut.
 - No audio or video of any stream is used (PROTOCOL section 17). The only sound is the narration.
 - Channel names are hidden in every frame. Video IDs and venue types are shown.
