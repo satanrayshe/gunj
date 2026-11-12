@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-"""Fill the results blocks of README.md, submission/UNSTOP-ANSWERS.md,
-video/NARRATION.md and video/SCRIPT.md.
+"""Fill the results blocks of README.md, video/NARRATION.md and video/SCRIPT.md
+(and of any other file passed as an argument).
 
 Every number this script writes is read at run time from a file in the repo,
 and that file is named next to the number. No number is typed in by hand.
@@ -75,7 +75,7 @@ LENGTHS = (10, 20, 40, 60)
 SCOPES = ("full", "90d", "1d")
 SCOPE_LABEL = {"full": "full span", "90d": "±90 days", "1d": "±1 day"}
 VERIFIED = "verified by metadata step"            # data/splits.csv official_status (scripts/make_splits.py)
-DEFAULT_TARGETS = ("README.md", "submission/UNSTOP-ANSWERS.md", "video/NARRATION.md", "video/SCRIPT.md")
+DEFAULT_TARGETS = ("README.md", "video/NARRATION.md", "video/SCRIPT.md")
 MARKER_RE = re.compile(r"<!--\s*([a-z0-9][a-z0-9-]*):start\s*-->")
 ABS_PATH_RE = re.compile(r"(?<![A-Za-z])[A-Za-z]:[\\/]|Users[\\/]|AppData")
 MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()

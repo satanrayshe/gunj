@@ -534,13 +534,3 @@ def test_repo_readme_shape():
         assert (REPO / name).exists(), name
 
 
-def test_repo_unstop_answers_fit_the_form():
-    text = (REPO / "submission" / "UNSTOP-ANSWERS.md").read_text(encoding="utf-8")
-    text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
-    fields = {}
-    for part in re.split(r"^## ", text, flags=re.M)[1:]:
-        head, _, body = part.partition("\n")
-        fields[head.strip()] = len(body.split())
-    assert 110 <= fields["3. Problem Statement"] <= 130
-    assert fields["4. Proposed Solution"] <= 260
-    assert "https://github.com/satanrayshe/gunj" in text and "https://satanrayshe.github.io/gunj/" in text
